@@ -255,3 +255,114 @@ mappings:
   "874039100":
     symbol: "TSM.US"
     company_name: "Taiwan Semiconductor Manufacturing Co. ADR"
+  "064058100":
+    symbol: "BK.US"
+    company_name: "The Bank of New York Mellon Corp."
+    tags: ["S&P 500"]
+  "150870103":
+    symbol: "CE.US"
+    company_name: "Celanese Corp."
+    tags: ["S&P 500"]
+  "172967424":
+    symbol: "C.US"
+    company_name: "Citigroup Inc."
+    tags: ["S&P 500"]
+  "23331A109":
+    symbol: "DHI.US"
+    company_name: "D.R. Horton Inc."
+    tags: ["S&P 500"]
+  "339750101":
+    symbol: "FND.US"
+    company_name: "Floor & Decor Holdings Inc."
+  "37045V100":
+    symbol: "GM.US"
+    company_name: "General Motors Co."
+    tags: ["S&P 500"]
+  "37959E102":
+    symbol: "GL.US"
+    company_name: "Globe Life Inc."
+    tags: ["S&P 500"]
+  "40434L105":
+    symbol: "HPQ.US"
+    company_name: "HP Inc."
+    tags: ["S&P 500"]
+  "46591M109":
+    symbol: "YY.US"
+    company_name: "JOYY Inc. ADR"
+  "478160104":
+    symbol: "JNJ.US"
+    company_name: "Johnson & Johnson"
+    tags: ["S&P 500"]
+  "570535104":
+    symbol: "MKL.US"
+    company_name: "Markel Group Inc."
+  "571748102":
+    symbol: "MMC.US"
+    company_name: "Marsh & McLennan Companies Inc."
+    tags: ["S&P 500"]
+  "58155Q103":
+    symbol: "MCK.US"
+    company_name: "McKesson Corp."
+    tags: ["S&P 500"]
+  "595112103":
+    symbol: "MU.US"
+    company_name: "Micron Technology Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "60770K107":
+    symbol: "MRNA.US"
+    company_name: "Moderna Inc."
+    tags: ["S&P 500"]
+  "609207105":
+    symbol: "MDLZ.US"
+    company_name: "Mondelez International Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "64110W102":
+    symbol: "NTES.US"
+    company_name: "NetEase Inc. ADR"
+  "742718109":
+    symbol: "PG.US"
+    company_name: "The Procter & Gamble Co."
+    tags: ["S&P 500"]
+  "74967X103":
+    symbol: "RH.US"
+    company_name: "RH"
+  "78462F103":
+    symbol: "SPY.US"
+    company_name: "SPDR S&P 500 ETF Trust"
+  "78574H104":
+    symbol: "SOC.US"
+    company_name: "Sable Offshore Corp."
+  "872590104":
+    symbol: "TMUS.US"
+    company_name: "T-Mobile US Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "902973304":
+    symbol: "USB.US"
+    company_name: "U.S. Bancorp"
+    tags: ["S&P 500"]
+  "90384S303":
+    symbol: "ULTA.US"
+    company_name: "Ulta Beauty Inc."
+    tags: ["S&P 500"]
+  "911312106":
+    symbol: "UPS.US"
+    company_name: "United Parcel Service Inc."
+    tags: ["S&P 500"]
+  "922908363":
+    symbol: "VOO.US"
+    company_name: "Vanguard S&P 500 ETF"
+  "92556H206":
+    symbol: "PARA.US"
+    company_name: "Paramount Global"
+  "92852X103":
+    symbol: "VTS.US"
+    company_name: "Vitesse Energy Inc."
+  "98980L101":
+    symbol: "ZM.US"
+    company_name: "Zoom Communications Inc."
+  "G6683N103":
+    symbol: "NU.US"
+    company_name: "Nu Holdings Ltd."
+  "G85158106":
+    symbol: "STNE.US"
+    company_name: "StoneCo Ltd."

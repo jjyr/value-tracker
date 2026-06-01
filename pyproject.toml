@@ -13,6 +13,7 @@ stockhunt-build-live = "scripts.tasks:build_live"
 stockhunt-build-sample = "scripts.tasks:build_sample"
 stockhunt-check = "scripts.tasks:check"
 stockhunt-backend = "scripts.stockhunt_backend:main"
+stockhunt-backtest = "scripts.historical_backtest:main"
 stockhunt-export = "scripts.generate_stockhunt_data:main"
 stockhunt-live-input = "scripts.build_live_input:main"
 

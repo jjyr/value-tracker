@@ -6,7 +6,7 @@ StockHunt 是一个全静态生成的美股机构 13F 信号仪表盘。页面�
 2. 后台规范化：原始 filing 和行情落 SQLite，计算机构变化、指标快照和排名历史。
 3. 静态导出：normalized snapshot 转成 Hugo 读取的 `data/stockhunt.yaml`。
 
-当前已经接入 Longbridge 真实数据：`stockhunt-live-input` 会读取白名单机构，拉取真实 13F holdings / changes 和行情估值，生成 backend 可消费的 raw YAML。
+当前已经接入真实数据链路：`stockhunt-live-input` 会读取白名单机构，拉取 Longbridge 当前 13F holdings / changes 和行情估值，生成 backend 可消费的 raw YAML；完整 live build 还会从 SEC EDGAR 拉取历史 13F，并用 Longbridge 日 K 线生成 2024 至今的周度再平衡模拟盘。
 
 ## 目录
 
@@ -17,6 +17,7 @@ raw/sample/13f_holdings.yaml   sample 原始 13F + 行情输入
 raw/generated/                 本地生成产物，已 gitignore
 data/stockhunt.yaml            Hugo 当前消费的数据
 scripts/build_live_input.py    Longbridge live data -> raw input
+scripts/historical_backtest.py SEC 历史 13F + Longbridge K 线 -> 周度回测
 scripts/stockhunt_backend.py   raw input -> SQLite + normalized snapshot
 scripts/generate_stockhunt_data.py
                                normalized snapshot -> Hugo data
@@ -52,13 +53,26 @@ uv run stockhunt-build-sample --help
 uv run stockhunt-check --help
 uv run stockhunt-live-input --help
 uv run stockhunt-backend --help
+uv run stockhunt-backtest --help
 uv run stockhunt-export --help
 ```
 
-真实数据完整生成：
+真实数据完整生成。默认会同时生成当前榜单、2024 至今历史周度回测、Hugo 数据和静态站点：
 
 ```bash
 uv run stockhunt-build-live
+```
+
+跳过历史回测，只生成当前快照：
+
+```bash
+uv run stockhunt-build-live --skip-backtest
+```
+
+修改历史回测起点，例如从 2024 年开始：
+
+```bash
+uv run stockhunt-build-live --backtest-start 2024-01-01
 ```
 
 真实数据 smoke test，只拉 1 个机构、Top 5 当前持仓：
@@ -143,7 +157,39 @@ uv run stockhunt-export --snapshot raw/generated/snapshot.yaml
 data/stockhunt.yaml
 ```
 
-### 4. 构建静态站点
+### 4. 生成历史周度回测
+
+完整 live build 默认会跑这一步，也可以单独运行：
+
+```bash
+uv run stockhunt-backtest --start-date 2024-01-01
+```
+
+默认产物：
+
+```text
+raw/generated/historical_13f_holdings.yaml
+raw/generated/historical_simulation.yaml
+raw/generated/cache/
+```
+
+历史回测规则：
+
+- 只使用 `filing_date <= rebalance_date` 的 13F，避免提前使用尚未披露的报告期数据。
+- 每周一再平衡；如果周一休市，则顺延到下一个交易日。
+- 每期按配置里的 `allocation_score` 规则选股和定权重，单只股票权重仍受配置里的最小/最大仓位约束。
+- 价格使用 Longbridge 日 K 线，默认 `period=day`、`adjust=forward`。
+- `raw/generated/cache/` 会缓存 SEC submissions、filing index、information table XML 和 Longbridge K 线，重复运行会复用缓存。
+
+如果只想重新计算历史回测并导入 Hugo 数据：
+
+```bash
+uv run stockhunt-backtest --start-date 2024-01-01
+uv run stockhunt-export --snapshot raw/generated/snapshot.yaml --simulation raw/generated/historical_simulation.yaml
+uv run hugo --minify
+```
+
+### 5. 构建静态站点
 
 ```bash
 uv run hugo --minify
@@ -165,7 +211,7 @@ public/
 uv run stockhunt-build-live
 ```
 
-`--reset-db` 会清空当前 SQLite 中 StockHunt 管理的表，然后重新写入当前输入文件里的 filings、holdings、market snapshots、metrics 和 rank history。
+完整 live build 会重新拉取当前 Longbridge raw input、重建 SQLite、重新计算历史回测、重新导出 Hugo 数据并构建 Hugo。后台步骤里的 `--reset-db` 会清空当前 SQLite 中 StockHunt 管理的表，然后重新写入当前输入文件里的 filings、holdings、market snapshots、metrics 和 rank history。
 
 ### 增量重跑
 
@@ -182,6 +228,7 @@ uv run stockhunt-build-live --incremental
 - 同一个 `symbol + date + config_hash` 的 metrics 会重算覆盖。
 - 同一个 `date + ranking_type + config_hash` 的 rank history 会重算覆盖。
 - 如果 raw input 没有包含某个历史 filing，它会保留在 SQLite 里；如果需要严格等于当前输入，请用全量重跑。
+- 历史回测本身总是按当前配置重新模拟；SEC 和 K 线请求会优先读 `raw/generated/cache/`。
 
 ### 只重建前端
 
@@ -248,6 +295,8 @@ mappings:
 uv run stockhunt-build-live
 ```
 
+历史回测也依赖同一份映射。补充 CUSIP 后重新运行完整 build，历史 SEC 13F 会按新映射重新解析；已缓存的 SEC 原始文件和 K 线会复用。
+
 ## 修改重点机构
 
 重点机构在同一个配置文件：
@@ -266,6 +315,7 @@ key_institutions:
 - `key_institution_bought`
 - 重点机构姓名标签
 - 模拟盘 `allocation_score`
+- 历史周度回测每一期的目标持仓和权重
 
 如果原始 13F 已经在 SQLite 中，可以不重新拉 Longbridge，只重算后台和静态数据：
 
@@ -276,6 +326,14 @@ uv run hugo --minify
 ```
 
 如果新增的重点机构不在已有 raw input 中，需要先跑 `stockhunt-live-input`。
+
+如果要让历史回测也使用新的重点机构规则，需要重新跑：
+
+```bash
+uv run stockhunt-backtest --start-date 2024-01-01
+uv run stockhunt-export --snapshot raw/generated/snapshot.yaml --simulation raw/generated/historical_simulation.yaml
+uv run hugo --minify
+```
 
 ## 修改策略参数
 
@@ -292,7 +350,13 @@ strategy:
     selling_top10_penalty: -50
 ```
 
-当前模拟盘由最新 snapshot 生成：根据买入/持有/卖出 Top10 和 `allocation_score` 规则计算当期目标持仓。由于还没有历史每日快照，当前净值曲线是单点建仓视图；接入历史 `rank_history` 后可扩展为完整周度回测。
+当前模拟盘默认由 `stockhunt-backtest` 生成完整历史周度回测：每个再平衡日用当时已经披露的 13F、当时价格和当前配置里的 `allocation_score` 规则重新选股，并输出净值曲线、当前持仓和调仓记录。
+
+修改策略参数后，推荐重新跑完整 build：
+
+```bash
+uv run stockhunt-build-live
+```
 
 ## 常用检查
 
@@ -322,10 +386,10 @@ uv run sqlite3 raw/generated/stockhunt.sqlite \
 uv run stockhunt-check
 ```
 
-底层拆步调试时，可以直接使用 `stockhunt-live-input`、`stockhunt-backend`、`stockhunt-export` 三个命令。
+底层拆步调试时，可以直接使用 `stockhunt-live-input`、`stockhunt-backend`、`stockhunt-backtest`、`stockhunt-export` 四个命令。
 
 ## 后续接入
 
-1. SEC 13F adapter：按白名单 CIK 拉取最新 `13F-HR` / `13F-HR/A`，优先解析 information table XML。
-2. Index tag adapter：自动维护 S&P 500、Nasdaq 100、Russell 1000/2000/3000、Mag7 标签。
-3. Historical simulation builder：用历史 `rank_history` 和 `metric_snapshots` 重跑每周模拟盘收益曲线。
+1. Index tag adapter：自动维护 S&P 500、Nasdaq 100、Russell 1000/2000/3000、Mag7 标签。
+2. 更完整的历史数据质量报告：展示未映射 CUSIP、退市股票、缺失价格和 13F value 单位修正。
+3. 将 SEC 历史 13F 结果写入 SQLite，支持更细的历史榜单页面和多策略对比。

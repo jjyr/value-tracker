@@ -2,6 +2,7 @@
 {{ $data := site.Data.stockhunt }}
 {{ $sim := $data.simulation }}
 {{ $scoreTooltip := "评分规则：买入榜 Top 10 +10；持有榜 Top 10 +10；命中买入榜或持有榜且低于机构平均持有价 +20；买入榜 Top 10 且重点机构买入 +10；持有榜 Top 10 且重点机构买入 +10；卖出榜 Top 10 -50。" }}
+{{ $isHistorical := eq $sim.meta.mode "historical_weekly_rebalance" }}
 {{ partial "topbar.html" . }}
 
 <main class="page-shell">
@@ -9,7 +10,7 @@
     <div class="panel hero-panel">
       <p class="eyebrow">模拟盘净值</p>
       <div class="hero-value" data-money="{{ $sim.summary.current_value }}">--</div>
-      <div class="hero-change positive">{{ printf "%+.1f%%" $sim.summary.total_return_pct }} 累计</div>
+      <div class="hero-change {{ if lt $sim.summary.total_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.total_return_pct }} 累计</div>
       <div class="metric-grid">
         <div>
           <span>本周</span>
@@ -29,8 +30,8 @@
         </div>
       </div>
       <div class="benchmark-row">
-        <span>vs SPY <strong class="positive">{{ printf "%+.1f%%" $sim.summary.excess_vs_spy_pct }}</strong></span>
-        <span>vs QQQ <strong class="positive">{{ printf "%+.1f%%" $sim.summary.excess_vs_qqq_pct }}</strong></span>
+        <span>vs SPY <strong class="{{ if lt $sim.summary.excess_vs_spy_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.excess_vs_spy_pct }}</strong></span>
+        <span>vs QQQ <strong class="{{ if lt $sim.summary.excess_vs_qqq_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.excess_vs_qqq_pct }}</strong></span>
       </div>
     </div>
 
@@ -88,7 +89,7 @@
         <p class="eyebrow">Portfolio</p>
         <h2>当前模拟盘持仓</h2>
       </div>
-      <span class="subtle-badge">自动再平衡 / 周一</span>
+      <span class="subtle-badge">{{ if $isHistorical }}2024 至今 / 周一再平衡{{ else }}当前快照 / 周一{{ end }}</span>
     </div>
     <div class="table-wrap">
       <table class="data-table">
@@ -184,7 +185,7 @@
   </section>
 
   <footer class="risk-note">
-    本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。模拟盘为规则化当前快照模拟，不代表未来收益。
+    本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。{{ if $isHistorical }}模拟盘为 2024 至今的规则化历史回测，不代表未来收益。{{ else }}模拟盘为规则化当前快照模拟，不代表未来收益。{{ end }}
   </footer>
 </main>
 {{ end }}

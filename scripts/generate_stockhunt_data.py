@@ -521,6 +521,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=pathlib.Path, default=ROOT / "config/stockhunt.yaml")
     parser.add_argument("--snapshot", type=pathlib.Path, default=ROOT / "raw/sample/snapshot.yaml")
+    parser.add_argument("--simulation", type=pathlib.Path, default=None)
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
     parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/stocks")
     parser.add_argument("--skip-content", action="store_true")
@@ -531,6 +532,9 @@ def main() -> None:
     args = parse_args()
     config = load_yaml(args.config)
     snapshot = load_yaml(args.snapshot)
+    if args.simulation and args.simulation.exists():
+        simulation_payload = load_yaml(args.simulation)
+        snapshot["simulation"] = simulation_payload.get("simulation") or simulation_payload
     data = build_hugo_data(config, snapshot)
     write_yaml(args.output, data)
     if not args.skip_content:
