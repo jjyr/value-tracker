@@ -1,0 +1,17 @@
+{{ $current := float (.current | default 0) }}
+{{ $basis := float (.basis | default 0) }}
+{{ if gt $basis 0.0 }}
+  {{ $pct := 0.0 }}
+  {{ if gt $current 0.0 }}
+    {{ $pct = mul (div (sub $current $basis) $basis) 100 }}
+  {{ end }}
+  <div class="price-basis">
+    <strong>${{ printf "%.2f" $basis }}</strong>
+    <span class="{{ if lt $pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $pct }}</span>
+  </div>
+{{ else }}
+  <div class="price-basis">
+    <strong>--</strong>
+    <span class="muted">--</span>
+  </div>
+{{ end }}

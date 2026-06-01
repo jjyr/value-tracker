@@ -3,6 +3,7 @@
 {{ $sim := $data.simulation }}
 {{ $scoreTooltip := "评分规则：买入榜 Top 10 +10；持有榜 Top 10 +10；命中买入榜或持有榜且低于机构平均持有价 +20；买入榜 Top 10 且重点机构买入 +10；持有榜 Top 10 且重点机构买入 +10；卖出榜 Top 10 -50。" }}
 {{ $isHistorical := eq $sim.meta.mode "historical_weekly_rebalance" }}
+{{ $dailyReturnPct := default 0 $sim.summary.daily_return_pct }}
 {{ partial "topbar.html" . }}
 
 <main class="page-shell">
@@ -12,6 +13,10 @@
       <div class="hero-value" data-money="{{ $sim.summary.current_value }}">--</div>
       <div class="hero-change {{ if lt $sim.summary.total_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.total_return_pct }} 累计</div>
       <div class="metric-grid">
+        <div>
+          <span>今日</span>
+          <strong class="{{ if lt $dailyReturnPct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $dailyReturnPct }}</strong>
+        </div>
         <div>
           <span>本周</span>
           <strong class="{{ if lt $sim.summary.weekly_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.weekly_return_pct }}</strong>
@@ -23,10 +28,6 @@
         <div>
           <span>最大回撤</span>
           <strong class="negative">{{ printf "%.1f%%" $sim.summary.max_drawdown_pct }}</strong>
-        </div>
-        <div>
-          <span>现金</span>
-          <strong>{{ printf "%.1f%%" $sim.summary.cash_weight_pct }}</strong>
         </div>
       </div>
       <div class="benchmark-row">
@@ -49,10 +50,10 @@
         </div>
       </div>
       <svg class="equity-chart" data-points='{{ $sim.equity_curve | jsonify }}' role="img" aria-label="模拟盘净值曲线"></svg>
-      <div class="legend">
-        <span><i class="legend-dot portfolio"></i>StockHunt</span>
-        <span><i class="legend-dot spy"></i>SPY</span>
-        <span><i class="legend-dot qqq"></i>QQQ</span>
+      <div class="legend" aria-label="图表序列开关">
+        <button class="legend-toggle is-active" type="button" data-series="value" aria-pressed="true"><i class="legend-dot portfolio"></i>StockHunt</button>
+        <button class="legend-toggle is-active" type="button" data-series="spy_value" aria-pressed="true"><i class="legend-dot spy"></i>SPY</button>
+        <button class="legend-toggle is-active" type="button" data-series="qqq_value" aria-pressed="true"><i class="legend-dot qqq"></i>QQQ</button>
       </div>
     </div>
 
@@ -71,7 +72,7 @@
             <a href="{{ printf "/stocks/%s/" .slug | relURL }}">
               <strong>{{ .symbol }}</strong>
               <span>{{ .reason }}</span>
-              <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · {{ printf "%.2f" .shares }} 股</span>
+              <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · {{ printf "%d" (int .shares) }} 股</span>
             </a>
           {{ end }}
           <h3>卖出</h3>
@@ -96,13 +97,12 @@
         <thead>
           <tr>
             <th>股票</th>
-            <th>权重</th>
+            <th title="当前持仓市值占模拟盘净值的比例">占比</th>
             <th>价格</th>
-            <th>入场</th>
-            <th>收益</th>
+            <th>买入均价</th>
+            <th>机构均价</th>
             <th title="{{ $scoreTooltip }}">评分</th>
             <th>信号</th>
-            <th>机构均价</th>
           </tr>
         </thead>
         <tbody>
@@ -120,15 +120,11 @@
                 </div>
               </td>
               <td>${{ printf "%.2f" .current_price }}</td>
-              <td>${{ printf "%.2f" .entry_price }}</td>
-              <td class="{{ if lt .return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.2f%%" .return_pct }}</td>
+              <td>{{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .entry_price) }}</td>
+              <td>{{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .institutional_avg_holding_price) }}</td>
               <td><span class="score-pill tip-trigger" data-tooltip="{{ $scoreTooltip }}" aria-label="{{ $scoreTooltip }}">{{ .allocation_score }}</span></td>
               <td>
                 {{ partial "badges.html" .badges }}
-              </td>
-              <td>
-                <strong>${{ printf "%.2f" .institutional_avg_holding_price }}</strong>
-                <span class="{{ if lt .discount_to_institutional_avg_pct 0 }}negative{{ else }}positive{{ end }} block">{{ printf "%+.1f%%" .discount_to_institutional_avg_pct }}</span>
               </td>
             </tr>
           {{ end }}
@@ -162,7 +158,7 @@
                 </div>
                 <div class="trade-meta">
                   <strong data-money="{{ .buy_value_usd }}">--</strong>
-                  <span>${{ printf "%.2f" .buy_price }} · {{ printf "%.2f" .shares }} 股</span>
+                  <span>${{ printf "%.2f" .buy_price }} · {{ printf "%d" (int .shares) }} 股</span>
                 </div>
               </div>
             {{ end }}

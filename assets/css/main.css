@@ -183,6 +183,10 @@ button {
   flex-direction: column;
 }
 
+.chart-panel {
+  position: relative;
+}
+
 .hero-panel .benchmark-row,
 .chart-panel .legend {
   margin-top: auto;
@@ -300,7 +304,7 @@ h3 {
 
 .benchmark-row span,
 .rebalance-stats span,
-.legend span {
+.legend-toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -311,6 +315,25 @@ h3 {
   background: rgba(255, 255, 255, 0.025);
   font-size: 12px;
   transition: border-color 160ms ease, background 160ms ease;
+}
+
+.legend-toggle {
+  cursor: pointer;
+}
+
+.legend-toggle:not(.is-active) {
+  color: var(--muted-2);
+  opacity: 0.55;
+}
+
+.legend-toggle:not(.is-active) .legend-dot {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+.legend-toggle:hover {
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .positive {
@@ -380,6 +403,94 @@ h3 {
 .chart-label {
   fill: var(--muted-2);
   font-size: 12px;
+}
+
+.chart-axis-label {
+  fill: var(--muted-2);
+  font-size: 11px;
+}
+
+.chart-hover-line {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-dasharray: 3 4;
+  stroke-width: 1;
+}
+
+.chart-point {
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+.point-portfolio {
+  fill: var(--green);
+  color: var(--green);
+}
+
+.point-spy {
+  fill: var(--cyan);
+  color: var(--cyan);
+}
+
+.point-qqq {
+  fill: var(--violet);
+  color: var(--violet);
+}
+
+.chart-hover-capture {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+.chart-hover-tooltip {
+  position: fixed;
+  z-index: 10000;
+  min-width: 210px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  color: var(--text);
+  background: rgba(13, 17, 23, 0.98);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 100ms ease, transform 100ms ease;
+}
+
+.chart-hover-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chart-hover-tooltip time {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.chart-hover-tooltip div {
+  display: grid;
+  grid-template-columns: 80px 58px 1fr;
+  gap: 8px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.chart-tooltip-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.chart-tooltip-name::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
 }
 
 .legend {
@@ -499,6 +610,21 @@ h3 {
 .stock-link span {
   color: var(--muted);
   font-size: 12px;
+}
+
+.price-basis {
+  display: grid;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.price-basis strong {
+  color: var(--text);
+}
+
+.price-basis span {
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .weight-bar {
@@ -670,32 +796,34 @@ h3 {
 
 .timeline {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .timeline-item {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 14px;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
 }
 
 .timeline-item time {
-  padding-top: 10px;
+  padding-top: 8px;
   color: var(--muted);
   font-size: 12px;
 }
 
 .timeline-body {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 8px;
 }
 
 .timeline-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  padding: 11px 12px;
+  gap: 10px;
+  min-height: 56px;
+  padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
@@ -710,7 +838,7 @@ h3 {
 .timeline-row > div {
   display: grid;
   min-width: 0;
-  gap: 4px;
+  gap: 3px;
 }
 
 .timeline-row span {
@@ -724,7 +852,7 @@ h3 {
 }
 
 .trade-meta strong {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .trade-meta span {
@@ -754,6 +882,16 @@ h3 {
 
 .timeline-row.resize strong {
   color: var(--cyan);
+}
+
+.ranking-filters {
+  display: inline-flex;
+  gap: 4px;
+  margin: -2px 0 16px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
 }
 
 .rankings-stack {

@@ -7,6 +7,7 @@ import argparse
 import bisect
 import datetime as dt
 import json
+import math
 import pathlib
 import subprocess
 import time
@@ -144,10 +145,17 @@ class SecClient:
 
 
 class LongbridgePriceClient:
-    def __init__(self, cache_dir: pathlib.Path, sleep_seconds: float = 0.0, refresh: bool = False) -> None:
+    def __init__(
+        self,
+        cache_dir: pathlib.Path,
+        sleep_seconds: float = 0.0,
+        refresh: bool = False,
+        cache_only: bool = False,
+    ) -> None:
         self.cache_dir = cache_dir
         self.sleep_seconds = sleep_seconds
         self.refresh = refresh
+        self.cache_only = cache_only
 
     def history(self, symbol: str, start_date: str, end_date: str) -> Dict[str, float]:
         cache_dir = self.cache_dir / "longbridge-kline"
@@ -169,6 +177,8 @@ class LongbridgePriceClient:
 
         for range_start, range_end in ranges:
             if range_start <= range_end:
+                if self.cache_only:
+                    continue
                 cached.update(self._fetch_range(symbol, range_start.isoformat(), range_end.isoformat()))
 
         if cached:
@@ -743,7 +753,7 @@ def build_trade(label: str, symbol: str, row: Dict[str, Any], value: float, pric
         "target_weight_pct": round(float(row.get("target_weight_pct") or 0), 2),
         "buy_value_usd": round(max(value, 0.0), 2),
         "buy_price": price,
-        "shares": round(abs(shares), 4),
+        "shares": int(abs(shares)),
     }
     payload["sell_value_usd"] = round(abs(min(value, 0.0)), 2)
     return payload
@@ -809,7 +819,7 @@ def run_simulation(
                             "from_weight_pct": round(value / total_value * 100, 2) if total_value else 0,
                             "sell_value_usd": round(value, 2),
                             "sell_price": price,
-                            "shares": round(position["shares"], 4),
+                            "shares": int(position["shares"]),
                         }
                     )
 
@@ -818,15 +828,15 @@ def run_simulation(
                     if not price:
                         continue
                     target_value = total_value * row["target_weight_pct"] / 100
-                    target_shares = target_value / price
+                    target_shares = math.floor(target_value / price)
                     existing = positions.get(symbol)
-                    previous_shares = existing["shares"] if existing else 0.0
+                    previous_shares = int(existing["shares"]) if existing else 0
                     previous_value = previous_shares * price
                     delta_shares = target_shares - previous_shares
                     delta_value = delta_shares * price
                     reason = hugo_data.buy_reason(row.get("source_rankings") or [])
                     badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit)
-                    if abs(delta_value) >= max(total_value * 0.001, 1.0):
+                    if delta_shares:
                         if previous_shares <= 0 and delta_value > 0:
                             buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares))
                             avg_cost = price
@@ -846,7 +856,7 @@ def run_simulation(
                                     "to_weight_pct": round(row["target_weight_pct"], 2),
                                     "sell_value_usd": round(abs(delta_value), 2),
                                     "sell_price": price,
-                                    "shares": round(abs(delta_shares), 4),
+                                    "shares": int(abs(delta_shares)),
                                 }
                             )
                             avg_cost = existing["avg_cost"] if existing else price
@@ -854,6 +864,8 @@ def run_simulation(
                     else:
                         avg_cost = existing["avg_cost"] if existing else price
                         entry_date = existing["entry_date"] if existing else date.isoformat()
+                    if target_shares <= 0:
+                        continue
                     new_positions[symbol] = {
                         "shares": target_shares,
                         "avg_cost": avg_cost,
@@ -887,6 +899,7 @@ def run_simulation(
         )
     current_value = curve[-1]["value"] if curve else initial_value
     final_date = parse_date(curve[-1]["date"]) if curve else end_date
+    previous_value = curve[-2]["value"] if len(curve) > 1 else current_value
     one_week_value = point_value_on_or_before(curve, final_date - dt.timedelta(days=7))
     ytd_value = point_value_on_or_before(curve, dt.date(final_date.year, 1, 1))
     spy_return = percent_change(curve[-1]["spy_value"], curve[0]["spy_value"]) if curve else 0
@@ -920,7 +933,7 @@ def run_simulation(
                 "institutional_avg_holding_price": round(position.get("institutional_avg_holding_price") or 0, 4),
                 "discount_to_institutional_avg_pct": round(position.get("discount_to_institutional_avg_pct") or 0, 2),
                 "key_institution_bought": bool(position.get("key_institution_bought")),
-                "shares": round(position["shares"], 4),
+                "shares": int(position["shares"]),
                 "market_value_usd": round(market_value, 2),
             }
         )
@@ -946,6 +959,7 @@ def run_simulation(
             "cash_value": round(cash, 2),
             "cash_weight_pct": round(cash / current_value * 100, 2) if current_value else 0,
             "total_return_pct": round(total_return, 2),
+            "daily_return_pct": round(percent_change(current_value, previous_value), 2),
             "weekly_return_pct": round(percent_change(current_value, one_week_value), 2),
             "ytd_return_pct": round(percent_change(current_value, ytd_value), 2),
             "max_drawdown_pct": round(max_drawdown_pct([point["value"] for point in curve]), 2),
@@ -985,7 +999,7 @@ def fetch_prices(
     args: argparse.Namespace,
     warnings: List[str],
 ) -> Dict[str, Dict[str, float]]:
-    client = LongbridgePriceClient(args.cache_dir, args.longbridge_sleep, args.refresh_prices)
+    client = LongbridgePriceClient(args.cache_dir, args.longbridge_sleep, args.refresh_prices, args.cache_only_prices)
     output = {}
     for index, symbol in enumerate(symbols, start=1):
         print(f"fetching price history {index}/{len(symbols)} {symbol}")
@@ -1013,6 +1027,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--refresh-sec", action="store_true")
     parser.add_argument("--refresh-submissions", action="store_true", help="Refresh SEC submissions index but reuse cached filing XML.")
     parser.add_argument("--refresh-prices", action="store_true")
+    parser.add_argument("--cache-only-prices", action="store_true", help="Reuse cached Longbridge K-line data and never fetch missing ranges.")
     parser.add_argument("--rebalance-until", default=None, help="Only create weekly rebalance events through this date.")
     return parser.parse_args()
 
