@@ -166,9 +166,73 @@ function setupRebalancePagination() {
   render();
 }
 
+function setupTooltips() {
+  const triggers = Array.from(document.querySelectorAll("[data-tooltip]"));
+  if (!triggers.length) return;
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "floating-tooltip";
+  tooltip.setAttribute("role", "tooltip");
+  document.body.appendChild(tooltip);
+
+  let activeTrigger = null;
+
+  const positionTooltip = () => {
+    if (!activeTrigger) return;
+    const rect = activeTrigger.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const gap = 10;
+    const margin = 12;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+    left = Math.max(margin, Math.min(left, viewportWidth - tooltipRect.width - margin));
+
+    let placement = "top";
+    let top = rect.top - tooltipRect.height - gap;
+    if (top < margin) {
+      placement = "bottom";
+      top = rect.bottom + gap;
+    }
+    top = Math.max(margin, Math.min(top, viewportHeight - tooltipRect.height - margin));
+
+    const arrowLeft = rect.left + rect.width / 2 - left;
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+    tooltip.style.setProperty("--arrow-left", `${Math.round(arrowLeft)}px`);
+    tooltip.dataset.placement = placement;
+  };
+
+  const showTooltip = (trigger) => {
+    const text = trigger.dataset.tooltip;
+    if (!text) return;
+    activeTrigger = trigger;
+    tooltip.textContent = text;
+    tooltip.classList.add("is-visible");
+    requestAnimationFrame(positionTooltip);
+  };
+
+  const hideTooltip = () => {
+    activeTrigger = null;
+    tooltip.classList.remove("is-visible");
+  };
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("mouseenter", () => showTooltip(trigger));
+    trigger.addEventListener("focus", () => showTooltip(trigger));
+    trigger.addEventListener("mouseleave", hideTooltip);
+    trigger.addEventListener("blur", hideTooltip);
+  });
+
+  window.addEventListener("scroll", positionTooltip, true);
+  window.addEventListener("resize", positionTooltip);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   formatMoneyElements();
   setupChartControls();
   setupRankingToggles();
   setupRebalancePagination();
+  setupTooltips();
 });

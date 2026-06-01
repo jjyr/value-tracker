@@ -1,7 +1,21 @@
 {{ with . }}
   <div class="tag-list">
     {{ range . }}
-      <span class="tag">{{ . }}</span>
+      {{ $tip := printf "%s 标签" . }}
+      {{ if eq . "S&P 500" }}
+        {{ $tip = "S&P 500 成分股标签。" }}
+      {{ else if eq . "Nasdaq 100" }}
+        {{ $tip = "Nasdaq 100 成分股标签。" }}
+      {{ else if eq . "Russell 1000" }}
+        {{ $tip = "Russell 1000 成分股标签。" }}
+      {{ else if eq . "Russell 2000" }}
+        {{ $tip = "Russell 2000 成分股标签。" }}
+      {{ else if eq . "Russell 3000" }}
+        {{ $tip = "Russell 3000 成分股标签。" }}
+      {{ else if eq . "Mag7" }}
+        {{ $tip = "Magnificent Seven 大型科技股标签。" }}
+      {{ end }}
+      <span class="tag tip-trigger" data-tooltip="{{ $tip }}">{{ . }}</span>
     {{ end }}
   </div>
 {{ end }}

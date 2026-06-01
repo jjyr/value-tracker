@@ -121,7 +121,7 @@
               <td>${{ printf "%.2f" .current_price }}</td>
               <td>${{ printf "%.2f" .entry_price }}</td>
               <td class="{{ if lt .return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.2f%%" .return_pct }}</td>
-              <td><span class="score-pill has-tooltip" data-tooltip="{{ $scoreTooltip }}" title="{{ $scoreTooltip }}" aria-label="{{ $scoreTooltip }}">{{ .allocation_score }}</span></td>
+              <td><span class="score-pill tip-trigger" data-tooltip="{{ $scoreTooltip }}" aria-label="{{ $scoreTooltip }}">{{ .allocation_score }}</span></td>
               <td>
                 {{ partial "badges.html" .badges }}
               </td>
