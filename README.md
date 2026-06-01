@@ -6,7 +6,7 @@ StockHunt 是一个全静态生成的美股机构 13F 信号仪表盘。页面�
 2. 后台规范化：原始 filing 和行情落 SQLite，计算机构变化、指标快照和排名历史。
 3. 静态导出：normalized snapshot 转成 Hugo 读取的 `data/stockhunt.yaml`。
 
-当前已经接入真实数据链路：`stockhunt-fetch` 会读取白名单机构，拉取 Longbridge 当前 13F holdings / changes 和行情估值，增量更新 SQLite；历史回测会从 SEC EDGAR 增量发现新的 13F，并用 Longbridge 日 K 线生成 2024 至今的周度再平衡模拟盘。
+当前已经接入真实数据链路：`fetch` 会读取白名单机构，拉取 Longbridge 当前 13F holdings / changes 和行情估值，增量更新 SQLite；历史回测会从 SEC EDGAR 增量发现新的 13F，并用 Longbridge 日 K 线生成 2024 至今的周度再平衡模拟盘。
 
 ## 目录
 
@@ -48,35 +48,35 @@ Python 依赖由 `uv` 根据 `pyproject.toml` / `uv.lock` 管理，不需要手�
 查看可用命令：
 
 ```bash
-uv run stockhunt-build --help
-uv run stockhunt-fetch --help
-uv run stockhunt-fetch-all --help
-uv run stockhunt-schedule --help
+uv run build --help
+uv run fetch --help
+uv run fetch-all --help
+uv run schedule --help
 ```
 
 日常只构建静态站点：
 
 ```bash
-uv run stockhunt-build
+uv run build
 ```
 
 增量抓取数据，不运行 Hugo build：
 
 ```bash
-uv run stockhunt-fetch
+uv run fetch
 ```
 
 全量抓取数据：重建 SQLite，刷新 SEC filing cache 和 Longbridge 价格 cache，不运行 Hugo build：
 
 ```bash
-uv run stockhunt-fetch-all
+uv run fetch-all
 ```
 
 定时任务入口。daily 只更新价格、净值和收益，不碰 13F / SQLite，也不产生新调仓；weekly 会增量更新 13F / SQLite，并允许按规则调仓。两者执行完都会自动 build：
 
 ```bash
-uv run stockhunt-schedule daily
-uv run stockhunt-schedule weekly
+uv run schedule daily
+uv run schedule weekly
 ```
 
 本地预览：
@@ -96,7 +96,7 @@ http://localhost:1313/
 ### 1. 增量抓取数据
 
 ```bash
-uv run stockhunt-fetch
+uv run fetch
 ```
 
 这个命令会更新数据产物，但不会运行 Hugo build。默认产物：
@@ -116,14 +116,14 @@ data/stockhunt.yaml
 - SQLite 不清空，filing、holding、market snapshot、metrics、rank history 按唯一键 upsert。
 - SEC submissions index 会刷新，用于发现新 13F；已有 filing index / information table XML 继续复用 cache。
 - Longbridge 日 K 线按 symbol 追加缺失日期，不再按每个 `start/end` 重新抓整段。
-- `data/stockhunt.yaml` 会重新导出，供后续 `stockhunt-build` 使用。
+- `data/stockhunt.yaml` 会重新导出，供后续 `build` 使用。
 
 13F 没有 ticker，只有 CUSIP。数据抓取只会导出能通过 `config/cusip-symbols.yaml` 明确映射到 symbol 的持仓。未映射持仓会进入 warnings，不会进入榜单。
 
 ### 2. 全量抓取数据
 
 ```bash
-uv run stockhunt-fetch-all
+uv run fetch-all
 ```
 
 适合修改白名单、CUSIP 映射、核心计算逻辑，或想从干净 SQLite / cache 口径重新生成。它会：
@@ -145,7 +145,7 @@ uv run stockhunt-fetch-all
 ### 4. 构建静态站点
 
 ```bash
-uv run stockhunt-build
+uv run build
 ```
 
 这个命令只执行 Hugo build，不抓数据、不改 SQLite、不重新回测。
@@ -156,22 +156,22 @@ uv run stockhunt-build
 
 ```bash
 # 每周调仓：美股周一收盘后，香港时间周二早上执行
-uv run stockhunt-schedule weekly
+uv run schedule weekly
 
 # 每日价格和收益更新：美股其他交易日收盘后执行
-uv run stockhunt-schedule daily
+uv run schedule daily
 ```
 
-第一次部署先跑一次 `uv run stockhunt-schedule weekly` 或 `uv run stockhunt-fetch-all && uv run stockhunt-build`，生成带有 `last_rebalance_date` 的历史模拟文件；之后 daily 才能冻结上次调仓日，只更新价格和收益。
+第一次部署先跑一次 `uv run schedule weekly` 或 `uv run fetch-all && uv run build`，生成带有 `last_rebalance_date` 的历史模拟文件；之后 daily 才能冻结上次调仓日，只更新价格和收益。
 
 cron 示例：
 
 ```cron
 # 周度调仓。周二跑；周三再跑一次用于覆盖周一美股休市顺延的情况。
-30 8 * * 2,3 cd /Users/jjy/Workspace/stockhunt && uv run stockhunt-schedule weekly >> /tmp/stockhunt-schedule-weekly.log 2>&1
+30 8 * * 2,3 cd /Users/jjy/Workspace/stockhunt && uv run schedule weekly >> /tmp/schedule-weekly.log 2>&1
 
 # 日常价格更新。避开周二/周三，防止和 weekly 重复。
-30 8 * * 4-6 cd /Users/jjy/Workspace/stockhunt && uv run stockhunt-schedule daily >> /tmp/stockhunt-schedule-daily.log 2>&1
+30 8 * * 4-6 cd /Users/jjy/Workspace/stockhunt && uv run schedule daily >> /tmp/schedule-daily.log 2>&1
 ```
 
 ## 重跑规则
@@ -181,19 +181,19 @@ cron 示例：
 适合修改白名单、CUSIP 映射、核心计算逻辑，或想从干净 SQLite 重新生成：
 
 ```bash
-uv run stockhunt-fetch-all
-uv run stockhunt-build
+uv run fetch-all
+uv run build
 ```
 
-`stockhunt-fetch-all` 会重新拉取当前 Longbridge raw input、重建 SQLite、刷新 SEC / K 线 cache、重新计算历史回测并导出 Hugo 数据。`stockhunt-build` 只把当前 `data/stockhunt.yaml` 构建成 `public/`。
+`fetch-all` 会重新拉取当前 Longbridge raw input、重建 SQLite、刷新 SEC / K 线 cache、重新计算历史回测并导出 Hugo 数据。`build` 只把当前 `data/stockhunt.yaml` 构建成 `public/`。
 
 ### 增量重跑
 
 适合日常更新或重复跑同一个输入：
 
 ```bash
-uv run stockhunt-fetch
-uv run stockhunt-build
+uv run fetch
+uv run build
 ```
 
 当前增量语义：
@@ -212,7 +212,7 @@ uv run stockhunt-build
 如果只改了 Hugo 模板、CSS、JS 或文案：
 
 ```bash
-uv run stockhunt-build
+uv run build
 ```
 
 ### 只重导 Hugo 数据
@@ -221,7 +221,7 @@ uv run stockhunt-build
 
 ```bash
 uv run python scripts/generate_stockhunt_data.py --snapshot raw/generated/snapshot.yaml
-uv run stockhunt-build
+uv run build
 ```
 
 ## 修改白名单
@@ -249,8 +249,8 @@ institutions:
 修改白名单后推荐全量重跑：
 
 ```bash
-uv run stockhunt-fetch-all
-uv run stockhunt-build
+uv run fetch-all
+uv run build
 ```
 
 如果新增机构的持仓里出现大量 unmapped CUSIP，先补 `config/cusip-symbols.yaml`，再全量重跑。
@@ -270,8 +270,8 @@ mappings:
 修改后需要重新生成 live input，因为 raw input 里已经按映射过滤过持仓：
 
 ```bash
-uv run stockhunt-fetch-all
-uv run stockhunt-build
+uv run fetch-all
+uv run build
 ```
 
 历史回测也依赖同一份映射。补充 CUSIP 后重新运行完整 build，历史 SEC 13F 会按新映射重新解析；已缓存的 SEC 原始文件和 K 线会复用。
@@ -299,15 +299,15 @@ key_institutions:
 如果只改重点机构配置，推荐重新增量计算并 build：
 
 ```bash
-uv run stockhunt-fetch
-uv run stockhunt-build
+uv run fetch
+uv run build
 ```
 
 如果新增的重点机构本身不在白名单里，先修改白名单，再全量抓取：
 
 ```bash
-uv run stockhunt-fetch-all
-uv run stockhunt-build
+uv run fetch-all
+uv run build
 ```
 
 ## 修改策略参数
@@ -330,8 +330,8 @@ strategy:
 修改策略参数后，推荐重新抓取并 build：
 
 ```bash
-uv run stockhunt-fetch
-uv run stockhunt-build
+uv run fetch
+uv run build
 ```
 
 ## 常用检查
@@ -359,10 +359,11 @@ uv run sqlite3 raw/generated/stockhunt.sqlite \
 验证脚本语法和 Hugo 构建：
 
 ```bash
-uv run stockhunt-check
+uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py
+uv run build
 ```
 
-日常只需要 `stockhunt-build`、`stockhunt-fetch`、`stockhunt-fetch-all`、`stockhunt-schedule`。底层拆步调试时，可以直接用 `uv run python scripts/*.py` 调用具体脚本。
+日常只需要 `build`、`fetch`、`fetch-all`、`schedule`。底层拆步调试时，可以直接用 `uv run python scripts/*.py` 调用具体脚本。
 
 ## 后续接入
 

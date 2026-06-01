@@ -9,11 +9,10 @@ dependencies = [
 ]
 
 [project.scripts]
-stockhunt-build = "scripts.tasks:build"
-stockhunt-fetch = "scripts.tasks:fetch"
-stockhunt-fetch-all = "scripts.tasks:fetch_all"
-stockhunt-schedule = "scripts.tasks:schedule"
-stockhunt-check = "scripts.tasks:check"
+build = "scripts.tasks:build"
+fetch = "scripts.tasks:fetch"
+fetch-all = "scripts.tasks:fetch_all"
+schedule = "scripts.tasks:schedule"
 
 [build-system]
 requires = ["hatchling"]
