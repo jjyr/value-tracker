@@ -1,0 +1,303 @@
+data_date: "2026-05-29"
+market_data_date: "2026-05-29"
+latest_13f_report_period: "2026-03-31"
+manager_count: 200
+
+build:
+  build_id: "2026-06-01-120000"
+  built_at: "2026-06-01T12:00:00+07:00"
+  metrics_version: "0.1"
+  status: "OK"
+  warnings:
+    - "Sample normalized backend snapshot for pipeline validation"
+
+securities:
+  - symbol: "AAPL.US"
+    slug: "aapl-us"
+    company_name: "Apple Inc."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Consumer Electronics"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    market:
+      price: 190.12
+      price_change_pct: 1.25
+      market_cap_usd: 2900000000000
+      pe: 29.4
+      forward_pe: 24.8
+      ps: 7.1
+    institution:
+      buyers_count: 11
+      sellers_count: 22
+      holders_count: 38
+      new_positions_count: 4
+      added_count: 7
+      reduced_count: 19
+      exits_count: 3
+      total_bought_value_usd: 850000000
+      total_sold_value_usd: 420000000
+      new_position_value_usd: 120000000
+      exit_value_usd: 150000000
+      total_tracked_value_usd: 12500000000
+      institutional_avg_holding_price: 195.4
+      key_institution_bought: true
+      key_institution_bought_value_usd: 300000000
+      key_institution_holders: ["段永平", "伯克希尔"]
+      managers:
+        - name: "H&H International Investment, LLC"
+          display_name: "段永平"
+          status: "added"
+          change_value_usd: 180000000
+          current_value_usd: 7346105601
+          portfolio_weight_pct: 36.72
+          filing_date: "2026-05-19"
+          report_period: "2026-03-31"
+        - name: "Berkshire Hathaway Inc"
+          display_name: "伯克希尔"
+          status: "new_position"
+          change_value_usd: 120000000
+          current_value_usd: 120000000
+          portfolio_weight_pct: 0.04
+          filing_date: "2026-05-15"
+          report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 1
+
+  - symbol: "BRK.B.US"
+    slug: "brk-b-us"
+    company_name: "Berkshire Hathaway Inc."
+    exchange: "NYSE"
+    sector: "Financials"
+    industry: "Insurance"
+    tags: ["S&P 500", "Russell 1000"]
+    detail_tags: ["S&P 500", "Russell 1000", "Russell 3000"]
+    risk_tags: []
+    market:
+      price: 417.3
+      price_change_pct: 0.4
+      market_cap_usd: 900000000000
+      pe: 21.3
+      forward_pe: 19.8
+      ps: 2.6
+    institution:
+      buyers_count: 5
+      sellers_count: 2
+      holders_count: 54
+      new_positions_count: 1
+      added_count: 4
+      reduced_count: 2
+      exits_count: 0
+      total_bought_value_usd: 120000000
+      total_sold_value_usd: 50000000
+      new_position_value_usd: 0
+      exit_value_usd: 0
+      total_tracked_value_usd: 10800000000
+      institutional_avg_holding_price: 430.1
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+      managers:
+        - name: "Dodge & Cox"
+          display_name: "Dodge & Cox"
+          status: "unchanged"
+          change_value_usd: 0
+          current_value_usd: 650000000
+          portfolio_weight_pct: 2.4
+          filing_date: "2026-05-15"
+          report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 2
+
+  - symbol: "NVDA.US"
+    slug: "nvda-us"
+    company_name: "NVIDIA Corp."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Semiconductors"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    market:
+      price: 121.8
+      price_change_pct: 3.1
+      market_cap_usd: 3000000000000
+      pe: 42.1
+      forward_pe: 28.5
+      ps: 19.4
+    institution:
+      buyers_count: 15
+      sellers_count: 8
+      holders_count: 42
+      new_positions_count: 6
+      added_count: 9
+      reduced_count: 7
+      exits_count: 1
+      total_bought_value_usd: 790000000
+      total_sold_value_usd: 110000000
+      new_position_value_usd: 410000000
+      exit_value_usd: 50000000
+      total_tracked_value_usd: 9800000000
+      institutional_avg_holding_price: 132.6
+      key_institution_bought: true
+      key_institution_bought_value_usd: 220000000
+      key_institution_holders: ["李录"]
+      managers:
+        - name: "Himalaya Capital Management LLC"
+          display_name: "李录"
+          status: "new_position"
+          change_value_usd: 220000000
+          current_value_usd: 220000000
+          portfolio_weight_pct: 6.1
+          filing_date: "2026-05-15"
+          report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 3
+
+  - symbol: "MSFT.US"
+    slug: "msft-us"
+    company_name: "Microsoft Corp."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Software"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    market:
+      price: 438.5
+      price_change_pct: 0.8
+      market_cap_usd: 3300000000000
+      pe: 34.8
+      forward_pe: 27.4
+      ps: 11.8
+    institution:
+      buyers_count: 7
+      sellers_count: 5
+      holders_count: 47
+      new_positions_count: 2
+      added_count: 5
+      reduced_count: 5
+      exits_count: 0
+      total_bought_value_usd: 240000000
+      total_sold_value_usd: 90000000
+      new_position_value_usd: 0
+      exit_value_usd: 0
+      total_tracked_value_usd: 9700000000
+      institutional_avg_holding_price: 452.0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+      managers:
+        - name: "Capital International Investors"
+          display_name: "Capital International"
+          status: "added"
+          change_value_usd: 95000000
+          current_value_usd: 1500000000
+          portfolio_weight_pct: 1.8
+          filing_date: "2026-05-15"
+          report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 4
+
+  - symbol: "TSLA.US"
+    slug: "tsla-us"
+    company_name: "Tesla Inc."
+    exchange: "NASDAQ"
+    sector: "Consumer Discretionary"
+    industry: "Automobiles"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: ["high-volatility"]
+    market:
+      price: 176.0
+      price_change_pct: -2.4
+      market_cap_usd: 560000000000
+      pe: 65.2
+      forward_pe: 48.3
+      ps: 6.2
+    institution:
+      buyers_count: 9
+      sellers_count: 18
+      holders_count: 25
+      new_positions_count: 2
+      added_count: 7
+      reduced_count: 14
+      exits_count: 4
+      total_bought_value_usd: 320000000
+      total_sold_value_usd: 680000000
+      new_position_value_usd: 80000000
+      exit_value_usd: 280000000
+      total_tracked_value_usd: 4200000000
+      institutional_avg_holding_price: 190.0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+      managers:
+        - name: "ARK Investment Management LLC"
+          display_name: "木头姐"
+          status: "reduced"
+          change_value_usd: -180000000
+          current_value_usd: 1052546690
+          portfolio_weight_pct: 8.18
+          filing_date: "2026-05-12"
+          report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 5
+
+  - symbol: "META.US"
+    slug: "meta-us"
+    company_name: "Meta Platforms Inc."
+    exchange: "NASDAQ"
+    sector: "Communication Services"
+    industry: "Internet Content & Information"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: ["fully-exited-by-tracked-managers"]
+    market:
+      price: 485.4
+      price_change_pct: -0.6
+      market_cap_usd: 1220000000000
+      pe: 24.6
+      forward_pe: 20.9
+      ps: 8.4
+    institution:
+      buyers_count: 0
+      sellers_count: 12
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 6
+      exits_count: 6
+      total_bought_value_usd: 0
+      total_sold_value_usd: 540000000
+      new_position_value_usd: 0
+      exit_value_usd: 360000000
+      total_tracked_value_usd: 0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+      managers:
+        - name: "Sample Growth Fund"
+          display_name: "Sample Growth"
+          status: "exit"
+          change_value_usd: -210000000
+          current_value_usd: 0
+          portfolio_weight_pct: 0
+          filing_date: "2026-05-16"
+          report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 6
