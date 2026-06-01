@@ -3,6 +3,9 @@ output/
 .playwright-cli/
 .hugo_build.lock
 .DS_Store
+.venv/
+__pycache__/
+*.pyc
 data/*.sqlite
 data/*.sqlite-*
 raw/generated/

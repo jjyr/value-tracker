@@ -17,6 +17,11 @@ import yaml
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data: Any) -> bool:
+        return True
+
+
 def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         data = yaml.safe_load(handle) or {}
@@ -28,7 +33,7 @@ def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
 def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
-        yaml.safe_dump(data, handle, allow_unicode=True, sort_keys=False, width=120)
+        yaml.dump(data, handle, Dumper=NoAliasDumper, allow_unicode=True, sort_keys=False, width=120)
 
 
 def now_iso() -> str:
@@ -944,13 +949,12 @@ def export_hugo_data(
     config_path: pathlib.Path,
     snapshot_path: pathlib.Path,
     output_path: pathlib.Path,
-    fallback_data: pathlib.Path,
 ) -> None:
-    import generate_stockhunt_data
+    from scripts import generate_stockhunt_data
 
     config = generate_stockhunt_data.load_yaml(config_path)
     snapshot = generate_stockhunt_data.load_yaml(snapshot_path)
-    data = generate_stockhunt_data.build_hugo_data(config, snapshot, fallback_data)
+    data = generate_stockhunt_data.build_hugo_data(config, snapshot)
     generate_stockhunt_data.write_yaml(output_path, data)
 
 
@@ -962,7 +966,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--snapshot-output", type=pathlib.Path, default=ROOT / "raw/generated/snapshot.yaml")
     parser.add_argument("--reset-db", action="store_true")
     parser.add_argument("--hugo-output", type=pathlib.Path, default=None)
-    parser.add_argument("--fallback-data", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
     return parser.parse_args()
 
 
@@ -983,7 +986,7 @@ def main() -> None:
         snapshot = build_snapshot(conn, config, raw, cfg_hash, metrics)
         write_yaml(args.snapshot_output, snapshot)
     if args.hugo_output:
-        export_hugo_data(args.config, args.snapshot_output, args.hugo_output, args.fallback_data)
+        export_hugo_data(args.config, args.snapshot_output, args.hugo_output)
     print(f"wrote {args.snapshot_output}")
     print(f"updated {db_path}")
 

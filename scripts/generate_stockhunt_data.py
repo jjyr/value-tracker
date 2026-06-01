@@ -8,12 +8,17 @@ import copy
 import datetime as dt
 import pathlib
 import re
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import yaml
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data: Any) -> bool:
+        return True
 
 
 def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
@@ -27,7 +32,7 @@ def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
 def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
-        yaml.safe_dump(data, handle, allow_unicode=True, sort_keys=False, width=120)
+        yaml.dump(data, handle, Dumper=NoAliasDumper, allow_unicode=True, sort_keys=False, width=120)
 
 
 def slugify_symbol(symbol: str) -> str:
@@ -68,23 +73,45 @@ def rank_by_value(rows: List[Dict[str, Any]], key: str) -> Dict[str, int]:
     return {row["symbol"]: index + 1 for index, row in enumerate(candidates)}
 
 
+def rank_holding(rows: List[Dict[str, Any]]) -> Dict[str, int]:
+    candidates = [row for row in rows if (row.get("total_tracked_value_usd") or 0) > 0]
+    candidates.sort(
+        key=lambda row: (
+            -(row.get("total_tracked_value_usd") or 0),
+            -(row.get("holders_count") or 0),
+            row["symbol"],
+        )
+    )
+    return {row["symbol"]: index + 1 for index, row in enumerate(candidates)}
+
+
 def badge(label: str, tone: str) -> Dict[str, str]:
     return {"label": label, "tone": tone}
 
 
-def build_badges(row: Dict[str, Any], ranks: Dict[str, Dict[str, int]], key_names: set) -> List[Dict[str, str]]:
+def rank_in_limit(ranks: Dict[str, Dict[str, int]], kind: str, symbol: str, limit: int) -> Optional[int]:
+    rank = ranks[kind].get(symbol)
+    return rank if rank and rank <= limit else None
+
+
+def build_badges(
+    row: Dict[str, Any],
+    ranks: Dict[str, Dict[str, int]],
+    key_names: set,
+    activity_tag_limit: int = 10,
+) -> List[Dict[str, str]]:
     symbol = row["symbol"]
     badges: List[Dict[str, str]] = []
-    if symbol in ranks["buying"]:
-        badges.append(badge(f"买入 #{ranks['buying'][symbol]}", "buying"))
-    if symbol in ranks["selling"]:
-        badges.append(badge(f"卖出 #{ranks['selling'][symbol]}", "selling"))
-    if symbol in ranks["new"]:
-        badges.append(badge(f"新建仓 #{ranks['new'][symbol]}", "new"))
-    if symbol in ranks["exit"]:
-        badges.append(badge(f"清仓 #{ranks['exit'][symbol]}", "exit"))
+    if rank := rank_in_limit(ranks, "buying", symbol, activity_tag_limit):
+        badges.append(badge(f"买入 #{rank}", "buying"))
+    if rank := rank_in_limit(ranks, "selling", symbol, activity_tag_limit):
+        badges.append(badge(f"卖出 #{rank}", "selling"))
+    if rank := rank_in_limit(ranks, "new", symbol, activity_tag_limit):
+        badges.append(badge(f"新建仓 #{rank}", "new"))
+    if rank := rank_in_limit(ranks, "exit", symbol, activity_tag_limit):
+        badges.append(badge(f"清仓 #{rank}", "exit"))
 
-    if (row.get("holders_count") or 0) == 0 and (row.get("total_tracked_value_usd") or 0) == 0 and symbol in ranks["exit"]:
+    if (row.get("holders_count") or 0) == 0 and (row.get("total_tracked_value_usd") or 0) == 0 and ranks["exit"].get(symbol):
         badges.append(badge("已清仓", "cleared"))
 
     row_key_holders = row.get("key_institution_holders") or []
@@ -202,23 +229,247 @@ def build_metadata(config: Dict[str, Any], snapshot: Dict[str, Any]) -> Dict[str
     }
 
 
-def load_simulation(snapshot: Dict[str, Any], fallback_path: Optional[pathlib.Path]) -> Dict[str, Any]:
-    if "simulation" in snapshot:
-        return snapshot["simulation"]
-    if fallback_path and fallback_path.exists():
-        fallback = load_yaml(fallback_path)
-        if "simulation" in fallback:
-            return fallback["simulation"]
+def next_monday(value: Optional[str]) -> Optional[str]:
+    if not value:
+        return None
+    try:
+        current = dt.date.fromisoformat(value)
+    except ValueError:
+        return None
+    days = (7 - current.weekday()) % 7
+    if days == 0:
+        days = 7
+    return (current + dt.timedelta(days=days)).isoformat()
+
+
+def date_offset(value: Optional[str], days: int) -> Optional[str]:
+    if not value:
+        return None
+    try:
+        current = dt.date.fromisoformat(value)
+    except ValueError:
+        return value
+    return (current + dt.timedelta(days=days)).isoformat()
+
+
+def allocation_rules(config: Dict[str, Any]) -> Dict[str, float]:
+    rules = config.get("strategy", {}).get("allocation_score", {})
     return {
-        "meta": {},
-        "summary": {},
-        "current_positions": [],
-        "equity_curve": [],
-        "rebalance_history": [],
+        "buying_top10_score": rules.get("buying_top10_score", 10),
+        "holding_top10_score": rules.get("holding_top10_score", 10),
+        "below_institution_avg_score": rules.get("below_institution_avg_score", 20),
+        "buying_top10_key_institution_bonus": rules.get("buying_top10_key_institution_bonus", 10),
+        "holding_top10_key_institution_bonus": rules.get("holding_top10_key_institution_bonus", 10),
+        "selling_top10_penalty": rules.get("selling_top10_penalty", -50),
     }
 
 
-def build_hugo_data(config: Dict[str, Any], snapshot: Dict[str, Any], fallback_data: Optional[pathlib.Path]) -> Dict[str, Any]:
+def discount_to_institutional_avg(row: Dict[str, Any]) -> float:
+    price = row.get("price") or 0
+    avg = row.get("institutional_avg_holding_price") or 0
+    if not price or not avg:
+        return 0.0
+    return (avg - price) / avg * 100
+
+
+def score_components(
+    row: Dict[str, Any],
+    ranks: Dict[str, Dict[str, int]],
+    rules: Dict[str, float],
+    top_n: int,
+) -> Tuple[float, Dict[str, float], List[str]]:
+    symbol = row["symbol"]
+    buying_top = ranks["buying"].get(symbol, 10**9) <= top_n
+    holding_top = ranks["holding"].get(symbol, 10**9) <= top_n
+    selling_top = ranks["selling"].get(symbol, 10**9) <= top_n
+    below_avg = (buying_top or holding_top) and (row.get("price") or 0) < (row.get("institutional_avg_holding_price") or 0)
+    key_bought = bool(row.get("key_institution_bought"))
+
+    components = {
+        "buying_top10_score": rules["buying_top10_score"] if buying_top else 0,
+        "holding_top10_score": rules["holding_top10_score"] if holding_top else 0,
+        "below_institution_avg_score": rules["below_institution_avg_score"] if below_avg else 0,
+        "buying_top10_key_institution_bonus": rules["buying_top10_key_institution_bonus"] if buying_top and key_bought else 0,
+        "holding_top10_key_institution_bonus": rules["holding_top10_key_institution_bonus"] if holding_top and key_bought else 0,
+        "selling_top10_penalty": rules["selling_top10_penalty"] if selling_top else 0,
+    }
+    source_rankings: List[str] = []
+    if buying_top:
+        source_rankings.append("institutional_buying")
+    if holding_top:
+        source_rankings.append("institutional_holding")
+    if selling_top:
+        source_rankings.append("institutional_selling")
+    return sum(components.values()), components, source_rankings
+
+
+def source_ranking_label(source: str) -> str:
+    labels = {
+        "institutional_buying": "买入榜 Top 10",
+        "institutional_holding": "持有榜 Top 10",
+        "institutional_selling": "卖出榜 Top 10",
+    }
+    return labels.get(source, source)
+
+
+def buy_reason(source_rankings: List[str]) -> str:
+    return " + ".join(source_ranking_label(source) for source in source_rankings) or "评分入选"
+
+
+def normalize_weights(rows: List[Dict[str, Any]], config: Dict[str, Any]) -> List[Dict[str, Any]]:
+    if not rows:
+        return rows
+    min_weight = float(config.get("strategy", {}).get("min_position_weight_pct", 5))
+    max_weight = float(config.get("strategy", {}).get("max_position_weight_pct", 50))
+    total_score = sum(max(row["allocation_score"], 0) for row in rows)
+    if total_score <= 0:
+        return []
+    for row in rows:
+        raw_weight = row["allocation_score"] / total_score * 100
+        row["target_weight_pct"] = min(max(raw_weight, min_weight), max_weight)
+    total_weight = sum(row["target_weight_pct"] for row in rows)
+    if total_weight > 100:
+        scale = 100 / total_weight
+        for row in rows:
+            row["target_weight_pct"] *= scale
+    return rows
+
+
+def build_snapshot_simulation(
+    config: Dict[str, Any],
+    snapshot: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+    ranks: Dict[str, Dict[str, int]],
+    badge_by_symbol: Dict[str, List[Dict[str, str]]],
+) -> Dict[str, Any]:
+    strategy = config.get("strategy", {})
+    top_n = int(config.get("rankings", {}).get("top_n_for_simulation", 10))
+    max_positions = int(strategy.get("max_positions", 10))
+    initial_value = 100000.0
+    rules = allocation_rules(config)
+    candidates = []
+
+    for row in rows:
+        score, components, source_rankings = score_components(row, ranks, rules, top_n)
+        if score <= 0 or not (row.get("price") or 0):
+            continue
+        row_copy = dict(row)
+        row_copy["allocation_score"] = score
+        row_copy["allocation_components"] = components
+        row_copy["source_rankings"] = source_rankings
+        row_copy["discount_to_institutional_avg_pct"] = discount_to_institutional_avg(row)
+        candidates.append(row_copy)
+
+    candidates.sort(
+        key=lambda row: (
+            -row["allocation_score"],
+            -int(bool(row.get("key_institution_bought"))),
+            -row.get("discount_to_institutional_avg_pct", 0),
+            -(row.get("total_bought_value_usd") or 0),
+            row["symbol"],
+        )
+    )
+    selected = normalize_weights(candidates[:max_positions], config)
+    total_weight = sum(row["target_weight_pct"] for row in selected)
+    cash_weight = max(0.0, 100 - total_weight)
+    data_date = snapshot.get("data_date")
+    baseline_date = date_offset(data_date, -7)
+    next_rebalance = next_monday(data_date)
+
+    positions = []
+    buys = []
+    for row in selected:
+        target_weight = row["target_weight_pct"]
+        buy_value = initial_value * target_weight / 100
+        price = row.get("price") or 0
+        shares = buy_value / price if price else 0
+        position = {
+            "symbol": row["symbol"],
+            "slug": row.get("slug") or slugify_symbol(row["symbol"]),
+            "company_name": row.get("company_name") or row["symbol"],
+            "target_weight_pct": round(target_weight, 2),
+            "actual_weight_pct": round(target_weight, 2),
+            "allocation_score": int(row["allocation_score"]) if row["allocation_score"] == int(row["allocation_score"]) else row["allocation_score"],
+            "allocation_components": row["allocation_components"],
+            "source_rankings": row["source_rankings"],
+            "badges": badge_by_symbol.get(row["symbol"], []),
+            "entry_date": data_date,
+            "entry_price": price,
+            "current_price": price,
+            "return_pct": 0,
+            "institutional_avg_holding_price": row.get("institutional_avg_holding_price") or 0,
+            "discount_to_institutional_avg_pct": round(row.get("discount_to_institutional_avg_pct", 0), 2),
+            "key_institution_bought": bool(row.get("key_institution_bought")),
+            "selling_top10": ranks["selling"].get(row["symbol"], 10**9) <= top_n,
+        }
+        positions.append(position)
+        buys.append(
+            {
+                "symbol": row["symbol"],
+                "slug": position["slug"],
+                "reason": buy_reason(row["source_rankings"]),
+                "target_weight_pct": round(target_weight, 2),
+                "buy_value_usd": round(buy_value, 2),
+                "buy_price": price,
+                "shares": round(shares, 4),
+            }
+        )
+
+    return {
+        "meta": {
+            "simulation_id": "institutional-signal-weekly-live-v0.1",
+            "strategy": strategy.get("id", "institutional_signal_weekly"),
+            "mode": "current_snapshot_rebalance",
+            "lookback_trading_days": strategy.get("lookback_trading_days", 21),
+            "max_positions": max_positions,
+            "weighting_method": "allocation_score_clamped_5_50",
+            "last_rebalance_date": data_date,
+            "next_rebalance_date": next_rebalance,
+        },
+        "summary": {
+            "start_date": baseline_date or data_date,
+            "initial_value": initial_value,
+            "current_value": initial_value,
+            "cash_value": round(initial_value * cash_weight / 100, 2),
+            "cash_weight_pct": round(cash_weight, 2),
+            "total_return_pct": 0,
+            "weekly_return_pct": 0,
+            "ytd_return_pct": 0,
+            "max_drawdown_pct": 0,
+            "spy_return_pct": 0,
+            "qqq_return_pct": 0,
+            "excess_vs_spy_pct": 0,
+            "excess_vs_qqq_pct": 0,
+            "candidates_count": len(candidates),
+            "positions_count": len(positions),
+        },
+        "current_positions": positions,
+        "equity_curve": [
+            {
+                "date": baseline_date or data_date,
+                "value": initial_value,
+                "spy_value": initial_value,
+                "qqq_value": initial_value,
+            },
+            {
+                "date": data_date,
+                "value": initial_value,
+                "spy_value": initial_value,
+                "qqq_value": initial_value,
+            }
+        ],
+        "rebalance_history": [
+            {
+                "date": data_date,
+                "buys": buys,
+                "sells": [],
+                "resizes": [],
+            }
+        ],
+    }
+
+
+def build_hugo_data(config: Dict[str, Any], snapshot: Dict[str, Any]) -> Dict[str, Any]:
     rows = copy.deepcopy(snapshot.get("securities") or [])
     if not rows:
         raise ValueError("snapshot must include at least one security")
@@ -238,15 +489,21 @@ def build_hugo_data(config: Dict[str, Any], snapshot: Dict[str, Any], fallback_d
         "selling": rank_by_value(metric_rows, "total_sold_value_usd"),
         "new": rank_by_value(metric_rows, "new_position_value_usd"),
         "exit": rank_by_value(metric_rows, "exit_value_usd"),
+        "holding": rank_holding(metric_rows),
     }
     key_names = key_institution_names(config)
-    badge_by_symbol = {row["symbol"]: build_badges({**row, **(row.get("institution") or {})}, ranks, key_names) for row in rows}
+    activity_tag_limit = int(config.get("rankings", {}).get("activity_tag_limit", 10))
+    badge_by_symbol = {
+        row["symbol"]: build_badges({**row, **(row.get("institution") or {})}, ranks, key_names, activity_tag_limit)
+        for row in rows
+    }
 
     combined_rows = sort_combined_rows([ranking_row(row, badge_by_symbol[row["symbol"]]) for row in rows])
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
+    simulation = snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
     return {
         "build": build_metadata(config, snapshot),
-        "simulation": load_simulation(snapshot, fallback_data),
+        "simulation": simulation,
         "rankings": [
             {
                 "type": "institutional_combined",
@@ -265,12 +522,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", type=pathlib.Path, default=ROOT / "config/stockhunt.yaml")
     parser.add_argument("--snapshot", type=pathlib.Path, default=ROOT / "raw/sample/snapshot.yaml")
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
-    parser.add_argument(
-        "--fallback-data",
-        type=pathlib.Path,
-        default=ROOT / "data/stockhunt.yaml",
-        help="Existing Hugo data file used to keep simulation data until backtest generation is implemented.",
-    )
     parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/stocks")
     parser.add_argument("--skip-content", action="store_true")
     return parser.parse_args()
@@ -280,7 +531,7 @@ def main() -> None:
     args = parse_args()
     config = load_yaml(args.config)
     snapshot = load_yaml(args.snapshot)
-    data = build_hugo_data(config, snapshot, args.fallback_data)
+    data = build_hugo_data(config, snapshot)
     write_yaml(args.output, data)
     if not args.skip_content:
         ensure_content_pages(args.content_dir, snapshot.get("securities") or [])

@@ -1,668 +1,6317 @@
 build:
-  build_id: "2026-06-01-120000"
-  built_at: "2026-06-01T12:00:00+07:00"
-  data_date: "2026-05-29"
-  market_data_date: "2026-05-29"
-  latest_13f_report_period: "2026-03-31"
-  metrics_version: "0.1"
-  whitelist_version: "2026-06-01-whitelist-v1"
-  key_institution_version: "2026-06-01-key-v1"
-  strategy_version: "2026-06-01-strategy-v1"
-  status: "OK"
-  warnings:
-    - "Sample data for MVP interface validation"
-
+  build_id: live-20260602013900
+  built_at: '2026-06-02T01:39:00+08:00'
+  data_date: '2026-06-02'
+  market_data_date: '2026-06-02'
+  latest_13f_report_period: '2026-03-31'
+  metrics_version: '0.1'
+  whitelist_version: 2026-06-01-whitelist-v1
+  key_institution_version: 2026-06-01-key-v1
+  strategy_version: 2026-06-01-strategy-v1
+  status: OK
+  warnings: []
 simulation:
   meta:
-    simulation_id: "institutional-signal-weekly-v0.1"
-    strategy: "institutional_signal_weekly"
+    simulation_id: institutional-signal-weekly-live-v0.1
+    strategy: institutional_signal_weekly
+    mode: current_snapshot_rebalance
     lookback_trading_days: 21
     max_positions: 10
-    weighting_method: "allocation_score_clamped_5_50"
-    last_rebalance_date: "2026-05-25"
-    next_rebalance_date: "2026-06-01"
+    weighting_method: allocation_score_clamped_5_50
+    last_rebalance_date: '2026-06-02'
+    next_rebalance_date: '2026-06-08'
   summary:
-    start_date: "2026-01-01"
-    initial_value: 100000
-    current_value: 118420
-    cash_value: 7420
-    cash_weight_pct: 6.3
-    total_return_pct: 18.4
-    weekly_return_pct: 2.1
-    ytd_return_pct: 18.4
-    max_drawdown_pct: -7.8
-    spy_return_pct: 7.1
-    qqq_return_pct: 9.8
-    excess_vs_spy_pct: 11.3
-    excess_vs_qqq_pct: 8.6
-    candidates_count: 14
-    positions_count: 5
+    start_date: '2026-05-26'
+    initial_value: 100000.0
+    current_value: 100000.0
+    cash_value: 0.0
+    cash_weight_pct: 0.0
+    total_return_pct: 0
+    weekly_return_pct: 0
+    ytd_return_pct: 0
+    max_drawdown_pct: 0
+    spy_return_pct: 0
+    qqq_return_pct: 0
+    excess_vs_spy_pct: 0
+    excess_vs_qqq_pct: 0
+    candidates_count: 17
+    positions_count: 10
   current_positions:
-    - symbol: "AAPL.US"
-      slug: "aapl-us"
-      company_name: "Apple Inc."
-      target_weight_pct: 23.8
-      actual_weight_pct: 23.5
-      allocation_score: 60
-      source_rankings: ["institutional_buying", "institutional_holding"]
-      badges:
-        - label: "买入 #1"
-          tone: "buying"
-        - label: "卖出 #2"
-          tone: "selling"
-        - label: "段永平"
-          tone: "key"
-        - label: "伯克希尔"
-          tone: "key"
-      entry_date: "2026-05-25"
-      entry_price: 185.22
-      current_price: 190.12
-      return_pct: 2.65
-      institutional_avg_holding_price: 195.4
-      discount_to_institutional_avg_pct: 2.7
-      key_institution_bought: true
-      selling_top10: false
-    - symbol: "NVDA.US"
-      slug: "nvda-us"
-      company_name: "NVIDIA Corp."
-      target_weight_pct: 21.4
-      actual_weight_pct: 21.1
-      allocation_score: 54
-      source_rankings: ["institutional_buying"]
-      badges:
-        - label: "买入 #2"
-          tone: "buying"
-        - label: "新建仓 #1"
-          tone: "new"
-        - label: "李录"
-          tone: "key"
-      entry_date: "2026-05-25"
-      entry_price: 116.5
-      current_price: 121.8
-      return_pct: 4.55
-      institutional_avg_holding_price: 132.6
-      discount_to_institutional_avg_pct: 8.1
-      key_institution_bought: true
-      selling_top10: false
-    - symbol: "BRK.B.US"
-      slug: "brk-b-us"
-      company_name: "Berkshire Hathaway Inc."
-      target_weight_pct: 20.2
-      actual_weight_pct: 20.4
-      allocation_score: 51
-      source_rankings: ["institutional_holding"]
-      badges: []
-      entry_date: "2026-05-19"
-      entry_price: 410.2
-      current_price: 417.3
-      return_pct: 1.73
-      institutional_avg_holding_price: 430.1
-      discount_to_institutional_avg_pct: 3.0
-      key_institution_bought: false
-      selling_top10: false
-    - symbol: "MSFT.US"
-      slug: "msft-us"
-      company_name: "Microsoft Corp."
-      target_weight_pct: 17.5
-      actual_weight_pct: 17.7
-      allocation_score: 44
-      source_rankings: ["institutional_holding"]
-      badges: []
-      entry_date: "2026-05-19"
-      entry_price: 432.1
-      current_price: 438.5
-      return_pct: 1.48
-      institutional_avg_holding_price: 452.0
-      discount_to_institutional_avg_pct: 3.0
-      key_institution_bought: false
-      selling_top10: false
-    - symbol: "TSLA.US"
-      slug: "tsla-us"
-      company_name: "Tesla Inc."
-      target_weight_pct: 10.8
-      actual_weight_pct: 11.0
-      allocation_score: 25
-      source_rankings: ["institutional_buying"]
-      badges:
-        - label: "买入 #3"
-          tone: "buying"
-        - label: "卖出 #1"
-          tone: "selling"
-        - label: "清仓 #2"
-          tone: "exit"
-      entry_date: "2026-05-12"
-      entry_price: 180.4
-      current_price: 176.0
-      return_pct: -2.44
-      institutional_avg_holding_price: 190.0
-      discount_to_institutional_avg_pct: 7.4
-      key_institution_bought: false
-      selling_top10: true
+  - symbol: PDD.US
+    slug: pdd-us
+    company_name: PDD Holdings Inc. ADR
+    target_weight_pct: 13.33
+    actual_weight_pct: 13.33
+    allocation_score: 40
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 20
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #5'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 87.43
+    current_price: 87.43
+    return_pct: 0
+    institutional_avg_holding_price: 102.18
+    discount_to_institutional_avg_pct: 14.44
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: NYT.US
+    slug: nyt-us
+    company_name: The New York Times Co.
+    target_weight_pct: 13.33
+    actual_weight_pct: 13.33
+    allocation_score: 40
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 20
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #4'
+      tone: buying
+    - label: 伯克希尔
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 75.39
+    current_price: 75.39
+    return_pct: 0
+    institutional_avg_holding_price: 83.73
+    discount_to_institutional_avg_pct: 9.96
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: BRK.B.US
+    slug: brk-b-us
+    company_name: Berkshire Hathaway Inc.
+    target_weight_pct: 13.33
+    actual_weight_pct: 13.33
+    allocation_score: 40
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 20
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #3'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 468.764
+    current_price: 468.764
+    return_pct: 0
+    institutional_avg_holding_price: 479.2
+    discount_to_institutional_avg_pct: 2.18
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: GOOGL.US
+    slug: googl-us
+    company_name: Alphabet Inc. Class A
+    target_weight_pct: 13.33
+    actual_weight_pct: 13.33
+    allocation_score: 40
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 10
+      below_institution_avg_score: 0
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 10
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    - institutional_holding
+    badges:
+    - label: '买入 #1'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 377.23
+    current_price: 377.23
+    return_pct: 0
+    institutional_avg_holding_price: 287.56
+    discount_to_institutional_avg_pct: -31.18
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: OXY.US
+    slug: oxy-us
+    company_name: Occidental Petroleum Corp.
+    target_weight_pct: 10.0
+    actual_weight_pct: 10.0
+    allocation_score: 30
+    allocation_components:
+      buying_top10_score: 0
+      holding_top10_score: 10
+      below_institution_avg_score: 20
+      buying_top10_key_institution_bonus: 0
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_holding
+    badges:
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 59.015
+    current_price: 59.015
+    return_pct: 0
+    institutional_avg_holding_price: 65.0
+    discount_to_institutional_avg_pct: 9.21
+    key_institution_bought: false
+    selling_top10: false
+  - symbol: CB.US
+    slug: cb-us
+    company_name: Chubb Ltd.
+    target_weight_pct: 10.0
+    actual_weight_pct: 10.0
+    allocation_score: 30
+    allocation_components:
+      buying_top10_score: 0
+      holding_top10_score: 10
+      below_institution_avg_score: 20
+      buying_top10_key_institution_bonus: 0
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_holding
+    badges:
+    - label: 伯克希尔
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 310.075
+    current_price: 310.075
+    return_pct: 0
+    institutional_avg_holding_price: 325.93
+    discount_to_institutional_avg_pct: 4.86
+    key_institution_bought: false
+    selling_top10: false
+  - symbol: LEN.US
+    slug: len-us
+    company_name: Lennar Corp. Class A
+    target_weight_pct: 6.67
+    actual_weight_pct: 6.67
+    allocation_score: 20
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 0
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #7'
+      tone: buying
+    - label: 伯克希尔
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 90.07
+    current_price: 90.07
+    return_pct: 0
+    institutional_avg_holding_price: 86.84
+    discount_to_institutional_avg_pct: -3.72
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: DIS.US
+    slug: dis-us
+    company_name: The Walt Disney Co.
+    target_weight_pct: 6.67
+    actual_weight_pct: 6.67
+    allocation_score: 20
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 0
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #8'
+      tone: buying
+    - label: 段永平
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 102.17
+    current_price: 102.17
+    return_pct: 0
+    institutional_avg_holding_price: 96.38
+    discount_to_institutional_avg_pct: -6.01
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: MSFT.US
+    slug: msft-us
+    company_name: Microsoft Corp.
+    target_weight_pct: 6.67
+    actual_weight_pct: 6.67
+    allocation_score: 20
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 0
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #9'
+      tone: buying
+    - label: 段永平
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 458.925
+    current_price: 458.925
+    return_pct: 0
+    institutional_avg_holding_price: 370.17
+    discount_to_institutional_avg_pct: -23.98
+    key_institution_bought: true
+    selling_top10: false
+  - symbol: NVDA.US
+    slug: nvda-us
+    company_name: NVIDIA Corp.
+    target_weight_pct: 6.67
+    actual_weight_pct: 6.67
+    allocation_score: 20
+    allocation_components:
+      buying_top10_score: 10
+      holding_top10_score: 0
+      below_institution_avg_score: 0
+      buying_top10_key_institution_bonus: 10
+      holding_top10_key_institution_bonus: 0
+      selling_top10_penalty: 0
+    source_rankings:
+    - institutional_buying
+    badges:
+    - label: '买入 #2'
+      tone: buying
+    - label: 段永平
+      tone: key
+    entry_date: '2026-06-02'
+    entry_price: 222.72
+    current_price: 222.72
+    return_pct: 0
+    institutional_avg_holding_price: 174.4
+    discount_to_institutional_avg_pct: -27.71
+    key_institution_bought: true
+    selling_top10: false
   equity_curve:
-    - date: "2026-01-01"
-      value: 100000
-      spy_value: 100000
-      qqq_value: 100000
-    - date: "2026-02-01"
-      value: 104800
-      spy_value: 101500
-      qqq_value: 102100
-    - date: "2026-03-01"
-      value: 111200
-      spy_value: 103100
-      qqq_value: 105700
-    - date: "2026-04-01"
-      value: 108600
-      spy_value: 102400
-      qqq_value: 104000
-    - date: "2026-05-01"
-      value: 115900
-      spy_value: 106200
-      qqq_value: 108700
-    - date: "2026-05-29"
-      value: 118420
-      spy_value: 107100
-      qqq_value: 109800
+  - date: '2026-05-26'
+    value: 100000.0
+    spy_value: 100000.0
+    qqq_value: 100000.0
+  - date: '2026-06-02'
+    value: 100000.0
+    spy_value: 100000.0
+    qqq_value: 100000.0
   rebalance_history:
-    - date: "2026-05-25"
-      buys:
-        - symbol: "AAPL.US"
-          slug: "aapl-us"
-          reason: "买入榜 + 持有榜 + 重点机构买入"
-          target_weight_pct: 23.8
-          buy_value_usd: 28200
-          buy_price: 185.22
-          shares: 152.25
-        - symbol: "NVDA.US"
-          slug: "nvda-us"
-          reason: "买入榜 + 低于机构平均持有价"
-          target_weight_pct: 21.4
-          buy_value_usd: 25350
-          buy_price: 116.50
-          shares: 217.60
-      sells:
-        - symbol: "META.US"
-          reason: "进入机构卖出榜 Top 10"
-          from_weight_pct: 12.0
-      resizes:
-        - symbol: "BRK.B.US"
-          slug: "brk-b-us"
-          reason: "权重按评分上调"
-          from_weight_pct: 14.0
-          to_weight_pct: 20.2
-    - date: "2026-05-19"
-      buys:
-        - symbol: "MSFT.US"
-          slug: "msft-us"
-          reason: "持有榜 Top 10 + 低于机构平均持有价"
-          target_weight_pct: 17.5
-          buy_value_usd: 18100
-          buy_price: 432.10
-          shares: 41.89
-      sells:
-        - symbol: "TSLA.US"
-          slug: "tsla-us"
-          reason: "部分减仓：卖出榜风险上升"
-          from_weight_pct: 18.0
-      resizes: []
-
+  - date: '2026-06-02'
+    buys:
+    - symbol: PDD.US
+      slug: pdd-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 13.33
+      buy_value_usd: 13333.33
+      buy_price: 87.43
+      shares: 152.503
+    - symbol: NYT.US
+      slug: nyt-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 13.33
+      buy_value_usd: 13333.33
+      buy_price: 75.39
+      shares: 176.8581
+    - symbol: BRK.B.US
+      slug: brk-b-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 13.33
+      buy_value_usd: 13333.33
+      buy_price: 468.764
+      shares: 28.4436
+    - symbol: GOOGL.US
+      slug: googl-us
+      reason: 买入榜 Top 10 + 持有榜 Top 10
+      target_weight_pct: 13.33
+      buy_value_usd: 13333.33
+      buy_price: 377.23
+      shares: 35.3454
+    - symbol: OXY.US
+      slug: oxy-us
+      reason: 持有榜 Top 10
+      target_weight_pct: 10.0
+      buy_value_usd: 10000.0
+      buy_price: 59.015
+      shares: 169.4484
+    - symbol: CB.US
+      slug: cb-us
+      reason: 持有榜 Top 10
+      target_weight_pct: 10.0
+      buy_value_usd: 10000.0
+      buy_price: 310.075
+      shares: 32.2503
+    - symbol: LEN.US
+      slug: len-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 6.67
+      buy_value_usd: 6666.67
+      buy_price: 90.07
+      shares: 74.0165
+    - symbol: DIS.US
+      slug: dis-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 6.67
+      buy_value_usd: 6666.67
+      buy_price: 102.17
+      shares: 65.2507
+    - symbol: MSFT.US
+      slug: msft-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 6.67
+      buy_value_usd: 6666.67
+      buy_price: 458.925
+      shares: 14.5267
+    - symbol: NVDA.US
+      slug: nvda-us
+      reason: 买入榜 Top 10
+      target_weight_pct: 6.67
+      buy_value_usd: 6666.67
+      buy_price: 222.72
+      shares: 29.933
+    sells: []
+    resizes: []
 rankings:
-  - type: "institutional_combined"
-    title: "机构综合榜"
-    description: "按白名单机构当前持有市值排序，并用标签标记买入、卖出、新建仓、清仓等异动"
-    sort_label: "持有市值"
-    rows:
-      - symbol: "AAPL.US"
-        slug: "aapl-us"
-        company_name: "Apple Inc."
-        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
-        badges:
-          - label: "买入 #1"
-            tone: "buying"
-          - label: "卖出 #2"
-            tone: "selling"
-          - label: "段永平"
-            tone: "key"
-          - label: "伯克希尔"
-            tone: "key"
-        price: 190.12
-        price_change_pct: 1.25
-        market_cap_usd: 2900000000000
-        pe: 29.4
-        forward_pe: 24.8
-        ps: 7.1
-        manager_count: 200
-        buyers_count: 11
-        sellers_count: 22
-        holders_count: 38
-        total_bought_value_usd: 850000000
-        total_sold_value_usd: 420000000
-        new_position_value_usd: 120000000
-        exit_value_usd: 150000000
-        new_positions_count: 4
-        added_count: 7
-        reduced_count: 19
-        exits_count: 3
-        total_tracked_value_usd: 12500000000
-        institutional_avg_holding_price: 195.4
-        key_institution_bought: true
-      - symbol: "BRK.B.US"
-        slug: "brk-b-us"
-        company_name: "Berkshire Hathaway Inc."
-        tags: ["S&P 500", "Russell 1000"]
-        badges: []
-        price: 417.3
-        price_change_pct: 0.4
-        market_cap_usd: 900000000000
-        pe: 21.3
-        forward_pe: 19.8
-        ps: 2.6
-        manager_count: 200
-        buyers_count: 5
-        sellers_count: 2
-        holders_count: 54
-        total_bought_value_usd: 120000000
-        total_sold_value_usd: 50000000
-        new_position_value_usd: 0
-        exit_value_usd: 0
-        total_tracked_value_usd: 10800000000
-        institutional_avg_holding_price: 430.1
-        key_institution_bought: false
-      - symbol: "NVDA.US"
-        slug: "nvda-us"
-        company_name: "NVIDIA Corp."
-        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
-        badges:
-          - label: "买入 #2"
-            tone: "buying"
-          - label: "新建仓 #1"
-            tone: "new"
-          - label: "李录"
-            tone: "key"
-        price: 121.8
-        price_change_pct: 3.1
-        market_cap_usd: 3000000000000
-        pe: 42.1
-        forward_pe: 28.5
-        ps: 19.4
-        manager_count: 200
-        buyers_count: 15
-        sellers_count: 8
-        holders_count: 42
-        total_bought_value_usd: 790000000
-        total_sold_value_usd: 110000000
-        new_position_value_usd: 410000000
-        exit_value_usd: 50000000
-        new_positions_count: 6
-        added_count: 9
-        reduced_count: 7
-        exits_count: 1
-        total_tracked_value_usd: 9800000000
-        institutional_avg_holding_price: 132.6
-        key_institution_bought: true
-      - symbol: "MSFT.US"
-        slug: "msft-us"
-        company_name: "Microsoft Corp."
-        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
-        badges: []
-        price: 438.5
-        price_change_pct: 0.8
-        market_cap_usd: 3300000000000
-        pe: 34.8
-        forward_pe: 27.4
-        ps: 11.8
-        manager_count: 200
-        buyers_count: 7
-        sellers_count: 5
-        holders_count: 47
-        total_bought_value_usd: 240000000
-        total_sold_value_usd: 90000000
-        new_position_value_usd: 0
-        exit_value_usd: 0
-        total_tracked_value_usd: 9700000000
-        institutional_avg_holding_price: 452.0
-        key_institution_bought: false
-      - symbol: "TSLA.US"
-        slug: "tsla-us"
-        company_name: "Tesla Inc."
-        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
-        badges:
-          - label: "买入 #3"
-            tone: "buying"
-          - label: "卖出 #1"
-            tone: "selling"
-          - label: "清仓 #2"
-            tone: "exit"
-        price: 176.0
-        price_change_pct: -2.4
-        market_cap_usd: 560000000000
-        pe: 65.2
-        forward_pe: 48.3
-        ps: 6.2
-        manager_count: 200
-        buyers_count: 9
-        sellers_count: 18
-        holders_count: 25
-        total_bought_value_usd: 320000000
-        total_sold_value_usd: 680000000
-        new_position_value_usd: 80000000
-        exit_value_usd: 280000000
-        exits_count: 4
-        reduced_count: 14
-        total_tracked_value_usd: 4200000000
-        institutional_avg_holding_price: 190.0
-        key_institution_bought: false
-      - symbol: "META.US"
-        slug: "meta-us"
-        company_name: "Meta Platforms Inc."
-        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
-        badges:
-          - label: "清仓 #1"
-            tone: "exit"
-          - label: "已清仓"
-            tone: "cleared"
-          - label: "卖出 #3"
-            tone: "selling"
-        price: 485.4
-        price_change_pct: -0.6
-        market_cap_usd: 1220000000000
-        pe: 24.6
-        forward_pe: 20.9
-        ps: 8.4
-        manager_count: 200
-        buyers_count: 0
-        sellers_count: 12
-        holders_count: 0
-        total_bought_value_usd: 0
-        total_sold_value_usd: 540000000
-        new_position_value_usd: 0
-        exit_value_usd: 360000000
-        new_positions_count: 0
-        added_count: 0
-        reduced_count: 6
-        exits_count: 6
-        total_tracked_value_usd: 0
-        institutional_avg_holding_price: 0
-        key_institution_bought: false
+- type: institutional_combined
+  title: 机构综合榜
+  description: 按白名单机构当前持有市值排序，并用标签标记买入、卖出、新建仓、清仓等异动
+  sort_label: 持有市值
+  rows:
+  - symbol: AAPL.US
+    slug: aapl-us
+    company_name: Apple Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    badges:
+    - label: '卖出 #8'
+      tone: selling
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    price: 306.975
+    price_change_pct: -1.6295
+    market_cap_usd: 4508944855220.0
+    pe: 36.79
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 3
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 866159891.02
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 65217435268.0
+    institutional_avg_holding_price: 253.79
+    key_institution_bought: false
+  - symbol: AXP.US
+    slug: axp-us
+    company_name: American Express Co.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 313.37
+    price_change_pct: -0.9796
+    market_cap_usd: 213820637442.91
+    pe: 19.29
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 45859204536.0
+    institutional_avg_holding_price: 302.48
+    key_institution_bought: false
+  - symbol: KO.US
+    slug: ko-us
+    company_name: The Coca-Cola Co.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 78.66
+    price_change_pct: -0.443
+    market_cap_usd: 338433266999.88
+    pe: 24.7
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 30420000000.0
+    institutional_avg_holding_price: 76.05
+    key_institution_bought: false
+  - symbol: BAC.US
+    slug: bac-us
+    company_name: Bank of America Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: 李录
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    price: 51.655
+    price_change_pct: 0.1066
+    market_cap_usd: 368295399392.96
+    pe: 12.17
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 2
+    holders_count: 2
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 541376988.75
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 2
+    exits_count: 0
+    total_tracked_value_usd: 25185329910.0
+    institutional_avg_holding_price: 48.75
+    key_institution_bought: false
+  - symbol: OXY.US
+    slug: oxy-us
+    company_name: Occidental Petroleum Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    price: 59.015
+    price_change_pct: 4.2115
+    market_cap_usd: 58703340053.02
+    pe: 14.65
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 3
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 189221500.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 17983513015.0
+    institutional_avg_holding_price: 65.0
+    key_institution_bought: false
+  - symbol: CVX.US
+    slug: cvx-us
+    company_name: Chevron Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #1'
+      tone: selling
+    - label: 伯克希尔
+      tone: key
+    price: 186.285
+    price_change_pct: 2.0963
+    market_cap_usd: 368365497625.62
+    pe: 33.46
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 9471986691.18
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 17457364606.0
+    institutional_avg_holding_price: 206.9
+    key_institution_bought: false
+  - symbol: GOOGL.US
+    slug: googl-us
+    company_name: Alphabet Inc. Class A
+    tags: []
+    badges:
+    - label: '买入 #1'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    price: 377.23
+    price_change_pct: -0.8177
+    market_cap_usd: 4570435951197.62
+    pe: 28.53
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 2
+    sellers_count: 0
+    holders_count: 2
+    total_bought_value_usd: 10494690839.44
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 2
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 16331423261.0
+    institutional_avg_holding_price: 287.56
+    key_institution_bought: true
+  - symbol: CB.US
+    slug: cb-us
+    company_name: Chubb Ltd.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 310.075
+    price_change_pct: -0.5309
+    market_cap_usd: 120283176072.72
+    pe: 10.65
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 11162836215.0
+    institutional_avg_holding_price: 325.93
+    key_institution_bought: false
+  - symbol: MCO.US
+    slug: mco-us
+    company_name: Moody's Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: 李录
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    price: 461.027
+    price_change_pct: 1.7158
+    market_cap_usd: 80530466843.61
+    pe: 32.28
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 2
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 10813573923.0
+    institutional_avg_holding_price: 436.25
+    key_institution_bought: false
+  - symbol: KHC.US
+    slug: khc-us
+    company_name: The Kraft Heinz Co.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 23.605
+    price_change_pct: -1.6868
+    market_cap_usd: 27940071576.74
+    pe: -4.85
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 7323527057.0
+    institutional_avg_holding_price: 22.49
+    key_institution_bought: false
+  - symbol: BRK.B.US
+    slug: brk-b-us
+    company_name: Berkshire Hathaway Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: '买入 #3'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    price: 468.764
+    price_change_pct: -1.2047
+    market_cap_usd: 1010968764482.88
+    pe: 13.95
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 2
+    total_bought_value_usd: 944790720.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 4813825164.0
+    institutional_avg_holding_price: 479.2
+    key_institution_bought: true
+  - symbol: DVA.US
+    slug: dva-us
+    company_name: DaVita Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 190.66
+    price_change_pct: -1.9037
+    market_cap_usd: 12736088000.0
+    pe: 16.3
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 254891791.22
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 4626158909.0
+    institutional_avg_holding_price: 153.69
+    key_institution_bought: false
+  - symbol: KR.US
+    slug: kr-us
+    company_name: The Kroger Co.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 62.07
+    price_change_pct: -0.1287
+    market_cap_usd: 38026189773.06
+    pe: 37.69
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 3618000000.0
+    institutional_avg_holding_price: 72.36
+    key_institution_bought: false
+  - symbol: SIRI.US
+    slug: siri-us
+    company_name: Sirius XM Holdings Inc.
+    tags:
+    - Nasdaq 100
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 28.935
+    price_change_pct: -1.9817
+    market_cap_usd: 9740097848.16
+    pe: 11.51
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 2880548260.0
+    institutional_avg_holding_price: 23.08
+    key_institution_bought: false
+  - symbol: GOOG.US
+    slug: goog-us
+    company_name: Alphabet Inc. Class C
+    tags: []
+    badges:
+    - label: '买入 #6'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    - label: 伯克希尔
+      tone: key
+    price: 373.29
+    price_change_pct: -0.8342
+    market_cap_usd: 4522335090264.37
+    pe: 28.23
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 1
+    holders_count: 3
+    total_bought_value_usd: 530863116.02
+    total_sold_value_usd: 26391120.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 2794737853.0
+    institutional_avg_holding_price: 286.86
+    key_institution_bought: true
+  - symbol: DAL.US
+    slug: dal-us
+    company_name: Delta Air Lines Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 81.125
+    price_change_pct: -1.6428
+    market_cap_usd: 53298647336.0
+    pe: 11.91
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 2646532635.0
+    institutional_avg_holding_price: 66.48
+    key_institution_bought: false
+  - symbol: PDD.US
+    slug: pdd-us
+    company_name: PDD Holdings Inc. ADR
+    tags:
+    - Nasdaq 100
+    badges:
+    - label: '买入 #5'
+      tone: buying
+    - label: 李录
+      tone: key
+    - label: 段永平
+      tone: key
+    price: 87.43
+    price_change_pct: 3.541
+    market_cap_usd: 124447552672.66
+    pe: 9.17
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 2
+    total_bought_value_usd: 839061288.03
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 2488726121.0
+    institutional_avg_holding_price: 102.18
+    key_institution_bought: true
+  - symbol: NVDA.US
+    slug: nvda-us
+    company_name: NVIDIA Corp.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    badges:
+    - label: '买入 #2'
+      tone: buying
+    - label: 段永平
+      tone: key
+    price: 222.72
+    price_change_pct: 5.4845
+    market_cap_usd: 5412040110000.0
+    pe: 33.91
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 1152204120.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 2414354360.0
+    institutional_avg_holding_price: 174.4
+    key_institution_bought: true
+  - symbol: VRSN.US
+    slug: vrsn-us
+    company_name: VeriSign Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 294.58
+    price_change_pct: 3.2238
+    market_cap_usd: 26846331615.84
+    pe: 31.93
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 2232726597.0
+    institutional_avg_holding_price: 248.36
+    key_institution_bought: false
+  - symbol: COF.US
+    slug: cof-us
+    company_name: Capital One Financial Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 185.97
+    price_change_pct: -1.0429
+    market_cap_usd: 115702897143.19
+    pe: 39.39
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 1304374500.0
+    institutional_avg_holding_price: 182.43
+    key_institution_bought: false
+  - symbol: NYT.US
+    slug: nyt-us
+    company_name: The New York Times Co.
+    tags: []
+    badges:
+    - label: '买入 #4'
+      tone: buying
+    - label: 伯克希尔
+      tone: key
+    price: 75.39
+    price_change_pct: 0.2393
+    market_cap_usd: 12202828877.61
+    pe: 31.92
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 844064630.73
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 1268219376.0
+    institutional_avg_holding_price: 83.73
+    key_institution_bought: true
+  - symbol: TSLA.US
+    slug: tsla-us
+    company_name: Tesla Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    badges:
+    - label: 段永平
+      tone: key
+    price: 419.935
+    price_change_pct: -3.6382
+    market_cap_usd: 1576596545187.74
+    pe: 408.23
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 1267258575.0
+    institutional_avg_holding_price: 371.75
+    key_institution_bought: false
+  - symbol: ALLY.US
+    slug: ally-us
+    company_name: Ally Financial Inc.
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 42.18
+    price_change_pct: -1.4716
+    market_cap_usd: 12966469440.0
+    pe: 10.08
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 1137670000.0
+    institutional_avg_holding_price: 39.23
+    key_institution_bought: false
+  - symbol: LLYVK.US
+    slug: llyvk-us
+    company_name: Liberty Live Group Series C
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 100.56
+    price_change_pct: 1.4733
+    market_cap_usd: 9244648634.64
+    pe: -26.29
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 31105048.99
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 996356028.0
+    institutional_avg_holding_price: 94.11
+    key_institution_bought: false
+  - symbol: LEN.US
+    slug: len-us
+    company_name: Lennar Corp. Class A
+    tags:
+    - S&P 500
+    badges:
+    - label: '买入 #7'
+      tone: buying
+    - label: 伯克希尔
+      tone: key
+    price: 90.07
+    price_change_pct: 0.323
+    market_cap_usd: 22181624537.76
+    pe: 12.53
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 264748413.2
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 877052911.0
+    institutional_avg_holding_price: 86.84
+    key_institution_bought: true
+  - symbol: NUE.US
+    slug: nue-us
+    company_name: Nucor Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 250.925
+    price_change_pct: 0.37
+    market_cap_usd: 57145897878.75
+    pe: 24.62
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 422863973.72
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 660686383.0
+    institutional_avg_holding_price: 169.1
+    key_institution_bought: false
+  - symbol: LLYVA.US
+    slug: llyva-us
+    company_name: Liberty Live Group Series A
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 97.77
+    price_change_pct: 1.5054
+    market_cap_usd: 8988159278.13
+    pe: -25.56
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 456970925.0
+    institutional_avg_holding_price: 91.64
+    key_institution_bought: false
+  - symbol: LPX.US
+    slug: lpx-us
+    company_name: Louisiana-Pacific Corp.
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 73.26
+    price_change_pct: -4.0848
+    market_cap_usd: 5118301108.8
+    pe: 62.42
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 412113691.0
+    institutional_avg_holding_price: 72.75
+    key_institution_bought: false
+  - symbol: MSFT.US
+    slug: msft-us
+    company_name: Microsoft Corp.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    badges:
+    - label: '买入 #9'
+      tone: buying
+    - label: 段永平
+      tone: key
+    price: 458.925
+    price_change_pct: 1.929
+    market_cap_usd: 3407942989154.08
+    pe: 27.22
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 58116690.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 376092720.0
+    institutional_avg_holding_price: 370.17
+    key_institution_bought: true
+  - symbol: EWBC.US
+    slug: ewbc-us
+    company_name: East West Bancorp Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 李录
+      tone: key
+    price: 120.56
+    price_change_pct: -1.6158
+    market_cap_usd: 16516269346.72
+    pe: 11.86
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 296403233.0
+    institutional_avg_holding_price: 106.76
+    key_institution_bought: false
+  - symbol: UNH.US
+    slug: unh-us
+    company_name: UnitedHealth Group Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #5'
+      tone: selling
+    - label: '清仓 #3'
+      tone: exit
+    - label: 段永平
+      tone: key
+    price: 378.51
+    price_change_pct: -0.4733
+    market_cap_usd: 343823471354.4
+    pe: 28.55
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 1363655622.76
+    new_position_value_usd: 0.0
+    exit_value_usd: 1363655622.76
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 162732826.0
+    institutional_avg_holding_price: 270.59
+    key_institution_bought: false
+  - symbol: DIS.US
+    slug: dis-us
+    company_name: The Walt Disney Co.
+    tags:
+    - S&P 500
+    badges:
+    - label: '买入 #8'
+      tone: buying
+    - label: 段永平
+      tone: key
+    price: 102.17
+    price_change_pct: 0.3339
+    market_cap_usd: 180996183176.67
+    pe: 16.13
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 77084724.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 145707284.0
+    institutional_avg_holding_price: 96.38
+    key_institution_bought: true
+  - symbol: STZ.US
+    slug: stz-us
+    company_name: Constellation Brands Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #4'
+      tone: selling
+    - label: 伯克希尔
+      tone: key
+    price: 135.68
+    price_change_pct: -2.2619
+    market_cap_usd: 23528380328.96
+    pe: 13.95
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 1855066500.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 94933500.0
+    institutional_avg_holding_price: 150.0
+    key_institution_bought: false
+  - symbol: CROX.US
+    slug: crox-us
+    company_name: Crocs Inc.
+    tags: []
+    badges:
+    - label: 李录
+      tone: key
+    price: 115.99
+    price_change_pct: -2.2584
+    market_cap_usd: 5763502271.52
+    pe: -55.55
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 21496700.72
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 73646461.0
+    institutional_avg_holding_price: 83.02
+    key_institution_bought: true
+  - symbol: NVR.US
+    slug: nvr-us
+    company_name: NVR Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 6145.14
+    price_change_pct: 0.6608
+    market_cap_usd: 16587527240.88
+    pe: 13.39
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 73226191.0
+    institutional_avg_holding_price: 6589.83
+    key_institution_bought: false
+  - symbol: CRDO.US
+    slug: crdo-us
+    company_name: Credo Technology Group Holding Ltd.
+    tags: []
+    badges:
+    - label: '买入 #10'
+      tone: buying
+    - label: 段永平
+      tone: key
+    price: 232.55
+    price_change_pct: -1.4744
+    market_cap_usd: 42915967539.8
+    pe: 126.31
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 57251313.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 70515144.0
+    institutional_avg_holding_price: 93.87
+    key_institution_bought: true
+  - symbol: TME.US
+    slug: tme-us
+    company_name: Tencent Music Entertainment Group ADR
+    tags: []
+    badges:
+    - label: 李录
+      tone: key
+    price: 9.53
+    price_change_pct: 3.3623
+    market_cap_usd: 14768804445.64
+    pe: 11.75
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 61162958.0
+    institutional_avg_holding_price: 9.28
+    key_institution_bought: false
+  - symbol: M.US
+    slug: m-us
+    company_name: Macy's Inc.
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 21.99
+    price_change_pct: 1.057
+    market_cap_usd: 5800115363.01
+    pe: 9.03
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 54963842.0
+    institutional_avg_holding_price: 18.09
+    key_institution_bought: false
+  - symbol: SPGI.US
+    slug: spgi-us
+    company_name: S&P Global Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: 李录
+      tone: key
+    price: 427.975
+    price_change_pct: 0.9375
+    market_cap_usd: 129763811498.79
+    pe: 27.17
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 51663072.0
+    institutional_avg_holding_price: 425.34
+    key_institution_bought: false
+  - symbol: HRB.US
+    slug: hrb-us
+    company_name: H&R Block Inc.
+    tags: []
+    badges:
+    - label: 李录
+      tone: key
+    price: 39.652
+    price_change_pct: 3.019
+    market_cap_usd: 5026042207.55
+    pe: 6.83
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 51637996.0
+    institutional_avg_holding_price: 31.74
+    key_institution_bought: false
+  - symbol: TSM.US
+    slug: tsm-us
+    company_name: Taiwan Semiconductor Manufacturing Co. ADR
+    tags: []
+    badges:
+    - label: 段永平
+      tone: key
+    price: 445.27
+    price_change_pct: 6.4094
+    market_cap_usd: 2309640601680.0
+    pe: 37.18
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 362682532.8
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 51098040.0
+    institutional_avg_holding_price: 337.95
+    key_institution_bought: false
+  - symbol: LEN.B.US
+    slug: len-b-us
+    company_name: Lennar Corp. Class B
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 88.12
+    price_change_pct: 0.0454
+    market_cap_usd: 21703805843.52
+    pe: 12.26
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 1
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 4771538.67
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 1
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 19995576.0
+    institutional_avg_holding_price: 84.12
+    key_institution_bought: true
+  - symbol: CRCL.US
+    slug: crcl-us
+    company_name: Circle Internet Group Inc.
+    tags: []
+    badges:
+    - label: 段永平
+      tone: key
+    price: 107.77
+    price_change_pct: -4.6283
+    market_cap_usd: 26659171692.8
+    pe: -1870.16
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 19082000.0
+    institutional_avg_holding_price: 95.41
+    key_institution_bought: false
+  - symbol: JEF.US
+    slug: jef-us
+    company_name: Jefferies Financial Group Inc.
+    tags: []
+    badges:
+    - label: 伯克希尔
+      tone: key
+    price: 52.92
+    price_change_pct: 0.3794
+    market_cap_usd: 10818557686.44
+    pe: 16.42
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 17892939.0
+    institutional_avg_holding_price: 41.27
+    key_institution_bought: false
+  - symbol: MSCI.US
+    slug: msci-us
+    company_name: MSCI Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: 李录
+      tone: key
+    price: 636.87
+    price_change_pct: 0.8695
+    market_cap_usd: 46346300000.0
+    pe: 35.12
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 10208310.0
+    institutional_avg_holding_price: 539.01
+    key_institution_bought: false
+  - symbol: PLTR.US
+    slug: pltr-us
+    company_name: Palantir Technologies Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 段永平
+      tone: key
+    price: 162.515
+    price_change_pct: 3.8169
+    market_cap_usd: 389419357543.88
+    pe: 170.68
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 8776800.0
+    institutional_avg_holding_price: 146.28
+    key_institution_bought: false
+  - symbol: SNPS.US
+    slug: snps-us
+    company_name: Synopsys Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 段永平
+      tone: key
+    price: 492.3
+    price_change_pct: 3.507
+    market_cap_usd: 94246601663.73
+    pe: 121.88
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 3964800.0
+    institutional_avg_holding_price: 396.48
+    key_institution_bought: false
+  - symbol: CRWD.US
+    slug: crwd-us
+    company_name: CrowdStrike Holdings Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 段永平
+      tone: key
+    price: 763.18
+    price_change_pct: 4.4022
+    market_cap_usd: 194402267913.75
+    pe: -1196.31
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 3904100.0
+    institutional_avg_holding_price: 390.41
+    key_institution_bought: false
+  - symbol: SNOW.US
+    slug: snow-us
+    company_name: Snowflake Inc.
+    tags: []
+    badges:
+    - label: 段永平
+      tone: key
+    price: 280.95
+    price_change_pct: 9.9393
+    market_cap_usd: 97141700000.0
+    pe: -81.15
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 1508200.0
+    institutional_avg_holding_price: 150.82
+    key_institution_bought: false
+  - symbol: TEM.US
+    slug: tem-us
+    company_name: Tempus AI Inc.
+    tags: []
+    badges:
+    - label: 段永平
+      tone: key
+    price: 54.22
+    price_change_pct: 7.4302
+    market_cap_usd: 9721936357.8
+    pe: -32.1
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 4069800.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 1
+    exits_count: 0
+    total_tracked_value_usd: 904400.0
+    institutional_avg_holding_price: 45.22
+    key_institution_bought: false
+  - symbol: INOD.US
+    slug: inod-us
+    company_name: Innodata Inc.
+    tags: []
+    badges:
+    - label: 段永平
+      tone: key
+    price: 114.98
+    price_change_pct: 9.5256
+    market_cap_usd: 3756182553.95
+    pe: 95.6
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 0
+    holders_count: 1
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 0.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 0.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 0
+    total_tracked_value_usd: 386200.0
+    institutional_avg_holding_price: 38.62
+    key_institution_bought: false
+  - symbol: ALLE.US
+    slug: alle-us
+    company_name: Allegion plc
+    tags:
+    - S&P 500
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 129.141
+    price_change_pct: -0.7142
+    market_cap_usd: 11097843025.4
+    pe: 17.51
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 100747155.75
+    new_position_value_usd: 0.0
+    exit_value_usd: 100747155.75
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: AMZN.US
+    slug: amzn-us
+    company_name: Amazon.com Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    badges:
+    - label: '卖出 #9'
+      tone: selling
+    - label: '清仓 #6'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 261.47
+    price_change_pct: -3.3883
+    market_cap_usd: 2813414401891.44
+    pe: 30.99
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 595105720.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 595105720.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: AON.US
+    slug: aon-us
+    company_name: Aon plc
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #6'
+      tone: selling
+    - label: '清仓 #4'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 319.02
+    price_change_pct: 0.9365
+    market_cap_usd: 68135318269.98
+    pe: 17.28
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 1149427464.9
+    new_position_value_usd: 0.0
+    exit_value_usd: 1149427464.9
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: ASML.US
+    slug: asml-us
+    company_name: ASML Holding NV ADR
+    tags:
+    - Nasdaq 100
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 1639.945
+    price_change_pct: 1.6856
+    market_cap_usd: 632277679432.5
+    pe: 54.1
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 16235455.5
+    new_position_value_usd: 0.0
+    exit_value_usd: 16235455.5
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: BABA.US
+    slug: baba-us
+    company_name: Alibaba Group Holding Ltd. ADR
+    tags: []
+    badges:
+    - label: '清仓 #9'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 125.84
+    price_change_pct: 1.3041
+    market_cap_usd: 301896514164.96
+    pe: 20.09
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 322213320.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 322213320.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: BATRA.US
+    slug: batra-us
+    company_name: Atlanta Braves Holdings Inc.
+    tags: []
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 53.53
+    price_change_pct: -0.1306
+    market_cap_usd: 3433618738.13
+    pe: -152.88
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 6178860.84
+    new_position_value_usd: 0.0
+    exit_value_usd: 6178860.84
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: CHTR.US
+    slug: chtr-us
+    company_name: Charter Communications Inc.
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 142.885
+    price_change_pct: -0.8087
+    market_cap_usd: 17572645569.25
+    pe: 3.56
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 151584124.57
+    new_position_value_usd: 0.0
+    exit_value_usd: 151584124.57
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: CRWV.US
+    slug: crwv-us
+    company_name: CoreWeave Inc.
+    tags: []
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 126.22
+    price_change_pct: 15.2378
+    market_cap_usd: 66373383672.58
+    pe: -41.67
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 37853378.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 37853378.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: DEO.US
+    slug: deo-us
+    company_name: Diageo plc ADR
+    tags: []
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 80.15
+    price_change_pct: -2.8014
+    market_cap_usd: 44550431617.98
+    pe: 18.46
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 18254162.5
+    new_position_value_usd: 0.0
+    exit_value_usd: 18254162.5
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: DPZ.US
+    slug: dpz-us
+    company_name: Domino's Pizza Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #7'
+      tone: selling
+    - label: '清仓 #5'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 312.49
+    price_change_pct: 0.615
+    market_cap_usd: 10507694993.0
+    pe: 17.75
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 1046841500.0
+    new_position_value_usd: 0.0
+    exit_value_usd: 1046841500.0
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: FWONK.US
+    slug: fwonk-us
+    company_name: Liberty Media Formula One Series C
+    tags: []
+    badges:
+    - label: '清仓 #10'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 90.86
+    price_change_pct: 0.0771
+    market_cap_usd: 22719927973.82
+    pe: 102.34
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 274265907.3
+    new_position_value_usd: 0.0
+    exit_value_usd: 274265907.3
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: HEI.US
+    slug: hei-us
+    company_name: HEICO Corp.
+    tags: []
+    badges:
+    - label: '清仓 #8'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 337.65
+    price_change_pct: -3.0243
+    market_cap_usd: 47155954879.05
+    pe: 59.72
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 437125741.8
+    new_position_value_usd: 0.0
+    exit_value_usd: 437125741.8
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: LAMR.US
+    slug: lamr-us
+    company_name: Lamar Advertising Co.
+    tags: []
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 151.65
+    price_change_pct: -0.5313
+    market_cap_usd: 15388699066.65
+    pe: 28.01
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 182345476.5
+    new_position_value_usd: 0.0
+    exit_value_usd: 182345476.5
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: LILA.US
+    slug: lila-us
+    company_name: Liberty Latin America Ltd. Class A
+    tags: []
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 8.18
+    price_change_pct: 1.3631
+    market_cap_usd: 1636858020.0
+    pe: -3.29
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 19604719.7
+    new_position_value_usd: 0.0
+    exit_value_usd: 19604719.7
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: LILAK.US
+    slug: lilak-us
+    company_name: Liberty Latin America Ltd. Class C
+    tags: []
+    badges:
+    - label: 已清仓
+      tone: cleared
+    price: 8.27
+    price_change_pct: 0.8537
+    market_cap_usd: 1654827000.0
+    pe: -3.33
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 10618845.4
+    new_position_value_usd: 0.0
+    exit_value_usd: 10618845.4
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: MA.US
+    slug: ma-us
+    company_name: Mastercard Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #3'
+      tone: selling
+    - label: '清仓 #2'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 492.329
+    price_change_pct: -0.3342
+    market_cap_usd: 435013513956.37
+    pe: 27.94
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 1962742423.19
+    new_position_value_usd: 0.0
+    exit_value_usd: 1962742423.19
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: POOL.US
+    slug: pool-us
+    company_name: Pool Corp.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #10'
+      tone: selling
+    - label: '清仓 #7'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 182.14
+    price_change_pct: 0.4079
+    market_cap_usd: 6644703757.19
+    pe: 16.44
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 558966713.9
+    new_position_value_usd: 0.0
+    exit_value_usd: 558966713.9
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
+  - symbol: V.US
+    slug: v-us
+    company_name: Visa Inc.
+    tags:
+    - S&P 500
+    badges:
+    - label: '卖出 #2'
+      tone: selling
+    - label: '清仓 #1'
+      tone: exit
+    - label: 已清仓
+      tone: cleared
+    price: 320.063
+    price_change_pct: -1.9295
+    market_cap_usd: 615656856275.55
+    pe: 27.94
+    forward_pe: null
+    ps: null
+    manager_count: 3
+    buyers_count: 0
+    sellers_count: 1
+    holders_count: 0
+    total_bought_value_usd: 0.0
+    total_sold_value_usd: 2655709939.98
+    new_position_value_usd: 0.0
+    exit_value_usd: 2655709939.98
+    new_positions_count: 0
+    added_count: 0
+    reduced_count: 0
+    exits_count: 1
+    total_tracked_value_usd: 0.0
+    institutional_avg_holding_price: 0
+    key_institution_bought: false
 stocks:
   AAPL.US:
-    symbol: "AAPL.US"
-    slug: "aapl-us"
-    company_name: "Apple Inc."
-    exchange: "NASDAQ"
-    sector: "Technology"
-    industry: "Consumer Electronics"
-    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    symbol: AAPL.US
+    slug: aapl-us
+    company_name: Apple Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
     risk_tags: []
     market:
-      price: 190.12
-      price_change_pct: 1.25
-      market_cap_usd: 2900000000000
-      pe: 29.4
-      forward_pe: 24.8
-      ps: 7.1
+      price: 306.975
+      price_change_pct: -1.6295
+      market_cap_usd: 4508944855220.0
+      pe: 36.79
+      forward_pe: null
+      ps: null
     metrics:
-      manager_count: 200
-      buyers_count: 11
-      sellers_count: 22
-      holders_count: 38
-      new_positions_count: 4
-      added_count: 7
-      reduced_count: 19
-      exits_count: 3
-      total_bought_value_usd: 850000000
-      total_sold_value_usd: 420000000
-      total_tracked_value_usd: 12500000000
-      institutional_avg_holding_price: 195.4
-      key_institution_bought: true
-      key_institution_bought_value_usd: 300000000
-      key_institution_holders: ["段永平", "伯克希尔"]
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 3
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 866159891.02
+      total_tracked_value_usd: 65217435268.0
+      institutional_avg_holding_price: 253.79
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+      - 段永平
+      - 伯克希尔
     managers:
-      - name: "H&H International Investment, LLC"
-        display_name: "段永平"
-        status: "added"
-        change_value_usd: 180000000
-        current_value_usd: 7346105601
-        portfolio_weight_pct: 36.72
-        filing_date: "2026-05-19"
-        report_period: "2026-03-31"
-      - name: "Berkshire Hathaway Inc"
-        display_name: "伯克希尔"
-        status: "new_position"
-        change_value_usd: 120000000
-        current_value_usd: 120000000
-        portfolio_weight_pct: 0.04
-        filing_date: "2026-05-15"
-        report_period: "2026-03-31"
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 110600.0
+      current_shares: 110600.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 28069174.0
+      portfolio_weight_pct: 0.8768255161592082
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: reduced
+      previous_shares: 32358507.0
+      current_shares: 28945607.0
+      change_shares: -3412900.0
+      change_value_usd: -866159891.0152733
+      current_value_usd: 7346105601.0
+      portfolio_weight_pct: 36.723190281920346
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 227917808.0
+      current_shares: 227917808.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 57843260493.0
+      portfolio_weight_pct: 21.985634774005366
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
     ranking_history:
-      - date: "2026-05-29"
-        ranking: "机构买入榜"
-        rank: 1
-      - date: "2026-05-29"
-        ranking: "机构持有榜"
-        rank: 1
-  NVDA.US:
-    symbol: "NVDA.US"
-    slug: "nvda-us"
-    company_name: "NVIDIA Corp."
-    exchange: "NASDAQ"
-    sector: "Technology"
-    industry: "Semiconductors"
-    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 1
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 8
+  AXP.US:
+    symbol: AXP.US
+    slug: axp-us
+    company_name: American Express Co.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
     risk_tags: []
     market:
-      price: 121.8
-      price_change_pct: 3.1
-      market_cap_usd: 3000000000000
-      pe: 42.1
-      forward_pe: 28.5
-      ps: 19.4
+      price: 313.37
+      price_change_pct: -0.9796
+      market_cap_usd: 213820637442.91
+      pe: 19.29
+      forward_pe: null
+      ps: null
     metrics:
-      manager_count: 200
-      buyers_count: 15
-      sellers_count: 8
-      holders_count: 42
-      new_positions_count: 6
-      added_count: 9
-      reduced_count: 7
-      exits_count: 1
-      total_bought_value_usd: 790000000
-      total_sold_value_usd: 110000000
-      total_tracked_value_usd: 9800000000
-      institutional_avg_holding_price: 132.6
-      key_institution_bought: true
-      key_institution_bought_value_usd: 220000000
-      key_institution_holders: ["李录"]
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 45859204536.0
+      institutional_avg_holding_price: 302.48
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
     managers:
-      - name: "Himalaya Capital Management LLC"
-        display_name: "李录"
-        status: "new_position"
-        change_value_usd: 220000000
-        current_value_usd: 220000000
-        portfolio_weight_pct: 6.1
-        filing_date: "2026-05-15"
-        report_period: "2026-03-31"
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 151610700.0
+      current_shares: 151610700.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 45859204536.0
+      portfolio_weight_pct: 17.430617039247302
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
     ranking_history:
-      - date: "2026-05-29"
-        ranking: "机构买入榜"
-        rank: 2
-  BRK.B.US:
-    symbol: "BRK.B.US"
-    slug: "brk-b-us"
-    company_name: "Berkshire Hathaway Inc."
-    exchange: "NYSE"
-    sector: "Financials"
-    industry: "Insurance"
-    tags: ["S&P 500", "Russell 1000", "Russell 3000"]
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 2
+  KO.US:
+    symbol: KO.US
+    slug: ko-us
+    company_name: The Coca-Cola Co.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
     risk_tags: []
     market:
-      price: 417.3
-      price_change_pct: 0.4
-      market_cap_usd: 900000000000
-      pe: 21.3
-      forward_pe: 19.8
-      ps: 2.6
+      price: 78.66
+      price_change_pct: -0.443
+      market_cap_usd: 338433266999.88
+      pe: 24.7
+      forward_pe: null
+      ps: null
     metrics:
-      manager_count: 200
-      buyers_count: 5
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 30420000000.0
+      institutional_avg_holding_price: 76.05
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 400000000.0
+      current_shares: 400000000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 30420000000.0
+      portfolio_weight_pct: 11.562332484804854
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 3
+  BAC.US:
+    symbol: BAC.US
+    slug: bac-us
+    company_name: Bank of America Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 51.655
+      price_change_pct: 0.1066
+      market_cap_usd: 368295399392.96
+      pe: 12.17
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
       sellers_count: 2
-      holders_count: 54
-      new_positions_count: 1
-      added_count: 4
+      holders_count: 2
+      new_positions_count: 0
+      added_count: 0
       reduced_count: 2
       exits_count: 0
-      total_bought_value_usd: 120000000
-      total_sold_value_usd: 50000000
-      total_tracked_value_usd: 10800000000
-      institutional_avg_holding_price: 430.1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 541376988.75
+      total_tracked_value_usd: 25185329910.0
+      institutional_avg_holding_price: 48.75
       key_institution_bought: false
-      key_institution_bought_value_usd: 0
-      key_institution_holders: []
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+      - 伯克希尔
     managers:
-      - name: "Dodge & Cox"
-        display_name: "Dodge & Cox"
-        status: "unchanged"
-        change_value_usd: 0
-        current_value_usd: 650000000
-        portfolio_weight_pct: 2.4
-        filing_date: "2026-05-15"
-        report_period: "2026-03-31"
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: reduced
+      previous_shares: 10431387.0
+      current_shares: 2997987.0
+      change_shares: -7433400.0
+      change_value_usd: -362378250.0
+      current_value_usd: 146151866.0
+      portfolio_weight_pct: 4.565495420103257
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: reduced
+      previous_shares: 517295934.0
+      current_shares: 513624165.0
+      change_shares: -3671769.0
+      change_value_usd: -178998738.75
+      current_value_usd: 25039178044.0
+      portfolio_weight_pct: 9.51713680772366
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
     ranking_history:
-      - date: "2026-05-29"
-        ranking: "机构持有榜"
-        rank: 2
-  TSLA.US:
-    symbol: "TSLA.US"
-    slug: "tsla-us"
-    company_name: "Tesla Inc."
-    exchange: "NASDAQ"
-    sector: "Consumer Discretionary"
-    industry: "Automobiles"
-    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
-    risk_tags: ["high-volatility"]
-    market:
-      price: 176.0
-      price_change_pct: -2.4
-      market_cap_usd: 560000000000
-      pe: 65.2
-      forward_pe: 48.3
-      ps: 6.2
-    metrics:
-      manager_count: 200
-      buyers_count: 9
-      sellers_count: 18
-      holders_count: 25
-      new_positions_count: 2
-      added_count: 7
-      reduced_count: 14
-      exits_count: 4
-      total_bought_value_usd: 320000000
-      total_sold_value_usd: 680000000
-      total_tracked_value_usd: 4200000000
-      institutional_avg_holding_price: 190.0
-      key_institution_bought: false
-      key_institution_bought_value_usd: 0
-      key_institution_holders: []
-    managers:
-      - name: "ARK Investment Management LLC"
-        display_name: "木头姐"
-        status: "reduced"
-        change_value_usd: -180000000
-        current_value_usd: 1052546690
-        portfolio_weight_pct: 8.18
-        filing_date: "2026-05-12"
-        report_period: "2026-03-31"
-    ranking_history:
-      - date: "2026-05-29"
-        ranking: "机构卖出榜"
-        rank: 1
-  MSFT.US:
-    symbol: "MSFT.US"
-    slug: "msft-us"
-    company_name: "Microsoft Corp."
-    exchange: "NASDAQ"
-    sector: "Technology"
-    industry: "Software"
-    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 4
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 11
+  OXY.US:
+    symbol: OXY.US
+    slug: oxy-us
+    company_name: Occidental Petroleum Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
     risk_tags: []
     market:
-      price: 438.5
-      price_change_pct: 0.8
-      market_cap_usd: 3300000000000
-      pe: 34.8
-      forward_pe: 27.4
-      ps: 11.8
+      price: 59.015
+      price_change_pct: 4.2115
+      market_cap_usd: 58703340053.02
+      pe: 14.65
+      forward_pe: null
+      ps: null
     metrics:
-      manager_count: 200
-      buyers_count: 7
-      sellers_count: 5
-      holders_count: 47
-      new_positions_count: 2
-      added_count: 5
-      reduced_count: 5
-      exits_count: 0
-      total_bought_value_usd: 240000000
-      total_sold_value_usd: 90000000
-      total_tracked_value_usd: 9700000000
-      institutional_avg_holding_price: 452.0
-      key_institution_bought: false
-      key_institution_bought_value_usd: 0
-      key_institution_holders: []
-    managers:
-      - name: "Capital International Investors"
-        display_name: "Capital International"
-        status: "added"
-        change_value_usd: 95000000
-        current_value_usd: 1500000000
-        portfolio_weight_pct: 1.8
-        filing_date: "2026-05-15"
-        report_period: "2026-03-31"
-    ranking_history:
-      - date: "2026-05-29"
-        ranking: "机构持有榜"
-        rank: 3
-  META.US:
-    symbol: "META.US"
-    slug: "meta-us"
-    company_name: "Meta Platforms Inc."
-    exchange: "NASDAQ"
-    sector: "Communication Services"
-    industry: "Internet Content & Information"
-    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
-    risk_tags: ["fully-exited-by-tracked-managers"]
-    market:
-      price: 485.4
-      price_change_pct: -0.6
-      market_cap_usd: 1220000000000
-      pe: 24.6
-      forward_pe: 20.9
-      ps: 8.4
-    metrics:
-      manager_count: 200
+      manager_count: 3
       buyers_count: 0
-      sellers_count: 12
+      sellers_count: 1
+      holders_count: 3
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 189221500.0
+      total_tracked_value_usd: 17983513015.0
+      institutional_avg_holding_price: 65.0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+      - 段永平
+      - 伯克希尔
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 1466500.0
+      current_shares: 1466500.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 95322500.0
+      portfolio_weight_pct: 2.9776864920957817
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: reduced
+      previous_shares: 13172600.0
+      current_shares: 10261500.0
+      change_shares: -2911100.0
+      change_value_usd: -189221500.0
+      current_value_usd: 666997500.0
+      portfolio_weight_pct: 3.334321263599974
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 264941431.0
+      current_shares: 264941431.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 17221193015.0
+      portfolio_weight_pct: 6.545600244064069
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 5
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 18
+  CVX.US:
+    symbol: CVX.US
+    slug: cvx-us
+    company_name: Chevron Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 186.285
+      price_change_pct: 2.0963
+      market_cap_usd: 368365497625.62
+      pe: 33.46
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 9471986691.18
+      total_tracked_value_usd: 17457364606.0
+      institutional_avg_holding_price: 206.9
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: reduced
+      previous_shares: 130156362.0
+      current_shares: 84375856.0
+      change_shares: -45780506.0
+      change_value_usd: -9471986691.18297
+      current_value_usd: 17457364606.0
+      portfolio_weight_pct: 6.635366662821706
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 6
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 1
+  GOOGL.US:
+    symbol: GOOGL.US
+    slug: googl-us
+    company_name: Alphabet Inc. Class A
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 377.23
+      price_change_pct: -0.8177
+      market_cap_usd: 4570435951197.62
+      pe: 28.53
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 2
+      sellers_count: 0
+      holders_count: 2
+      new_positions_count: 0
+      added_count: 2
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 10494690839.44
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 16331423261.0
+      institutional_avg_holding_price: 287.56
+      key_institution_bought: true
+      key_institution_bought_value_usd: 10494690839.44
+      key_institution_holders:
+      - 李录
+      - 伯克希尔
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: added
+      previous_shares: 2451300.0
+      current_shares: 2543300.0
+      change_shares: 92000.0
+      change_value_usd: 26455520.00019439
+      current_value_usd: 731351348.0
+      portfolio_weight_pct: 22.845970572694185
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: added
+      previous_shares: 17846142.0
+      current_shares: 54249798.0
+      change_shares: 36403656.0
+      change_value_usd: 10468235319.436918
+      current_value_usd: 15600071913.0
+      portfolio_weight_pct: 5.929428607658505
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 1
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 7
+  CB.US:
+    symbol: CB.US
+    slug: cb-us
+    company_name: Chubb Ltd.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 310.075
+      price_change_pct: -0.5309
+      market_cap_usd: 120283176072.72
+      pe: 10.65
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 11162836215.0
+      institutional_avg_holding_price: 325.93
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 34249183.0
+      current_shares: 34249183.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 11162836215.0
+      portfolio_weight_pct: 4.242880466510539
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 8
+  MCO.US:
+    symbol: MCO.US
+    slug: mco-us
+    company_name: Moody's Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 461.027
+      price_change_pct: 1.7158
+      market_cap_usd: 80530466843.61
+      pe: 32.28
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 2
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 10813573923.0
+      institutional_avg_holding_price: 436.25
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+      - 伯克希尔
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 117784.0
+      current_shares: 117784.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 51383270.0
+      portfolio_weight_pct: 1.6051117941588864
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 24669778.0
+      current_shares: 24669778.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 10762190653.0
+      portfolio_weight_pct: 4.090599164853553
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 9
+  KHC.US:
+    symbol: KHC.US
+    slug: khc-us
+    company_name: The Kraft Heinz Co.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 23.605
+      price_change_pct: -1.6868
+      market_cap_usd: 27940071576.74
+      pe: -4.85
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 7323527057.0
+      institutional_avg_holding_price: 22.49
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 325634818.0
+      current_shares: 325634818.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 7323527057.0
+      portfolio_weight_pct: 2.783598119477265
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 10
+  BRK.B.US:
+    symbol: BRK.B.US
+    slug: brk-b-us
+    company_name: Berkshire Hathaway Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 468.764
+      price_change_pct: -1.2047
+      market_cap_usd: 1010968764482.88
+      pe: 13.95
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 2
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 944790720.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 4813825164.0
+      institutional_avg_holding_price: 479.2
+      key_institution_bought: true
+      key_institution_bought_value_usd: 944790720.0
+      key_institution_holders:
+      - 李录
+      - 段永平
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 897749.0
+      current_shares: 897749.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 430201321.0
+      portfolio_weight_pct: 13.438638961666568
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 7176196.0
+      current_shares: 9147796.0
+      change_shares: 1971600.0
+      change_value_usd: 944790720.0
+      current_value_usd: 4383623843.0
+      portfolio_weight_pct: 21.913740593238707
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 3
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 11
+  DVA.US:
+    symbol: DVA.US
+    slug: dva-us
+    company_name: DaVita Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 190.66
+      price_change_pct: -1.9037
+      market_cap_usd: 12736088000.0
+      pe: 16.3
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 254891791.22
+      total_tracked_value_usd: 4626158909.0
+      institutional_avg_holding_price: 153.69
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: reduced
+      previous_shares: 31759065.0
+      current_shares: 30100585.0
+      change_shares: -1658480.0
+      change_value_usd: -254891791.2192843
+      current_value_usd: 4626158909.0
+      portfolio_weight_pct: 1.758355931406972
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 12
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 17
+  KR.US:
+    symbol: KR.US
+    slug: kr-us
+    company_name: The Kroger Co.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 62.07
+      price_change_pct: -0.1287
+      market_cap_usd: 38026189773.06
+      pe: 37.69
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 3618000000.0
+      institutional_avg_holding_price: 72.36
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 50000000.0
+      current_shares: 50000000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 3618000000.0
+      portfolio_weight_pct: 1.3751649878377374
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 13
+  SIRI.US:
+    symbol: SIRI.US
+    slug: siri-us
+    company_name: Sirius XM Holdings Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    risk_tags: []
+    market:
+      price: 28.935
+      price_change_pct: -1.9817
+      market_cap_usd: 9740097848.16
+      pe: 11.51
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 2880548260.0
+      institutional_avg_holding_price: 23.08
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 124807117.0
+      current_shares: 124807117.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 2880548260.0
+      portfolio_weight_pct: 1.0948670848338626
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 14
+  GOOG.US:
+    symbol: GOOG.US
+    slug: goog-us
+    company_name: Alphabet Inc. Class C
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 373.29
+      price_change_pct: -0.8342
+      market_cap_usd: 4522335090264.37
+      pe: 28.23
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 1
+      holders_count: 3
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 530863116.02
+      total_sold_value_usd: 26391120.0
+      total_tracked_value_usd: 2794737853.0
+      institutional_avg_holding_price: 286.86
+      key_institution_bought: true
+      key_institution_bought_value_usd: 530863116.02
+      key_institution_holders:
+      - 李录
+      - 段永平
+      - 伯克希尔
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: reduced
+      previous_shares: 2543300.0
+      current_shares: 2451300.0
+      change_shares: -92000.0
+      change_value_usd: -26391120.000944313
+      current_value_usd: 703179918.0
+      portfolio_weight_pct: 21.965950781207162
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 1855400.0
+      current_shares: 3706000.0
+      change_shares: 1850600.0
+      change_value_usd: 530863116.0189951
+      current_value_usd: 1063103160.0
+      portfolio_weight_pct: 5.314453909929686
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 3585215.0
+      current_shares: 3585215.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 1028454775.0
+      portfolio_weight_pct: 0.39090519573093924
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 6
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 15
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 24
+  DAL.US:
+    symbol: DAL.US
+    slug: dal-us
+    company_name: Delta Air Lines Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 81.125
+      price_change_pct: -1.6428
+      market_cap_usd: 53298647336.0
+      pe: 11.91
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 2646532635.0
+      institutional_avg_holding_price: 66.48
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 39809456.0
+      current_shares: 39809456.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 2646532635.0
+      portfolio_weight_pct: 1.0059201268164593
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 16
+  PDD.US:
+    symbol: PDD.US
+    slug: pdd-us
+    company_name: PDD Holdings Inc. ADR
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    risk_tags: []
+    market:
+      price: 87.43
+      price_change_pct: 3.541
+      market_cap_usd: 124447552672.66
+      pe: 9.17
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 2
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 839061288.03
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 2488726121.0
+      institutional_avg_holding_price: 102.18
+      key_institution_bought: true
+      key_institution_bought_value_usd: 839061288.03
+      key_institution_holders:
+      - 李录
+      - 段永平
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 4608000.0
+      current_shares: 4608000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 470845440.0
+      portfolio_weight_pct: 14.70828090485347
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 11536694.0
+      current_shares: 19748294.0
+      change_shares: 8211600.0
+      change_value_usd: 839061288.0269716
+      current_value_usd: 2017880681.0
+      portfolio_weight_pct: 10.087387826889753
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 5
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 17
+  NVDA.US:
+    symbol: NVDA.US
+    slug: nvda-us
+    company_name: NVIDIA Corp.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    risk_tags: []
+    market:
+      price: 222.72
+      price_change_pct: 5.4845
+      market_cap_usd: 5412040110000.0
+      pe: 33.91
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 1152204120.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 2414354360.0
+      institutional_avg_holding_price: 174.4
+      key_institution_bought: true
+      key_institution_bought_value_usd: 1152204120.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 7237100.0
+      current_shares: 13843775.0
+      change_shares: 6606675.0
+      change_value_usd: 1152204120.0
+      current_value_usd: 2414354360.0
+      portfolio_weight_pct: 12.069360200620402
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 2
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 18
+  VRSN.US:
+    symbol: VRSN.US
+    slug: vrsn-us
+    company_name: VeriSign Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 294.58
+      price_change_pct: 3.2238
+      market_cap_usd: 26846331615.84
+      pe: 31.93
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 2232726597.0
+      institutional_avg_holding_price: 248.36
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 8989880.0
+      current_shares: 8989880.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 2232726597.0
+      portfolio_weight_pct: 0.8486366621361242
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 19
+  COF.US:
+    symbol: COF.US
+    slug: cof-us
+    company_name: Capital One Financial Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 185.97
+      price_change_pct: -1.0429
+      market_cap_usd: 115702897143.19
+      pe: 39.39
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 1304374500.0
+      institutional_avg_holding_price: 182.43
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 7150000.0
+      current_shares: 7150000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 1304374500.0
+      portfolio_weight_pct: 0.4957794757955652
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 20
+  NYT.US:
+    symbol: NYT.US
+    slug: nyt-us
+    company_name: The New York Times Co.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 75.39
+      price_change_pct: 0.2393
+      market_cap_usd: 12202828877.61
+      pe: 31.92
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 844064630.73
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 1268219376.0
+      institutional_avg_holding_price: 83.73
+      key_institution_bought: true
+      key_institution_bought_value_usd: 844064630.73
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: added
+      previous_shares: 5065744.0
+      current_shares: 15146535.0
+      change_shares: 10080791.0
+      change_value_usd: 844064630.729498
+      current_value_usd: 1268219376.0
+      portfolio_weight_pct: 0.48203728103168125
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 4
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 21
+  TSLA.US:
+    symbol: TSLA.US
+    slug: tsla-us
+    company_name: Tesla Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    risk_tags: []
+    market:
+      price: 419.935
+      price_change_pct: -3.6382
+      market_cap_usd: 1576596545187.74
+      pe: 408.23
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 1267258575.0
+      institutional_avg_holding_price: 371.75
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 3408900.0
+      current_shares: 3408900.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 1267258575.0
+      portfolio_weight_pct: 6.3350270624731015
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 22
+  ALLY.US:
+    symbol: ALLY.US
+    slug: ally-us
+    company_name: Ally Financial Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 42.18
+      price_change_pct: -1.4716
+      market_cap_usd: 12966469440.0
+      pe: 10.08
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 1137670000.0
+      institutional_avg_holding_price: 39.23
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 29000000.0
+      current_shares: 29000000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 1137670000.0
+      portfolio_weight_pct: 0.4324167915183413
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 23
+  LLYVK.US:
+    symbol: LLYVK.US
+    slug: llyvk-us
+    company_name: Liberty Live Group Series C
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 100.56
+      price_change_pct: 1.4733
+      market_cap_usd: 9244648634.64
+      pe: -26.29
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 31105048.99
+      total_tracked_value_usd: 996356028.0
+      institutional_avg_holding_price: 94.11
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: reduced
+      previous_shares: 10917661.0
+      current_shares: 10587143.0
+      change_shares: -330518.0
+      change_value_usd: -31105048.988429077
+      current_value_usd: 996356028.0
+      portfolio_weight_pct: 0.3787047885922267
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 24
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 23
+  LEN.US:
+    symbol: LEN.US
+    slug: len-us
+    company_name: Lennar Corp. Class A
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 90.07
+      price_change_pct: 0.323
+      market_cap_usd: 22181624537.76
+      pe: 12.53
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 264748413.2
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 877052911.0
+      institutional_avg_holding_price: 86.84
+      key_institution_bought: true
+      key_institution_bought_value_usd: 264748413.2
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: added
+      previous_shares: 7050950.0
+      current_shares: 10099642.0
+      change_shares: 3048692.0
+      change_value_usd: 264748413.19547883
+      current_value_usd: 877052911.0
+      portfolio_weight_pct: 0.3333588876971717
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 7
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 25
+  NUE.US:
+    symbol: NUE.US
+    slug: nue-us
+    company_name: Nucor Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 250.925
+      price_change_pct: 0.37
+      market_cap_usd: 57145897878.75
+      pe: 24.62
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 422863973.72
+      total_tracked_value_usd: 660686383.0
+      institutional_avg_holding_price: 169.1
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: reduced
+      previous_shares: 6407749.0
+      current_shares: 3907075.0
+      change_shares: -2500674.0
+      change_value_usd: -422863973.7200187
+      current_value_usd: 660686383.0
+      portfolio_weight_pct: 0.25112017187472463
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 26
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 13
+  LLYVA.US:
+    symbol: LLYVA.US
+    slug: llyva-us
+    company_name: Liberty Live Group Series A
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 97.77
+      price_change_pct: 1.5054
+      market_cap_usd: 8988159278.13
+      pe: -25.56
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 456970925.0
+      institutional_avg_holding_price: 91.64
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 4986588.0
+      current_shares: 4986588.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 456970925.0
+      portfolio_weight_pct: 0.17368999903809415
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 27
+  LPX.US:
+    symbol: LPX.US
+    slug: lpx-us
+    company_name: Louisiana-Pacific Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 73.26
+      price_change_pct: -4.0848
+      market_cap_usd: 5118301108.8
+      pe: 62.42
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 412113691.0
+      institutional_avg_holding_price: 72.75
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 5664793.0
+      current_shares: 5664793.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 412113691.0
+      portfolio_weight_pct: 0.15664022080480378
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 28
+  MSFT.US:
+    symbol: MSFT.US
+    slug: msft-us
+    company_name: Microsoft Corp.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    risk_tags: []
+    market:
+      price: 458.925
+      price_change_pct: 1.929
+      market_cap_usd: 3407942989154.08
+      pe: 27.22
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 58116690.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 376092720.0
+      institutional_avg_holding_price: 370.17
+      key_institution_bought: true
+      key_institution_bought_value_usd: 58116690.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 859000.0
+      current_shares: 1016000.0
+      change_shares: 157000.0
+      change_value_usd: 58116690.0
+      current_value_usd: 376092720.0
+      portfolio_weight_pct: 1.8800879364332717
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 9
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 29
+  EWBC.US:
+    symbol: EWBC.US
+    slug: ewbc-us
+    company_name: East West Bancorp Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 120.56
+      price_change_pct: -1.6158
+      market_cap_usd: 16516269346.72
+      pe: 11.86
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 296403233.0
+      institutional_avg_holding_price: 106.76
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 2776351.0
+      current_shares: 2776351.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 296403233.0
+      portfolio_weight_pct: 9.259051148654502
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 30
+  UNH.US:
+    symbol: UNH.US
+    slug: unh-us
+    company_name: UnitedHealth Group Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 378.51
+      price_change_pct: -0.4733
+      market_cap_usd: 343823471354.4
+      pe: 28.55
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 1363655622.76
+      total_tracked_value_usd: 162732826.0
+      institutional_avg_holding_price: 270.59
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 601400.0
+      current_shares: 601400.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 162732826.0
+      portfolio_weight_pct: 0.8135015828657749
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 5039564.0
+      current_shares: 0.0
+      change_shares: -5039564.0
+      change_value_usd: -1363655622.76
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 3
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 31
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 5
+  DIS.US:
+    symbol: DIS.US
+    slug: dis-us
+    company_name: The Walt Disney Co.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 102.17
+      price_change_pct: 0.3339
+      market_cap_usd: 180996183176.67
+      pe: 16.13
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 77084724.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 145707284.0
+      institutional_avg_holding_price: 96.38
+      key_institution_bought: true
+      key_institution_bought_value_usd: 77084724.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 712000.0
+      current_shares: 1511800.0
+      change_shares: 799800.0
+      change_value_usd: 77084724.0
+      current_value_usd: 145707284.0
+      portfolio_weight_pct: 0.7283908789802065
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 8
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 32
+  STZ.US:
+    symbol: STZ.US
+    slug: stz-us
+    company_name: Constellation Brands Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 135.68
+      price_change_pct: -2.2619
+      market_cap_usd: 23528380328.96
+      pe: 13.95
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 1855066500.0
+      total_tracked_value_usd: 94933500.0
+      institutional_avg_holding_price: 150.0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: reduced
+      previous_shares: 13000000.0
+      current_shares: 632890.0
+      change_shares: -12367110.0
+      change_value_usd: -1855066500.0
+      current_value_usd: 94933500.0
+      portfolio_weight_pct: 0.03608325742755496
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 33
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 4
+  CROX.US:
+    symbol: CROX.US
+    slug: crox-us
+    company_name: Crocs Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 115.99
+      price_change_pct: -2.2584
+      market_cap_usd: 5763502271.52
+      pe: -55.55
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 21496700.72
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 73646461.0
+      institutional_avg_holding_price: 83.02
+      key_institution_bought: true
+      key_institution_bought_value_usd: 21496700.72
+      key_institution_holders:
+      - 李录
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: added
+      previous_shares: 628159.0
+      current_shares: 887093.0
+      change_shares: 258934.0
+      change_value_usd: 21496700.72086467
+      current_value_usd: 73646461.0
+      portfolio_weight_pct: 2.300569877105183
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 11
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 34
+  NVR.US:
+    symbol: NVR.US
+    slug: nvr-us
+    company_name: NVR Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 6145.14
+      price_change_pct: 0.6608
+      market_cap_usd: 16587527240.88
+      pe: 13.39
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 73226191.0
+      institutional_avg_holding_price: 6589.83
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 11112.0
+      current_shares: 11112.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 73226191.0
+      portfolio_weight_pct: 0.0278325301425978
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 35
+  CRDO.US:
+    symbol: CRDO.US
+    slug: crdo-us
+    company_name: Credo Technology Group Holding Ltd.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 232.55
+      price_change_pct: -1.4744
+      market_cap_usd: 42915967539.8
+      pe: 126.31
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 57251313.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 70515144.0
+      institutional_avg_holding_price: 93.87
+      key_institution_bought: true
+      key_institution_bought_value_usd: 57251313.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: added
+      previous_shares: 141300.0
+      current_shares: 751200.0
+      change_shares: 609900.0
+      change_value_usd: 57251313.0
+      current_value_usd: 70515144.0
+      portfolio_weight_pct: 0.3525052853196813
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 10
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 36
+  TME.US:
+    symbol: TME.US
+    slug: tme-us
+    company_name: Tencent Music Entertainment Group ADR
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 9.53
+      price_change_pct: 3.3623
+      market_cap_usd: 14768804445.64
+      pe: 11.75
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 61162958.0
+      institutional_avg_holding_price: 9.28
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 6590836.0
+      current_shares: 6590836.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 61162958.0
+      portfolio_weight_pct: 1.9106099174195141
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 37
+  M.US:
+    symbol: M.US
+    slug: m-us
+    company_name: Macy's Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 21.99
+      price_change_pct: 1.057
+      market_cap_usd: 5800115363.01
+      pe: 9.03
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 54963842.0
+      institutional_avg_holding_price: 18.09
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 3038355.0
+      current_shares: 3038355.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 54963842.0
+      portfolio_weight_pct: 0.020891197102113134
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 38
+  SPGI.US:
+    symbol: SPGI.US
+    slug: spgi-us
+    company_name: S&P Global Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 427.975
+      price_change_pct: 0.9375
+      market_cap_usd: 129763811498.79
+      pe: 27.17
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 51663072.0
+      institutional_avg_holding_price: 425.34
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 121463.0
+      current_shares: 121463.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 51663072.0
+      portfolio_weight_pct: 1.613852255601477
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 39
+  HRB.US:
+    symbol: HRB.US
+    slug: hrb-us
+    company_name: H&R Block Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 39.652
+      price_change_pct: 3.019
+      market_cap_usd: 5026042207.55
+      pe: 6.83
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 51637996.0
+      institutional_avg_holding_price: 31.74
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 1626906.0
+      current_shares: 1626906.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 51637996.0
+      portfolio_weight_pct: 1.6130689309249755
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 40
+  TSM.US:
+    symbol: TSM.US
+    slug: tsm-us
+    company_name: Taiwan Semiconductor Manufacturing Co. ADR
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 445.27
+      price_change_pct: 6.4094
+      market_cap_usd: 2309640601680.0
+      pe: 37.18
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 362682532.8
+      total_tracked_value_usd: 51098040.0
+      institutional_avg_holding_price: 337.95
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: reduced
+      previous_shares: 1224384.0
+      current_shares: 151200.0
+      change_shares: -1073184.0
+      change_value_usd: -362682532.8
+      current_value_usd: 51098040.0
+      portfolio_weight_pct: 0.2554391602671405
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 41
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 14
+  LEN.B.US:
+    symbol: LEN.B.US
+    slug: len-b-us
+    company_name: Lennar Corp. Class B
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 88.12
+      price_change_pct: 0.0454
+      market_cap_usd: 21703805843.52
+      pe: 12.26
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 1
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 1
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 4771538.67
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 19995576.0
+      institutional_avg_holding_price: 84.12
+      key_institution_bought: true
+      key_institution_bought_value_usd: 4771538.67
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: added
+      previous_shares: 180980.0
+      current_shares: 237703.0
+      change_shares: 56723.0
+      change_value_usd: 4771538.674093301
+      current_value_usd: 19995576.0
+      portfolio_weight_pct: 0.007600114988073121
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_buying
+      rank: 12
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 42
+  CRCL.US:
+    symbol: CRCL.US
+    slug: crcl-us
+    company_name: Circle Internet Group Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 107.77
+      price_change_pct: -4.6283
+      market_cap_usd: 26659171692.8
+      pe: -1870.16
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 19082000.0
+      institutional_avg_holding_price: 95.41
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 200000.0
+      current_shares: 200000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 19082000.0
+      portfolio_weight_pct: 0.09539093977415912
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 43
+  JEF.US:
+    symbol: JEF.US
+    slug: jef-us
+    company_name: Jefferies Financial Group Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 52.92
+      price_change_pct: 0.3794
+      market_cap_usd: 10818557686.44
+      pe: 16.42
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 17892939.0
+      institutional_avg_holding_price: 41.27
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 伯克希尔
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: unchanged
+      previous_shares: 433558.0
+      current_shares: 433558.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 17892939.0
+      portfolio_weight_pct: 0.006800924058130563
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 44
+  MSCI.US:
+    symbol: MSCI.US
+    slug: msci-us
+    company_name: MSCI Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 636.87
+      price_change_pct: 0.8695
+      market_cap_usd: 46346300000.0
+      pe: 35.12
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 10208310.0
+      institutional_avg_holding_price: 539.01
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 李录
+    managers:
+    - cik: 0001709323
+      name: Himalaya Capital Management LLC
+      display_name: 李录
+      status: unchanged
+      previous_shares: 18939.0
+      current_shares: 18939.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 10208310.0
+      portfolio_weight_pct: 0.318887427355832
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 45
+  PLTR.US:
+    symbol: PLTR.US
+    slug: pltr-us
+    company_name: Palantir Technologies Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 162.515
+      price_change_pct: 3.8169
+      market_cap_usd: 389419357543.88
+      pe: 170.68
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 8776800.0
+      institutional_avg_holding_price: 146.28
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 60000.0
+      current_shares: 60000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 8776800.0
+      portfolio_weight_pct: 0.043875233215063404
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 46
+  SNPS.US:
+    symbol: SNPS.US
+    slug: snps-us
+    company_name: Synopsys Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 492.3
+      price_change_pct: 3.507
+      market_cap_usd: 94246601663.73
+      pe: 121.88
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 3964800.0
+      institutional_avg_holding_price: 396.48
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 10000.0
+      current_shares: 10000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 3964800.0
+      portfolio_weight_pct: 0.019820039724168646
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 47
+  CRWD.US:
+    symbol: CRWD.US
+    slug: crwd-us
+    company_name: CrowdStrike Holdings Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 763.18
+      price_change_pct: 4.4022
+      market_cap_usd: 194402267913.75
+      pe: -1196.31
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 3904100.0
+      institutional_avg_holding_price: 390.41
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 10000.0
+      current_shares: 10000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 3904100.0
+      portfolio_weight_pct: 0.019516600354904868
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 48
+  SNOW.US:
+    symbol: SNOW.US
+    slug: snow-us
+    company_name: Snowflake Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 280.95
+      price_change_pct: 9.9393
+      market_cap_usd: 97141700000.0
+      pe: -81.15
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 1508200.0
+      institutional_avg_holding_price: 150.82
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 10000.0
+      current_shares: 10000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 1508200.0
+      portfolio_weight_pct: 0.007539493520982434
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 49
+  TEM.US:
+    symbol: TEM.US
+    slug: tem-us
+    company_name: Tempus AI Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 54.22
+      price_change_pct: 7.4302
+      market_cap_usd: 9721936357.8
+      pe: -32.1
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 1
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 4069800.0
+      total_tracked_value_usd: 904400.0
+      institutional_avg_holding_price: 45.22
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: reduced
+      previous_shares: 110000.0
+      current_shares: 20000.0
+      change_shares: -90000.0
+      change_value_usd: -4069800.0
+      current_value_usd: 904400.0
+      portfolio_weight_pct: 0.004521096631996097
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 50
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 30
+  INOD.US:
+    symbol: INOD.US
+    slug: inod-us
+    company_name: Innodata Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 114.98
+      price_change_pct: 9.5256
+      market_cap_usd: 3756182553.95
+      pe: 95.6
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 0
+      holders_count: 1
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 0
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 0.0
+      total_tracked_value_usd: 386200.0
+      institutional_avg_holding_price: 38.62
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders:
+      - 段永平
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: unchanged
+      previous_shares: 10000.0
+      current_shares: 10000.0
+      change_shares: 0.0
+      change_value_usd: 0.0
+      current_value_usd: 386200.0
+      portfolio_weight_pct: 0.0019306142406865243
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 51
+  ALLE.US:
+    symbol: ALLE.US
+    slug: alle-us
+    company_name: Allegion plc
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 129.141
+      price_change_pct: -0.7142
+      market_cap_usd: 11097843025.4
+      pe: 17.51
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
       holders_count: 0
       new_positions_count: 0
       added_count: 0
-      reduced_count: 6
-      exits_count: 6
-      total_bought_value_usd: 0
-      total_sold_value_usd: 540000000
-      total_tracked_value_usd: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 100747155.75
+      total_tracked_value_usd: 0.0
       institutional_avg_holding_price: 0
       key_institution_bought: false
-      key_institution_bought_value_usd: 0
+      key_institution_bought_value_usd: 0.0
       key_institution_holders: []
     managers:
-      - name: "Sample Growth Fund"
-        display_name: "Sample Growth"
-        status: "exit"
-        change_value_usd: -210000000
-        current_value_usd: 0
-        portfolio_weight_pct: 0
-        filing_date: "2026-05-16"
-        report_period: "2026-03-31"
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 780133.0
+      current_shares: 0.0
+      change_shares: -780133.0
+      change_value_usd: -100747155.75299999
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
     ranking_history:
-      - date: "2026-05-29"
-        ranking: "机构综合榜"
-        rank: 6
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 13
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 52
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 21
+  AMZN.US:
+    symbol: AMZN.US
+    slug: amzn-us
+    company_name: Amazon.com Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    - Mag7
+    risk_tags: []
+    market:
+      price: 261.47
+      price_change_pct: -3.3883
+      market_cap_usd: 2813414401891.44
+      pe: 30.99
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 595105720.0
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 2276000.0
+      current_shares: 0.0
+      change_shares: -2276000.0
+      change_value_usd: -595105720.0000001
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 6
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 53
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 9
+  AON.US:
+    symbol: AON.US
+    slug: aon-us
+    company_name: Aon plc
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 319.02
+      price_change_pct: 0.9365
+      market_cap_usd: 68135318269.98
+      pe: 17.28
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 1149427464.9
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 3602995.0
+      current_shares: 0.0
+      change_shares: -3602995.0
+      change_value_usd: -1149427464.8999999
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 4
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 54
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 6
+  ASML.US:
+    symbol: ASML.US
+    slug: asml-us
+    company_name: ASML Holding NV ADR
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    risk_tags: []
+    market:
+      price: 1639.945
+      price_change_pct: 1.6856
+      market_cap_usd: 632277679432.5
+      pe: 54.1
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 16235455.5
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: exited
+      previous_shares: 9900.0
+      current_shares: 0.0
+      change_shares: -9900.0
+      change_value_usd: -16235455.5
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 17
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 55
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 27
+  BABA.US:
+    symbol: BABA.US
+    slug: baba-us
+    company_name: Alibaba Group Holding Ltd. ADR
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 125.84
+      price_change_pct: 1.3041
+      market_cap_usd: 301896514164.96
+      pe: 20.09
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 322213320.0
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: exited
+      previous_shares: 2560500.0
+      current_shares: 0.0
+      change_shares: -2560500.0
+      change_value_usd: -322213320.0
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 9
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 56
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 15
+  BATRA.US:
+    symbol: BATRA.US
+    slug: batra-us
+    company_name: Atlanta Braves Holdings Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 53.53
+      price_change_pct: -0.1306
+      market_cap_usd: 3433618738.13
+      pe: -152.88
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 6178860.84
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 115428.0
+      current_shares: 0.0
+      change_shares: -115428.0
+      change_value_usd: -6178860.84
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 19
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 57
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 29
+  CHTR.US:
+    symbol: CHTR.US
+    slug: chtr-us
+    company_name: Charter Communications Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - Nasdaq 100
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 142.885
+      price_change_pct: -0.8087
+      market_cap_usd: 17572645569.25
+      pe: 3.56
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 151584124.57
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 1060882.0
+      current_shares: 0.0
+      change_shares: -1060882.0
+      change_value_usd: -151584124.57
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 12
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 58
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 20
+  CRWV.US:
+    symbol: CRWV.US
+    slug: crwv-us
+    company_name: CoreWeave Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 126.22
+      price_change_pct: 15.2378
+      market_cap_usd: 66373383672.58
+      pe: -41.67
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 37853378.0
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001759760
+      name: H&H International Investment, LLC
+      display_name: 段永平
+      status: exited
+      previous_shares: 299900.0
+      current_shares: 0.0
+      change_shares: -299900.0
+      change_value_usd: -37853378.0
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-19'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 14
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 59
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 22
+  DEO.US:
+    symbol: DEO.US
+    slug: deo-us
+    company_name: Diageo plc ADR
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 80.15
+      price_change_pct: -2.8014
+      market_cap_usd: 44550431617.98
+      pe: 18.46
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 18254162.5
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 227750.0
+      current_shares: 0.0
+      change_shares: -227750.0
+      change_value_usd: -18254162.5
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 16
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 60
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 26
+  DPZ.US:
+    symbol: DPZ.US
+    slug: dpz-us
+    company_name: Domino's Pizza Inc.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 312.49
+      price_change_pct: 0.615
+      market_cap_usd: 10507694993.0
+      pe: 17.75
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 1046841500.0
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 3350000.0
+      current_shares: 0.0
+      change_shares: -3350000.0
+      change_value_usd: -1046841500.0
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 5
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 61
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 7
+  FWONK.US:
+    symbol: FWONK.US
+    slug: fwonk-us
+    company_name: Liberty Media Formula One Series C
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 90.86
+      price_change_pct: 0.0771
+      market_cap_usd: 22719927973.82
+      pe: 102.34
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 274265907.3
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 3018555.0
+      current_shares: 0.0
+      change_shares: -3018555.0
+      change_value_usd: -274265907.3
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 10
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 62
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 16
+  HEI.US:
+    symbol: HEI.US
+    slug: hei-us
+    company_name: HEICO Corp.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 337.65
+      price_change_pct: -3.0243
+      market_cap_usd: 47155954879.05
+      pe: 59.72
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 437125741.8
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 1294612.0
+      current_shares: 0.0
+      change_shares: -1294612.0
+      change_value_usd: -437125741.79999995
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 8
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 63
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 12
+  LAMR.US:
+    symbol: LAMR.US
+    slug: lamr-us
+    company_name: Lamar Advertising Co.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 151.65
+      price_change_pct: -0.5313
+      market_cap_usd: 15388699066.65
+      pe: 28.01
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 182345476.5
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 1202410.0
+      current_shares: 0.0
+      change_shares: -1202410.0
+      change_value_usd: -182345476.5
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 11
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 64
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 19
+  LILA.US:
+    symbol: LILA.US
+    slug: lila-us
+    company_name: Liberty Latin America Ltd. Class A
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 8.18
+      price_change_pct: 1.3631
+      market_cap_usd: 1636858020.0
+      pe: -3.29
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 19604719.7
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 2396665.0
+      current_shares: 0.0
+      change_shares: -2396665.0
+      change_value_usd: -19604719.7
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 15
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 65
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 25
+  LILAK.US:
+    symbol: LILAK.US
+    slug: lilak-us
+    company_name: Liberty Latin America Ltd. Class C
+    exchange: NASD
+    sector: null
+    industry: null
+    tags: []
+    risk_tags: []
+    market:
+      price: 8.27
+      price_change_pct: 0.8537
+      market_cap_usd: 1654827000.0
+      pe: -3.33
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 10618845.4
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 1284020.0
+      current_shares: 0.0
+      change_shares: -1284020.0
+      change_value_usd: -10618845.4
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 18
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 66
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 28
+  MA.US:
+    symbol: MA.US
+    slug: ma-us
+    company_name: Mastercard Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 492.329
+      price_change_pct: -0.3342
+      market_cap_usd: 435013513956.37
+      pe: 27.94
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 1962742423.19
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 3986648.0
+      current_shares: 0.0
+      change_shares: -3986648.0
+      change_value_usd: -1962742423.192
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 2
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 67
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 3
+  POOL.US:
+    symbol: POOL.US
+    slug: pool-us
+    company_name: Pool Corp.
+    exchange: NASD
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 182.14
+      price_change_pct: 0.4079
+      market_cap_usd: 6644703757.19
+      pe: 16.44
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 558966713.9
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 3068885.0
+      current_shares: 0.0
+      change_shares: -3068885.0
+      change_value_usd: -558966713.9
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 7
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 68
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 10
+  V.US:
+    symbol: V.US
+    slug: v-us
+    company_name: Visa Inc.
+    exchange: NYSE
+    sector: null
+    industry: null
+    tags:
+    - S&P 500
+    risk_tags: []
+    market:
+      price: 320.063
+      price_change_pct: -1.9295
+      market_cap_usd: 615656856275.55
+      pe: 27.94
+      forward_pe: null
+      ps: null
+    metrics:
+      manager_count: 3
+      buyers_count: 0
+      sellers_count: 1
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 0
+      exits_count: 1
+      total_bought_value_usd: 0.0
+      total_sold_value_usd: 2655709939.98
+      total_tracked_value_usd: 0.0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0.0
+      key_institution_holders: []
+    managers:
+    - cik: 0001067983
+      name: Berkshire Hathaway Inc
+      display_name: 伯克希尔
+      status: exited
+      previous_shares: 8297460.0
+      current_shares: 0.0
+      change_shares: -8297460.0
+      change_value_usd: -2655709939.98
+      current_value_usd: 0.0
+      portfolio_weight_pct: 0.0
+      filing_date: '2026-05-15'
+      report_period: '2026-03-31'
+    ranking_history:
+    - date: '2026-06-02'
+      ranking: exits
+      rank: 1
+    - date: '2026-06-02'
+      ranking: institutional_combined
+      rank: 69
+    - date: '2026-06-02'
+      ranking: institutional_selling
+      rank: 2

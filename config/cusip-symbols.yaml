@@ -1,0 +1,257 @@
+# Explicit 13F CUSIP -> Longbridge symbol mappings.
+#
+# SEC 13F information tables do not contain exchange tickers. Keep this file
+# conservative: only add mappings that are known enough to avoid symbol drift.
+mappings:
+  "01609W102":
+    symbol: "BABA.US"
+    company_name: "Alibaba Group Holding Ltd. ADR"
+  "172573107":
+    symbol: "CRCL.US"
+    company_name: "Circle Internet Group Inc."
+  "02005N100":
+    symbol: "ALLY.US"
+    company_name: "Ally Financial Inc."
+  "02079K107":
+    symbol: "GOOG.US"
+    company_name: "Alphabet Inc. Class C"
+  "02079K305":
+    symbol: "GOOGL.US"
+    company_name: "Alphabet Inc. Class A"
+  "023135106":
+    symbol: "AMZN.US"
+    company_name: "Amazon.com Inc."
+    tags: ["Nasdaq 100", "S&P 500", "Mag7"]
+  "025816109":
+    symbol: "AXP.US"
+    company_name: "American Express Co."
+    tags: ["S&P 500"]
+  "037833100":
+    symbol: "AAPL.US"
+    company_name: "Apple Inc."
+    tags: ["Nasdaq 100", "S&P 500", "Mag7"]
+  "060505104":
+    symbol: "BAC.US"
+    company_name: "Bank of America Corp."
+    tags: ["S&P 500"]
+  "084670702":
+    symbol: "BRK.B.US"
+    company_name: "Berkshire Hathaway Inc."
+    tags: ["S&P 500"]
+  "093671105":
+    symbol: "HRB.US"
+    company_name: "H&R Block Inc."
+  "14040H105":
+    symbol: "COF.US"
+    company_name: "Capital One Financial Corp."
+    tags: ["S&P 500"]
+  "16119P108":
+    symbol: "CHTR.US"
+    company_name: "Charter Communications Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "166764100":
+    symbol: "CVX.US"
+    company_name: "Chevron Corp."
+    tags: ["S&P 500"]
+  "191216100":
+    symbol: "KO.US"
+    company_name: "The Coca-Cola Co."
+    tags: ["S&P 500"]
+  "21873S108":
+    symbol: "CRWV.US"
+    company_name: "CoreWeave Inc."
+  "22788C105":
+    symbol: "CRWD.US"
+    company_name: "CrowdStrike Holdings Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "227046109":
+    symbol: "CROX.US"
+    company_name: "Crocs Inc."
+  "21036P108":
+    symbol: "STZ.US"
+    company_name: "Constellation Brands Inc."
+    tags: ["S&P 500"]
+  "23918K108":
+    symbol: "DVA.US"
+    company_name: "DaVita Inc."
+    tags: ["S&P 500"]
+  "247361702":
+    symbol: "DAL.US"
+    company_name: "Delta Air Lines Inc."
+    tags: ["S&P 500"]
+  "25243Q205":
+    symbol: "DEO.US"
+    company_name: "Diageo plc ADR"
+  "254687106":
+    symbol: "DIS.US"
+    company_name: "The Walt Disney Co."
+    tags: ["S&P 500"]
+  "25754A201":
+    symbol: "DPZ.US"
+    company_name: "Domino's Pizza Inc."
+    tags: ["S&P 500"]
+  "27579R104":
+    symbol: "EWBC.US"
+    company_name: "East West Bancorp Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "30303M102":
+    symbol: "META.US"
+    company_name: "Meta Platforms Inc."
+    tags: ["Nasdaq 100", "S&P 500", "Mag7"]
+  "422806208":
+    symbol: "HEI.US"
+    company_name: "HEICO Corp."
+  "457642205":
+    symbol: "INOD.US"
+    company_name: "Innodata Inc."
+  "47233W109":
+    symbol: "JEF.US"
+    company_name: "Jefferies Financial Group Inc."
+  "500754106":
+    symbol: "KHC.US"
+    company_name: "The Kraft Heinz Co."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "501044101":
+    symbol: "KR.US"
+    company_name: "The Kroger Co."
+    tags: ["S&P 500"]
+  "512816109":
+    symbol: "LAMR.US"
+    company_name: "Lamar Advertising Co."
+  "526057302":
+    symbol: "LEN.B.US"
+    company_name: "Lennar Corp. Class B"
+  "531229755":
+    symbol: "FWONK.US"
+    company_name: "Liberty Media Formula One Series C"
+  "55354G100":
+    symbol: "MSCI.US"
+    company_name: "MSCI Inc."
+    tags: ["S&P 500"]
+  "526057104":
+    symbol: "LEN.US"
+    company_name: "Lennar Corp. Class A"
+    tags: ["S&P 500"]
+  "546347105":
+    symbol: "LPX.US"
+    company_name: "Louisiana-Pacific Corp."
+  "55616P104":
+    symbol: "M.US"
+    company_name: "Macy's Inc."
+  "57636Q104":
+    symbol: "MA.US"
+    company_name: "Mastercard Inc."
+    tags: ["S&P 500"]
+  "594918104":
+    symbol: "MSFT.US"
+    company_name: "Microsoft Corp."
+    tags: ["Nasdaq 100", "S&P 500", "Mag7"]
+  "615369105":
+    symbol: "MCO.US"
+    company_name: "Moody's Corp."
+    tags: ["S&P 500"]
+  "62944T105":
+    symbol: "NVR.US"
+    company_name: "NVR Inc."
+    tags: ["S&P 500"]
+  "722304102":
+    symbol: "PDD.US"
+    company_name: "PDD Holdings Inc. ADR"
+    tags: ["Nasdaq 100"]
+  "78409V104":
+    symbol: "SPGI.US"
+    company_name: "S&P Global Inc."
+    tags: ["S&P 500"]
+  "833445109":
+    symbol: "SNOW.US"
+    company_name: "Snowflake Inc."
+  "650111107":
+    symbol: "NYT.US"
+    company_name: "The New York Times Co."
+  "670346105":
+    symbol: "NUE.US"
+    company_name: "Nucor Corp."
+    tags: ["S&P 500"]
+  "67066G104":
+    symbol: "NVDA.US"
+    company_name: "NVIDIA Corp."
+    tags: ["Nasdaq 100", "S&P 500", "Mag7"]
+  "674599105":
+    symbol: "OXY.US"
+    company_name: "Occidental Petroleum Corp."
+    tags: ["S&P 500"]
+  "829933100":
+    symbol: "SIRI.US"
+    company_name: "Sirius XM Holdings Inc."
+    tags: ["Nasdaq 100"]
+  "871607107":
+    symbol: "SNPS.US"
+    company_name: "Synopsys Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "88034P109":
+    symbol: "TME.US"
+    company_name: "Tencent Music Entertainment Group ADR"
+  "88023B103":
+    symbol: "TEM.US"
+    company_name: "Tempus AI Inc."
+  "88160R101":
+    symbol: "TSLA.US"
+    company_name: "Tesla Inc."
+    tags: ["Nasdaq 100", "S&P 500", "Mag7"]
+  "91324P102":
+    symbol: "UNH.US"
+    company_name: "UnitedHealth Group Inc."
+    tags: ["S&P 500"]
+  "92343E102":
+    symbol: "VRSN.US"
+    company_name: "VeriSign Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "92826C839":
+    symbol: "V.US"
+    company_name: "Visa Inc."
+    tags: ["S&P 500"]
+  "G0176J109":
+    symbol: "ALLE.US"
+    company_name: "Allegion plc"
+    tags: ["S&P 500"]
+  "G0403H108":
+    symbol: "AON.US"
+    company_name: "Aon plc"
+    tags: ["S&P 500"]
+  "G25457105":
+    symbol: "CRDO.US"
+    company_name: "Credo Technology Group Holding Ltd."
+  "G9001E102":
+    symbol: "LILA.US"
+    company_name: "Liberty Latin America Ltd. Class A"
+  "G9001E128":
+    symbol: "LILAK.US"
+    company_name: "Liberty Latin America Ltd. Class C"
+  "N07059210":
+    symbol: "ASML.US"
+    company_name: "ASML Holding NV ADR"
+    tags: ["Nasdaq 100"]
+  "H1467J104":
+    symbol: "CB.US"
+    company_name: "Chubb Ltd."
+    tags: ["S&P 500"]
+  "047726302":
+    symbol: "BATRA.US"
+    company_name: "Atlanta Braves Holdings Inc."
+  "530909100":
+    symbol: "LLYVA.US"
+    company_name: "Liberty Live Group Series A"
+  "530909308":
+    symbol: "LLYVK.US"
+    company_name: "Liberty Live Group Series C"
+  "69608A108":
+    symbol: "PLTR.US"
+    company_name: "Palantir Technologies Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "73278L105":
+    symbol: "POOL.US"
+    company_name: "Pool Corp."
+    tags: ["S&P 500"]
+  "874039100":
+    symbol: "TSM.US"
+    company_name: "Taiwan Semiconductor Manufacturing Co. ADR"

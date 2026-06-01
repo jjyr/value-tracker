@@ -1,0 +1,1 @@
+"""StockHunt command modules."""

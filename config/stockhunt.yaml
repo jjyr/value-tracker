@@ -40,6 +40,11 @@ key_institutions:
       display_name: "伯克希尔"
       enabled: true
 
+rankings:
+  homepage_display_limit: 100
+  top_n_for_simulation: 10
+  activity_tag_limit: 10
+
 strategy:
   version: "2026-06-01-strategy-v1"
   id: "institutional_signal_weekly"

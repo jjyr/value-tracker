@@ -15,7 +15,7 @@
       {{ else if eq $tone "cleared" }}
         {{ $tip = "已清仓：追踪机构当前持有市值为 0，但因清仓信号仍进入综合榜。" }}
       {{ else if eq $tone "key" }}
-        {{ $tip = printf "%s：重点机构持有或本期买入该股票。" $label }}
+        {{ $tip = printf "%s：重点机构当前持有该股票。" $label }}
       {{ end }}
       <span class="activity-badge badge-{{ $tone }} tip-trigger" data-tooltip="{{ $tip }}">{{ $label }}</span>
     {{ end }}
