@@ -86,15 +86,23 @@ def cache_write(path: pathlib.Path, data: Any) -> None:
 
 
 class SecClient:
-    def __init__(self, cache_dir: pathlib.Path, user_agent: str, sleep_seconds: float = 0.1, refresh: bool = False) -> None:
+    def __init__(
+        self,
+        cache_dir: pathlib.Path,
+        user_agent: str,
+        sleep_seconds: float = 0.1,
+        refresh: bool = False,
+        refresh_submissions: bool = False,
+    ) -> None:
         self.cache_dir = cache_dir
         self.user_agent = user_agent
         self.sleep_seconds = sleep_seconds
         self.refresh = refresh
+        self.refresh_submissions = refresh_submissions
 
-    def fetch_json(self, url: str, cache_name: str) -> Any:
+    def fetch_json(self, url: str, cache_name: str, force_refresh: bool = False) -> Any:
         cache_path = self.cache_dir / "sec" / f"{cache_name}.json"
-        if not self.refresh and (cached := cache_read(cache_path)) is not None:
+        if not (self.refresh or force_refresh) and (cached := cache_read(cache_path)) is not None:
             return cached
         request = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
         with urllib.request.urlopen(request, timeout=30) as response:
@@ -118,7 +126,11 @@ class SecClient:
         return text
 
     def submissions(self, cik: str) -> Dict[str, Any]:
-        return self.fetch_json(f"https://data.sec.gov/submissions/CIK{cik}.json", f"submissions-{cik}")
+        return self.fetch_json(
+            f"https://data.sec.gov/submissions/CIK{cik}.json",
+            f"submissions-{cik}",
+            force_refresh=self.refresh_submissions,
+        )
 
     def filing_index(self, cik: str, accession_number: str) -> Dict[str, Any]:
         accession = accession_number.replace("-", "")
@@ -138,10 +150,50 @@ class LongbridgePriceClient:
         self.refresh = refresh
 
     def history(self, symbol: str, start_date: str, end_date: str) -> Dict[str, float]:
-        cache_name = f"{symbol.replace('.', '-')}-{start_date}-{end_date}-day-forward"
-        cache_path = self.cache_dir / "longbridge-kline" / f"{cache_name}.json"
-        if not self.refresh and (cached := cache_read(cache_path)) is not None:
-            return {row["date"]: float(row["close"]) for row in cached}
+        cache_dir = self.cache_dir / "longbridge-kline"
+        symbol_key = symbol.replace(".", "-")
+        cache_path = cache_dir / f"{symbol_key}-day-forward.json"
+        cached = {} if self.refresh else self._cached_rows(cache_dir, symbol_key, cache_path)
+        start = parse_date(start_date)
+        end = parse_date(end_date)
+
+        ranges: List[Tuple[dt.date, dt.date]] = []
+        if not cached:
+            ranges.append((start, end))
+        else:
+            cached_dates = sorted(parse_date(date) for date in cached)
+            if start < cached_dates[0]:
+                ranges.append((start, cached_dates[0] - dt.timedelta(days=1)))
+            if end > cached_dates[-1]:
+                ranges.append((cached_dates[-1] + dt.timedelta(days=1), end))
+
+        for range_start, range_end in ranges:
+            if range_start <= range_end:
+                cached.update(self._fetch_range(symbol, range_start.isoformat(), range_end.isoformat()))
+
+        if cached:
+            rows = [{"date": date, "close": cached[date]} for date in sorted(cached)]
+            cache_write(cache_path, rows)
+        return {date: close for date, close in cached.items() if start_date <= date <= end_date}
+
+    def _cached_rows(self, cache_dir: pathlib.Path, symbol_key: str, cache_path: pathlib.Path) -> Dict[str, float]:
+        rows: Dict[str, float] = {}
+        paths = []
+        if cache_path.exists():
+            paths.append(cache_path)
+        paths.extend(sorted(cache_dir.glob(f"{symbol_key}-*-day-forward.json")))
+        for path in paths:
+            cached = cache_read(path)
+            if not isinstance(cached, list):
+                continue
+            for row in cached:
+                close = number(row.get("close"))
+                date = str(row.get("date") or "")[:10]
+                if date and close is not None:
+                    rows[date] = close
+        return rows
+
+    def _fetch_range(self, symbol: str, start_date: str, end_date: str) -> Dict[str, float]:
         command = [
             "longbridge",
             "kline",
@@ -170,7 +222,6 @@ class LongbridgePriceClient:
             if close is None:
                 continue
             rows.append({"date": str(row["time"])[:10], "close": close})
-        cache_write(cache_path, rows)
         return {row["date"]: float(row["close"]) for row in rows}
 
 
@@ -261,7 +312,7 @@ def fetch_historical_filings(
     start_date = parse_date(args.start_date)
     end_date = parse_date(args.end_date)
     min_report_date = start_date - dt.timedelta(days=450)
-    client = SecClient(args.cache_dir, args.sec_user_agent, args.sec_sleep, args.refresh_sec)
+    client = SecClient(args.cache_dir, args.sec_user_agent, args.sec_sleep, args.refresh_sec, args.refresh_submissions)
     filings = []
     for manager in enabled_managers(config, args.manager_limit):
         display_name = manager.get("display_name") or manager.get("name") or manager["cik"]
@@ -705,6 +756,7 @@ def run_simulation(
     cusip_map: Dict[str, Dict[str, Any]],
     start_date: dt.date,
     end_date: dt.date,
+    rebalance_until: Optional[dt.date] = None,
 ) -> Dict[str, Any]:
     initial_value = float(config.get("strategy", {}).get("initial_value", 100000))
     filings_by_cik = group_filings_by_cik(filings)
@@ -712,7 +764,8 @@ def run_simulation(
     trading_days = trading_dates(price_index, start_date, end_date)
     if not trading_days:
         raise ValueError("no SPY trading days available for backtest range")
-    rebalances = weekly_rebalance_dates(start_date, end_date, trading_days)
+    rebalance_end = min(end_date, rebalance_until) if rebalance_until else end_date
+    rebalances = weekly_rebalance_dates(start_date, rebalance_end, trading_days) if rebalance_end >= start_date else []
     rebalance_set = set(rebalances)
     start_trade_date = trading_days[0]
     spy_start = price_at(price_index, BENCHMARKS["spy"], start_trade_date)
@@ -883,6 +936,7 @@ def run_simulation(
             "max_positions": int(config.get("strategy", {}).get("max_positions", 10)),
             "weighting_method": "allocation_score_clamped_5_50",
             "last_rebalance_date": last_rebalance_date.isoformat() if last_rebalance_date else None,
+            "rebalance_until": rebalance_until.isoformat() if rebalance_until else None,
             "next_rebalance_date": hugo_data.next_monday(final_date.isoformat()),
         },
         "summary": {
@@ -957,7 +1011,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sec-sleep", type=float, default=0.1)
     parser.add_argument("--longbridge-sleep", type=float, default=0.0)
     parser.add_argument("--refresh-sec", action="store_true")
+    parser.add_argument("--refresh-submissions", action="store_true", help="Refresh SEC submissions index but reuse cached filing XML.")
     parser.add_argument("--refresh-prices", action="store_true")
+    parser.add_argument("--rebalance-until", default=None, help="Only create weekly rebalance events through this date.")
     return parser.parse_args()
 
 
@@ -983,7 +1039,15 @@ def main() -> None:
     normalize_filing_value_units(filings, build_price_index(price_history), warnings)
     warnings = list(dict.fromkeys(warnings))
     write_historical_raw(args.raw_output, args, filings, warnings)
-    simulation = run_simulation(config, filings, price_history, cusip_map, parse_date(args.start_date), parse_date(args.end_date))
+    simulation = run_simulation(
+        config,
+        filings,
+        price_history,
+        cusip_map,
+        parse_date(args.start_date),
+        parse_date(args.end_date),
+        parse_date(args.rebalance_until) if args.rebalance_until else None,
+    )
     payload = {
         "build": {
             "build_id": f"historical-simulation-{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",

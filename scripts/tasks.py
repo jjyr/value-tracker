@@ -7,10 +7,16 @@ import argparse
 import pathlib
 import subprocess
 import sys
-from typing import List
+from typing import List, Optional
+
+import yaml
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+LIVE_INPUT = ROOT / "raw/generated/live_13f_holdings.yaml"
+SNAPSHOT = ROOT / "raw/generated/snapshot.yaml"
+SIMULATION = ROOT / "raw/generated/historical_simulation.yaml"
+DEFAULT_BACKTEST_START = "2024-01-01"
 
 
 def run(command: List[str]) -> None:
@@ -18,57 +24,119 @@ def run(command: List[str]) -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
 
-def build_live() -> None:
-    parser = argparse.ArgumentParser(description="Build StockHunt from live Longbridge data.")
-    parser.add_argument("--incremental", action="store_true", help="Do not reset SQLite before recomputing metrics.")
-    parser.add_argument("--skip-backtest", action="store_true", help="Skip historical weekly backtest.")
-    parser.add_argument("--skip-hugo", action="store_true", help="Skip Hugo static-site build.")
+def add_fetch_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--top", type=int, default=50, help="Top current holdings to fetch per manager.")
     parser.add_argument("--manager-limit", type=int, default=None, help="Limit managers for smoke tests.")
-    parser.add_argument("--backtest-start", default="2024-01-01", help="Historical backtest start date.")
-    args = parser.parse_args()
+    parser.add_argument("--backtest-start", default=DEFAULT_BACKTEST_START, help="Historical backtest start date.")
+    parser.add_argument("--end-date", default=None, help="Historical backtest end date. Defaults to today.")
 
-    live_input = ROOT / "raw/generated/live_13f_holdings.yaml"
-    snapshot = ROOT / "raw/generated/snapshot.yaml"
-    simulation = ROOT / "raw/generated/historical_simulation.yaml"
-    live_command = [sys.executable, "scripts/build_live_input.py", "--top", str(args.top), "--output", str(live_input)]
+
+def last_rebalance_date(path: pathlib.Path = SIMULATION) -> Optional[str]:
+    if not path.exists():
+        return None
+    with path.open("r", encoding="utf-8") as handle:
+        payload = yaml.safe_load(handle) or {}
+    return (
+        payload.get("simulation", {})
+        .get("meta", {})
+        .get("last_rebalance_date")
+    )
+
+
+def run_live_input(args: argparse.Namespace) -> None:
+    live_command = [sys.executable, "scripts/build_live_input.py", "--top", str(args.top), "--output", str(LIVE_INPUT)]
     if args.manager_limit:
         live_command.extend(["--manager-limit", str(args.manager_limit)])
     run(live_command)
 
-    backend_command = [sys.executable, "scripts/stockhunt_backend.py", "--raw", str(live_input)]
-    if not args.incremental:
+
+def run_backend(reset_db: bool) -> None:
+    backend_command = [sys.executable, "scripts/stockhunt_backend.py", "--raw", str(LIVE_INPUT)]
+    if reset_db:
         backend_command.append("--reset-db")
     run(backend_command)
-    export_command = [sys.executable, "scripts/generate_stockhunt_data.py", "--snapshot", str(snapshot)]
-    if not args.skip_backtest:
-        backtest_command = [
-            sys.executable,
-            "scripts/historical_backtest.py",
-            "--start-date",
-            args.backtest_start,
-            "--output",
-            str(simulation),
-        ]
-        if args.manager_limit:
-            backtest_command.extend(["--manager-limit", str(args.manager_limit)])
-        run(backtest_command)
-        export_command.extend(["--simulation", str(simulation)])
+
+
+def run_backtest(
+    args: argparse.Namespace,
+    full: bool,
+    allow_rebalance: bool,
+    refresh_submissions: bool = True,
+) -> None:
+    backtest_command = [
+        sys.executable,
+        "scripts/historical_backtest.py",
+        "--start-date",
+        args.backtest_start,
+        "--output",
+        str(SIMULATION),
+    ]
+    if args.end_date:
+        backtest_command.extend(["--end-date", args.end_date])
+    if args.manager_limit:
+        backtest_command.extend(["--manager-limit", str(args.manager_limit)])
+    if full:
+        backtest_command.extend(["--refresh-sec", "--refresh-prices"])
+    elif refresh_submissions:
+        backtest_command.append("--refresh-submissions")
+    if not allow_rebalance:
+        frozen_rebalance_date = last_rebalance_date()
+        if not frozen_rebalance_date:
+            raise SystemExit("daily/hold mode requires an existing historical_simulation.yaml with last_rebalance_date")
+        backtest_command.extend(["--rebalance-until", frozen_rebalance_date])
+    run(backtest_command)
+
+
+def run_export() -> None:
+    export_command = [
+        sys.executable,
+        "scripts/generate_stockhunt_data.py",
+        "--snapshot",
+        str(SNAPSHOT),
+        "--simulation",
+        str(SIMULATION),
+    ]
     run(export_command)
-    if not args.skip_hugo:
-        run(["hugo", "--minify"])
 
 
-def build_sample() -> None:
-    parser = argparse.ArgumentParser(description="Build StockHunt from the checked-in sample data.")
-    parser.add_argument("--skip-hugo", action="store_true", help="Skip Hugo static-site build.")
+def fetch_pipeline(args: argparse.Namespace, full: bool, allow_rebalance: bool) -> None:
+    run_live_input(args)
+    run_backend(reset_db=full)
+    run_backtest(args, full=full, allow_rebalance=allow_rebalance)
+    run_export()
+
+
+def build() -> None:
+    argparse.ArgumentParser(description="Build the Hugo static site from existing data.").parse_args()
+    run(["hugo", "--minify"])
+
+
+def fetch() -> None:
+    parser = argparse.ArgumentParser(description="Incrementally fetch StockHunt data without running Hugo.")
+    add_fetch_args(parser)
+    parser.add_argument("--hold-positions", action="store_true", help="Update prices and P/L without creating a new rebalance.")
     args = parser.parse_args()
+    fetch_pipeline(args, full=False, allow_rebalance=not args.hold_positions)
 
-    snapshot = ROOT / "raw/generated/snapshot.yaml"
-    run([sys.executable, "scripts/stockhunt_backend.py", "--reset-db", "--raw", "raw/sample/13f_holdings.yaml"])
-    run([sys.executable, "scripts/generate_stockhunt_data.py", "--snapshot", str(snapshot)])
-    if not args.skip_hugo:
-        run(["hugo", "--minify"])
+
+def fetch_all() -> None:
+    parser = argparse.ArgumentParser(description="Fully refresh StockHunt data without running Hugo.")
+    add_fetch_args(parser)
+    args = parser.parse_args()
+    fetch_pipeline(args, full=True, allow_rebalance=True)
+
+
+def schedule() -> None:
+    parser = argparse.ArgumentParser(description="Run scheduled StockHunt jobs and then build Hugo.")
+    parser.add_argument("mode", choices=["daily", "weekly"], help="daily updates prices/P&L; weekly allows rebalance.")
+    add_fetch_args(parser)
+    args = parser.parse_args()
+    if args.mode == "daily":
+        run_backtest(args, full=False, allow_rebalance=False, refresh_submissions=False)
+        run_export()
+    else:
+        fetch_pipeline(args, full=False, allow_rebalance=True)
+    run(["hugo", "--minify"])
 
 
 def check() -> None:

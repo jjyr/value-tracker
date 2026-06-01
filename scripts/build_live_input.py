@@ -9,6 +9,7 @@ import json
 import pathlib
 import subprocess
 import sys
+import tempfile
 import time
 from collections import Counter
 from typing import Any, Dict, Iterable, List, Optional
@@ -34,8 +35,10 @@ def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
 
 def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as handle:
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
         yaml.dump(data, handle, Dumper=NoAliasDumper, allow_unicode=True, sort_keys=False, width=120)
+        tmp_path = pathlib.Path(handle.name)
+    tmp_path.replace(path)
 
 
 def today() -> str:

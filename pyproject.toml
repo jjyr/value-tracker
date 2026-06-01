@@ -9,13 +9,11 @@ dependencies = [
 ]
 
 [project.scripts]
-stockhunt-build-live = "scripts.tasks:build_live"
-stockhunt-build-sample = "scripts.tasks:build_sample"
+stockhunt-build = "scripts.tasks:build"
+stockhunt-fetch = "scripts.tasks:fetch"
+stockhunt-fetch-all = "scripts.tasks:fetch_all"
+stockhunt-schedule = "scripts.tasks:schedule"
 stockhunt-check = "scripts.tasks:check"
-stockhunt-backend = "scripts.stockhunt_backend:main"
-stockhunt-backtest = "scripts.historical_backtest:main"
-stockhunt-export = "scripts.generate_stockhunt_data:main"
-stockhunt-live-input = "scripts.build_live_input:main"
 
 [build-system]
 requires = ["hatchling"]
