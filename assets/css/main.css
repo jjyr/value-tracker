@@ -521,10 +521,10 @@ h3 {
   margin-top: 18px;
 }
 
-.action-list a,
-.action-list div {
+.action-card {
   display: grid;
   gap: 3px;
+  position: relative;
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -532,9 +532,17 @@ h3 {
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
-.action-list a:hover {
+.action-card:hover {
   border-color: var(--line-strong);
   background: rgba(255, 255, 255, 0.05);
+}
+
+.action-card.buy strong {
+  color: var(--green);
+}
+
+.action-card.sell strong {
+  color: var(--red);
 }
 
 .action-list span {
@@ -544,6 +552,19 @@ h3 {
 
 .action-list b {
   color: var(--text);
+}
+
+.trade-pct {
+  font-style: normal;
+  font-weight: 750;
+}
+
+.trade-pct.buy {
+  color: var(--green);
+}
+
+.trade-pct.sell {
+  color: var(--red);
 }
 
 .table-wrap {
@@ -822,6 +843,7 @@ h3 {
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
+  position: relative;
   min-height: 56px;
   padding: 8px 10px;
   border: 1px solid var(--line);
@@ -880,8 +902,41 @@ h3 {
   color: var(--red);
 }
 
-.timeline-row.resize strong {
+.timeline-row.signal strong {
   color: var(--cyan);
+}
+
+.timeline-row.buy,
+.action-card.buy {
+  border-color: rgba(84, 214, 144, 0.18);
+  background: rgba(84, 214, 144, 0.045);
+}
+
+.timeline-row.sell,
+.action-card.sell {
+  border-color: rgba(255, 107, 122, 0.18);
+  background: rgba(255, 107, 122, 0.045);
+}
+
+.timeline-row.initial-buy,
+.action-card.initial-buy {
+  border-color: rgba(84, 214, 144, 0.48);
+  background: linear-gradient(90deg, rgba(84, 214, 144, 0.18), rgba(84, 214, 144, 0.055));
+  box-shadow: inset 3px 0 0 rgba(84, 214, 144, 0.86), 0 10px 24px rgba(84, 214, 144, 0.07);
+}
+
+.timeline-row.exit,
+.action-card.exit {
+  border-color: rgba(255, 107, 122, 0.48);
+  background: linear-gradient(90deg, rgba(255, 107, 122, 0.18), rgba(255, 107, 122, 0.055));
+  box-shadow: inset 3px 0 0 rgba(255, 107, 122, 0.86), 0 10px 24px rgba(255, 107, 122, 0.07);
+}
+
+.timeline-row.initial-buy strong,
+.timeline-row.exit strong,
+.action-card.initial-buy strong,
+.action-card.exit strong {
+  font-weight: 820;
 }
 
 .ranking-filters {

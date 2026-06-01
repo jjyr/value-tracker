@@ -69,15 +69,21 @@
         <div class="action-list">
           <h3>买入</h3>
           {{ range .buys }}
-            <a href="{{ printf "/stocks/%s/" .slug | relURL }}">
-              <strong>{{ .symbol }}</strong>
+            {{ $isInitial := eq .action "initial-buy" }}
+            <a class="action-card buy {{ if $isInitial }}initial-buy{{ end }}" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+              <strong>{{ if $isInitial }}首次买入{{ else }}买入{{ end }} {{ .symbol }}</strong>
               <span>{{ .reason }}</span>
-              <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · {{ printf "%d" (int .shares) }} 股</span>
+              <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · <em class="trade-pct buy">买入 {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
             </a>
           {{ end }}
           <h3>卖出</h3>
           {{ range .sells }}
-            <div><strong>{{ .symbol }}</strong><span>{{ .reason }}</span></div>
+            {{ $isExit := eq .action "exit" }}
+            <a class="action-card sell {{ if $isExit }}exit{{ end }}" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+              <strong>{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ .symbol }}</strong>
+              <span>{{ .reason }}</span>
+              <span><b data-money="{{ .sell_value_usd }}">--</b> · ${{ printf "%.2f" .sell_price }} · <em class="trade-pct sell">{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
+            </a>
           {{ end }}
         </div>
       {{ end }}
@@ -151,22 +157,37 @@
           <time>{{ .date }}</time>
           <div class="timeline-body">
             {{ range .buys }}
-              <div class="timeline-row buy">
+              {{ $isInitial := eq .action "initial-buy" }}
+              <div class="timeline-row buy {{ if $isInitial }}initial-buy{{ end }}">
                 <div>
-                  <strong>买入 {{ .symbol }}</strong>
+                  <strong>{{ if $isInitial }}首次买入{{ else }}买入{{ end }} {{ .symbol }}</strong>
                   <span>{{ .reason }} · 目标 {{ printf "%.1f%%" .target_weight_pct }}</span>
                 </div>
                 <div class="trade-meta">
                   <strong data-money="{{ .buy_value_usd }}">--</strong>
-                  <span>${{ printf "%.2f" .buy_price }} · {{ printf "%d" (int .shares) }} 股</span>
+                  <span>${{ printf "%.2f" .buy_price }} · <em class="trade-pct buy">买入 {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
                 </div>
               </div>
             {{ end }}
             {{ range .sells }}
-              <div class="timeline-row sell"><div><strong>卖出 {{ .symbol }}</strong><span>{{ .reason }} · 原权重 {{ printf "%.1f%%" .from_weight_pct }}</span></div></div>
-            {{ end }}
-            {{ range .resizes }}
-              <div class="timeline-row resize"><div><strong>调整 {{ .symbol }}</strong><span>{{ .reason }} · {{ printf "%.1f%%" .from_weight_pct }} → {{ printf "%.1f%%" .to_weight_pct }}</span></div></div>
+              {{ $isExit := eq .action "exit" }}
+              <div class="timeline-row sell {{ if $isExit }}exit{{ end }}">
+                <div>
+                  <strong>{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ .symbol }}</strong>
+                  <span>
+                    {{ .reason }} ·
+                    {{ if isset . "to_weight_pct" }}
+                      {{ printf "%.1f%%" .from_weight_pct }} → {{ printf "%.1f%%" .to_weight_pct }}
+                    {{ else }}
+                      原权重 {{ printf "%.1f%%" .from_weight_pct }}
+                    {{ end }}
+                  </span>
+                </div>
+                <div class="trade-meta">
+                  <strong data-money="{{ .sell_value_usd }}">--</strong>
+                  <span>${{ printf "%.2f" .sell_price }} · <em class="trade-pct sell">{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
+                </div>
+              </div>
             {{ end }}
           </div>
         </article>

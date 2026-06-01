@@ -745,12 +745,24 @@ def point_value_on_or_before(curve: List[Dict[str, Any]], date: dt.date) -> Opti
     return candidates[-1]["value"] if candidates else None
 
 
-def build_trade(label: str, symbol: str, row: Dict[str, Any], value: float, price: float, shares: float) -> Dict[str, Any]:
+def build_trade(
+    label: str,
+    symbol: str,
+    row: Dict[str, Any],
+    value: float,
+    price: float,
+    shares: float,
+    total_value: float,
+    action: str = "buy",
+) -> Dict[str, Any]:
+    trade_weight_pct = abs(value) / total_value * 100 if total_value else 0
     payload = {
         "symbol": symbol,
         "slug": hugo_data.slugify_symbol(symbol),
+        "action": action,
         "reason": label,
         "target_weight_pct": round(float(row.get("target_weight_pct") or 0), 2),
+        "trade_weight_pct": round(trade_weight_pct, 2),
         "buy_value_usd": round(max(value, 0.0), 2),
         "buy_price": price,
         "shares": int(abs(shares)),
@@ -803,7 +815,6 @@ def run_simulation(
                 last_candidate_rows = target_by_symbol
                 buys = []
                 sells = []
-                resizes = []
                 new_positions: Dict[str, Dict[str, Any]] = {}
 
                 for symbol, position in positions.items():
@@ -815,8 +826,10 @@ def run_simulation(
                         {
                             "symbol": symbol,
                             "slug": hugo_data.slugify_symbol(symbol),
+                            "action": "exit",
                             "reason": "不在本期目标持仓",
                             "from_weight_pct": round(value / total_value * 100, 2) if total_value else 0,
+                            "trade_weight_pct": round(value / total_value * 100, 2) if total_value else 0,
                             "sell_value_usd": round(value, 2),
                             "sell_price": price,
                             "shares": int(position["shares"]),
@@ -838,22 +851,24 @@ def run_simulation(
                     badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit)
                     if delta_shares:
                         if previous_shares <= 0 and delta_value > 0:
-                            buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares))
+                            buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares, total_value, "initial-buy"))
                             avg_cost = price
                             entry_date = date.isoformat()
                         elif delta_value > 0:
-                            buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares))
+                            buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares, total_value))
                             old_cost_value = existing["avg_cost"] * previous_shares
                             avg_cost = (old_cost_value + delta_value) / target_shares if target_shares else price
                             entry_date = existing["entry_date"]
                         else:
-                            resizes.append(
+                            sells.append(
                                 {
                                     "symbol": symbol,
                                     "slug": hugo_data.slugify_symbol(symbol),
+                                    "action": "sell",
                                     "reason": "目标权重下降",
                                     "from_weight_pct": round(previous_value / total_value * 100, 2) if total_value else 0,
                                     "to_weight_pct": round(row["target_weight_pct"], 2),
+                                    "trade_weight_pct": round(abs(delta_value) / total_value * 100, 2) if total_value else 0,
                                     "sell_value_usd": round(abs(delta_value), 2),
                                     "sell_price": price,
                                     "shares": int(abs(delta_shares)),
@@ -885,8 +900,8 @@ def run_simulation(
                 positions = new_positions
                 invested_value = sum((price_at(price_index, symbol, date) or 0) * row["shares"] for symbol, row in positions.items())
                 cash = max(0.0, total_value - invested_value)
-                if buys or sells or resizes:
-                    history.append({"date": date.isoformat(), "buys": buys, "sells": sells, "resizes": resizes})
+                if buys or sells:
+                    history.append({"date": date.isoformat(), "buys": buys, "sells": sells})
 
         value = portfolio_value(positions, cash, price_index, date)
         curve.append(

@@ -653,8 +653,10 @@ def build_snapshot_simulation(
             {
                 "symbol": row["symbol"],
                 "slug": position["slug"],
+                "action": "initial-buy",
                 "reason": buy_reason(row["source_rankings"]),
                 "target_weight_pct": round(target_weight, 2),
+                "trade_weight_pct": round(buy_value / initial_value * 100, 2) if initial_value else 0,
                 "buy_value_usd": round(buy_value, 2),
                 "buy_price": price,
                 "shares": int(shares),
@@ -711,7 +713,6 @@ def build_snapshot_simulation(
                 "date": data_date,
                 "buys": buys,
                 "sells": [],
-                "resizes": [],
             }
         ],
     }
