@@ -1,0 +1,188 @@
+data_date: "2026-05-29"
+market_data_date: "2026-05-29"
+latest_13f_report_period: "2026-03-31"
+previous_13f_report_period: "2025-12-31"
+
+build:
+  build_id: "sample-13f-2026-06-01"
+  built_at: "2026-06-01T12:00:00+07:00"
+  metrics_version: "0.1"
+  status: "OK"
+  warnings:
+    - "Sample raw 13F fixture for backend pipeline validation"
+
+market:
+  - symbol: "AAPL.US"
+    company_name: "Apple Inc."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Consumer Electronics"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    price: 190.12
+    price_change_pct: 1.25
+    market_cap_usd: 2900000000000
+    pe: 29.4
+    forward_pe: 24.8
+    ps: 7.1
+  - symbol: "BRK.B.US"
+    company_name: "Berkshire Hathaway Inc."
+    exchange: "NYSE"
+    sector: "Financials"
+    industry: "Insurance"
+    tags: ["S&P 500", "Russell 1000"]
+    detail_tags: ["S&P 500", "Russell 1000", "Russell 3000"]
+    risk_tags: []
+    price: 417.3
+    price_change_pct: 0.4
+    market_cap_usd: 900000000000
+    pe: 21.3
+    forward_pe: 19.8
+    ps: 2.6
+  - symbol: "NVDA.US"
+    company_name: "NVIDIA Corp."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Semiconductors"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    price: 121.8
+    price_change_pct: 3.1
+    market_cap_usd: 3000000000000
+    pe: 42.1
+    forward_pe: 28.5
+    ps: 19.4
+  - symbol: "MSFT.US"
+    company_name: "Microsoft Corp."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Software"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    price: 438.5
+    price_change_pct: 0.8
+    market_cap_usd: 3300000000000
+    pe: 34.8
+    forward_pe: 27.4
+    ps: 11.8
+  - symbol: "META.US"
+    company_name: "Meta Platforms Inc."
+    exchange: "NASDAQ"
+    sector: "Communication Services"
+    industry: "Internet Content & Information"
+    tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+    detail_tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: ["fully-exited-by-tracked-managers"]
+    price: 485.4
+    price_change_pct: -0.6
+    market_cap_usd: 1220000000000
+    pe: 24.6
+    forward_pe: 20.9
+    ps: 8.4
+
+filings:
+  - accession_number: "0001759760-26-000001"
+    cik: "0001759760"
+    manager_name: "H&H International Investment, LLC"
+    filing_type: "13F-HR"
+    filing_date: "2026-05-19"
+    report_period: "2026-03-31"
+    sec_url: "https://www.sec.gov/Archives/sample/0001759760-26-000001"
+    holdings:
+      - symbol: "AAPL.US"
+        cusip: "037833100"
+        issuer_name: "Apple Inc."
+        share_type: "SH"
+        shares: 28945607
+        value_usd: 5502338793
+      - symbol: "MSFT.US"
+        cusip: "594918104"
+        issuer_name: "Microsoft Corp."
+        share_type: "SH"
+        shares: 100000
+        value_usd: 43850000
+  - accession_number: "0001759760-25-000004"
+    cik: "0001759760"
+    manager_name: "H&H International Investment, LLC"
+    filing_type: "13F-HR"
+    filing_date: "2026-02-14"
+    report_period: "2025-12-31"
+    sec_url: "https://www.sec.gov/Archives/sample/0001759760-25-000004"
+    holdings:
+      - symbol: "AAPL.US"
+        cusip: "037833100"
+        issuer_name: "Apple Inc."
+        share_type: "SH"
+        shares: 28000000
+        value_usd: 5348000000
+      - symbol: "MSFT.US"
+        cusip: "594918104"
+        issuer_name: "Microsoft Corp."
+        share_type: "SH"
+        shares: 100000
+        value_usd: 43850000
+  - accession_number: "0001709323-26-000001"
+    cik: "0001709323"
+    manager_name: "Himalaya Capital Management LLC"
+    filing_type: "13F-HR"
+    filing_date: "2026-05-15"
+    report_period: "2026-03-31"
+    sec_url: "https://www.sec.gov/Archives/sample/0001709323-26-000001"
+    holdings:
+      - symbol: "NVDA.US"
+        cusip: "67066G104"
+        issuer_name: "NVIDIA Corp."
+        share_type: "SH"
+        shares: 1800000
+        value_usd: 219240000
+      - symbol: "BRK.B.US"
+        cusip: "084670702"
+        issuer_name: "Berkshire Hathaway Inc."
+        share_type: "SH"
+        shares: 500000
+        value_usd: 208650000
+  - accession_number: "0001709323-25-000004"
+    cik: "0001709323"
+    manager_name: "Himalaya Capital Management LLC"
+    filing_type: "13F-HR"
+    filing_date: "2026-02-14"
+    report_period: "2025-12-31"
+    sec_url: "https://www.sec.gov/Archives/sample/0001709323-25-000004"
+    holdings:
+      - symbol: "BRK.B.US"
+        cusip: "084670702"
+        issuer_name: "Berkshire Hathaway Inc."
+        share_type: "SH"
+        shares: 500000
+        value_usd: 208650000
+  - accession_number: "0001067983-26-000001"
+    cik: "0001067983"
+    manager_name: "Berkshire Hathaway Inc"
+    filing_type: "13F-HR"
+    filing_date: "2026-05-15"
+    report_period: "2026-03-31"
+    sec_url: "https://www.sec.gov/Archives/sample/0001067983-26-000001"
+    holdings:
+      - symbol: "AAPL.US"
+        cusip: "037833100"
+        issuer_name: "Apple Inc."
+        share_type: "SH"
+        shares: 400000
+        value_usd: 76048000
+  - accession_number: "0001067983-25-000004"
+    cik: "0001067983"
+    manager_name: "Berkshire Hathaway Inc"
+    filing_type: "13F-HR"
+    filing_date: "2026-02-14"
+    report_period: "2025-12-31"
+    sec_url: "https://www.sec.gov/Archives/sample/0001067983-25-000004"
+    holdings:
+      - symbol: "META.US"
+        cusip: "30303M102"
+        issuer_name: "Meta Platforms Inc."
+        share_type: "SH"
+        shares: 500000
+        value_usd: 242700000

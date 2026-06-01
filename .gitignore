@@ -3,3 +3,6 @@ output/
 .playwright-cli/
 .hugo_build.lock
 .DS_Store
+data/*.sqlite
+data/*.sqlite-*
+raw/generated/

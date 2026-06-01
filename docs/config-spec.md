@@ -26,7 +26,7 @@ data:
   market: "US"
   symbol_format: "longbridge"
   output_dir: "dist"
-  sqlite_path: "data/stockhunt.sqlite"
+  sqlite_path: "raw/generated/stockhunt.sqlite"
 
 institutions:
   whitelist_version: "2026-06-01-whitelist-v1"
@@ -226,4 +226,3 @@ recompute_rank_history
 - 静态 JSON metadata
 
 这样同一份历史 13F 数据可以用不同配置重复回测。
-
