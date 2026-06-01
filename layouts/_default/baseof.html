@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ site.LanguageCode | default "zh-CN" }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ site.Params.description }}">
+    <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+    <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+    {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+  </head>
+  <body>
+    {{ block "main" . }}{{ end }}
+    {{ $js := resources.Get "js/main.js" | minify | fingerprint }}
+    <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+  </body>
+</html>

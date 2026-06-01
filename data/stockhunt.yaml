@@ -1,0 +1,668 @@
+build:
+  build_id: "2026-06-01-120000"
+  built_at: "2026-06-01T12:00:00+07:00"
+  data_date: "2026-05-29"
+  market_data_date: "2026-05-29"
+  latest_13f_report_period: "2026-03-31"
+  metrics_version: "0.1"
+  whitelist_version: "2026-06-01-whitelist-v1"
+  key_institution_version: "2026-06-01-key-v1"
+  strategy_version: "2026-06-01-strategy-v1"
+  status: "OK"
+  warnings:
+    - "Sample data for MVP interface validation"
+
+simulation:
+  meta:
+    simulation_id: "institutional-signal-weekly-v0.1"
+    strategy: "institutional_signal_weekly"
+    lookback_trading_days: 21
+    max_positions: 10
+    weighting_method: "allocation_score_clamped_5_50"
+    last_rebalance_date: "2026-05-25"
+    next_rebalance_date: "2026-06-01"
+  summary:
+    start_date: "2026-01-01"
+    initial_value: 100000
+    current_value: 118420
+    cash_value: 7420
+    cash_weight_pct: 6.3
+    total_return_pct: 18.4
+    weekly_return_pct: 2.1
+    ytd_return_pct: 18.4
+    max_drawdown_pct: -7.8
+    spy_return_pct: 7.1
+    qqq_return_pct: 9.8
+    excess_vs_spy_pct: 11.3
+    excess_vs_qqq_pct: 8.6
+    candidates_count: 14
+    positions_count: 5
+  current_positions:
+    - symbol: "AAPL.US"
+      slug: "aapl-us"
+      company_name: "Apple Inc."
+      target_weight_pct: 23.8
+      actual_weight_pct: 23.5
+      allocation_score: 60
+      source_rankings: ["institutional_buying", "institutional_holding"]
+      badges:
+        - label: "买入 #1"
+          tone: "buying"
+        - label: "卖出 #2"
+          tone: "selling"
+        - label: "段永平"
+          tone: "key"
+        - label: "伯克希尔"
+          tone: "key"
+      entry_date: "2026-05-25"
+      entry_price: 185.22
+      current_price: 190.12
+      return_pct: 2.65
+      institutional_avg_holding_price: 195.4
+      discount_to_institutional_avg_pct: 2.7
+      key_institution_bought: true
+      selling_top10: false
+    - symbol: "NVDA.US"
+      slug: "nvda-us"
+      company_name: "NVIDIA Corp."
+      target_weight_pct: 21.4
+      actual_weight_pct: 21.1
+      allocation_score: 54
+      source_rankings: ["institutional_buying"]
+      badges:
+        - label: "买入 #2"
+          tone: "buying"
+        - label: "新建仓 #1"
+          tone: "new"
+        - label: "李录"
+          tone: "key"
+      entry_date: "2026-05-25"
+      entry_price: 116.5
+      current_price: 121.8
+      return_pct: 4.55
+      institutional_avg_holding_price: 132.6
+      discount_to_institutional_avg_pct: 8.1
+      key_institution_bought: true
+      selling_top10: false
+    - symbol: "BRK.B.US"
+      slug: "brk-b-us"
+      company_name: "Berkshire Hathaway Inc."
+      target_weight_pct: 20.2
+      actual_weight_pct: 20.4
+      allocation_score: 51
+      source_rankings: ["institutional_holding"]
+      badges: []
+      entry_date: "2026-05-19"
+      entry_price: 410.2
+      current_price: 417.3
+      return_pct: 1.73
+      institutional_avg_holding_price: 430.1
+      discount_to_institutional_avg_pct: 3.0
+      key_institution_bought: false
+      selling_top10: false
+    - symbol: "MSFT.US"
+      slug: "msft-us"
+      company_name: "Microsoft Corp."
+      target_weight_pct: 17.5
+      actual_weight_pct: 17.7
+      allocation_score: 44
+      source_rankings: ["institutional_holding"]
+      badges: []
+      entry_date: "2026-05-19"
+      entry_price: 432.1
+      current_price: 438.5
+      return_pct: 1.48
+      institutional_avg_holding_price: 452.0
+      discount_to_institutional_avg_pct: 3.0
+      key_institution_bought: false
+      selling_top10: false
+    - symbol: "TSLA.US"
+      slug: "tsla-us"
+      company_name: "Tesla Inc."
+      target_weight_pct: 10.8
+      actual_weight_pct: 11.0
+      allocation_score: 25
+      source_rankings: ["institutional_buying"]
+      badges:
+        - label: "买入 #3"
+          tone: "buying"
+        - label: "卖出 #1"
+          tone: "selling"
+        - label: "清仓 #2"
+          tone: "exit"
+      entry_date: "2026-05-12"
+      entry_price: 180.4
+      current_price: 176.0
+      return_pct: -2.44
+      institutional_avg_holding_price: 190.0
+      discount_to_institutional_avg_pct: 7.4
+      key_institution_bought: false
+      selling_top10: true
+  equity_curve:
+    - date: "2026-01-01"
+      value: 100000
+      spy_value: 100000
+      qqq_value: 100000
+    - date: "2026-02-01"
+      value: 104800
+      spy_value: 101500
+      qqq_value: 102100
+    - date: "2026-03-01"
+      value: 111200
+      spy_value: 103100
+      qqq_value: 105700
+    - date: "2026-04-01"
+      value: 108600
+      spy_value: 102400
+      qqq_value: 104000
+    - date: "2026-05-01"
+      value: 115900
+      spy_value: 106200
+      qqq_value: 108700
+    - date: "2026-05-29"
+      value: 118420
+      spy_value: 107100
+      qqq_value: 109800
+  rebalance_history:
+    - date: "2026-05-25"
+      buys:
+        - symbol: "AAPL.US"
+          slug: "aapl-us"
+          reason: "买入榜 + 持有榜 + 重点机构买入"
+          target_weight_pct: 23.8
+          buy_value_usd: 28200
+          buy_price: 185.22
+          shares: 152.25
+        - symbol: "NVDA.US"
+          slug: "nvda-us"
+          reason: "买入榜 + 低于机构平均持有价"
+          target_weight_pct: 21.4
+          buy_value_usd: 25350
+          buy_price: 116.50
+          shares: 217.60
+      sells:
+        - symbol: "META.US"
+          reason: "进入机构卖出榜 Top 10"
+          from_weight_pct: 12.0
+      resizes:
+        - symbol: "BRK.B.US"
+          slug: "brk-b-us"
+          reason: "权重按评分上调"
+          from_weight_pct: 14.0
+          to_weight_pct: 20.2
+    - date: "2026-05-19"
+      buys:
+        - symbol: "MSFT.US"
+          slug: "msft-us"
+          reason: "持有榜 Top 10 + 低于机构平均持有价"
+          target_weight_pct: 17.5
+          buy_value_usd: 18100
+          buy_price: 432.10
+          shares: 41.89
+      sells:
+        - symbol: "TSLA.US"
+          slug: "tsla-us"
+          reason: "部分减仓：卖出榜风险上升"
+          from_weight_pct: 18.0
+      resizes: []
+
+rankings:
+  - type: "institutional_combined"
+    title: "机构综合榜"
+    description: "按白名单机构当前持有市值排序，并用标签标记买入、卖出、新建仓、清仓等异动"
+    sort_label: "持有市值"
+    rows:
+      - symbol: "AAPL.US"
+        slug: "aapl-us"
+        company_name: "Apple Inc."
+        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+        badges:
+          - label: "买入 #1"
+            tone: "buying"
+          - label: "卖出 #2"
+            tone: "selling"
+          - label: "段永平"
+            tone: "key"
+          - label: "伯克希尔"
+            tone: "key"
+        price: 190.12
+        price_change_pct: 1.25
+        market_cap_usd: 2900000000000
+        pe: 29.4
+        forward_pe: 24.8
+        ps: 7.1
+        manager_count: 200
+        buyers_count: 11
+        sellers_count: 22
+        holders_count: 38
+        total_bought_value_usd: 850000000
+        total_sold_value_usd: 420000000
+        new_position_value_usd: 120000000
+        exit_value_usd: 150000000
+        new_positions_count: 4
+        added_count: 7
+        reduced_count: 19
+        exits_count: 3
+        total_tracked_value_usd: 12500000000
+        institutional_avg_holding_price: 195.4
+        key_institution_bought: true
+      - symbol: "BRK.B.US"
+        slug: "brk-b-us"
+        company_name: "Berkshire Hathaway Inc."
+        tags: ["S&P 500", "Russell 1000"]
+        badges: []
+        price: 417.3
+        price_change_pct: 0.4
+        market_cap_usd: 900000000000
+        pe: 21.3
+        forward_pe: 19.8
+        ps: 2.6
+        manager_count: 200
+        buyers_count: 5
+        sellers_count: 2
+        holders_count: 54
+        total_bought_value_usd: 120000000
+        total_sold_value_usd: 50000000
+        new_position_value_usd: 0
+        exit_value_usd: 0
+        total_tracked_value_usd: 10800000000
+        institutional_avg_holding_price: 430.1
+        key_institution_bought: false
+      - symbol: "NVDA.US"
+        slug: "nvda-us"
+        company_name: "NVIDIA Corp."
+        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+        badges:
+          - label: "买入 #2"
+            tone: "buying"
+          - label: "新建仓 #1"
+            tone: "new"
+          - label: "李录"
+            tone: "key"
+        price: 121.8
+        price_change_pct: 3.1
+        market_cap_usd: 3000000000000
+        pe: 42.1
+        forward_pe: 28.5
+        ps: 19.4
+        manager_count: 200
+        buyers_count: 15
+        sellers_count: 8
+        holders_count: 42
+        total_bought_value_usd: 790000000
+        total_sold_value_usd: 110000000
+        new_position_value_usd: 410000000
+        exit_value_usd: 50000000
+        new_positions_count: 6
+        added_count: 9
+        reduced_count: 7
+        exits_count: 1
+        total_tracked_value_usd: 9800000000
+        institutional_avg_holding_price: 132.6
+        key_institution_bought: true
+      - symbol: "MSFT.US"
+        slug: "msft-us"
+        company_name: "Microsoft Corp."
+        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+        badges: []
+        price: 438.5
+        price_change_pct: 0.8
+        market_cap_usd: 3300000000000
+        pe: 34.8
+        forward_pe: 27.4
+        ps: 11.8
+        manager_count: 200
+        buyers_count: 7
+        sellers_count: 5
+        holders_count: 47
+        total_bought_value_usd: 240000000
+        total_sold_value_usd: 90000000
+        new_position_value_usd: 0
+        exit_value_usd: 0
+        total_tracked_value_usd: 9700000000
+        institutional_avg_holding_price: 452.0
+        key_institution_bought: false
+      - symbol: "TSLA.US"
+        slug: "tsla-us"
+        company_name: "Tesla Inc."
+        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+        badges:
+          - label: "买入 #3"
+            tone: "buying"
+          - label: "卖出 #1"
+            tone: "selling"
+          - label: "清仓 #2"
+            tone: "exit"
+        price: 176.0
+        price_change_pct: -2.4
+        market_cap_usd: 560000000000
+        pe: 65.2
+        forward_pe: 48.3
+        ps: 6.2
+        manager_count: 200
+        buyers_count: 9
+        sellers_count: 18
+        holders_count: 25
+        total_bought_value_usd: 320000000
+        total_sold_value_usd: 680000000
+        new_position_value_usd: 80000000
+        exit_value_usd: 280000000
+        exits_count: 4
+        reduced_count: 14
+        total_tracked_value_usd: 4200000000
+        institutional_avg_holding_price: 190.0
+        key_institution_bought: false
+      - symbol: "META.US"
+        slug: "meta-us"
+        company_name: "Meta Platforms Inc."
+        tags: ["S&P 500", "Nasdaq 100", "Mag7"]
+        badges:
+          - label: "清仓 #1"
+            tone: "exit"
+          - label: "已清仓"
+            tone: "cleared"
+          - label: "卖出 #3"
+            tone: "selling"
+        price: 485.4
+        price_change_pct: -0.6
+        market_cap_usd: 1220000000000
+        pe: 24.6
+        forward_pe: 20.9
+        ps: 8.4
+        manager_count: 200
+        buyers_count: 0
+        sellers_count: 12
+        holders_count: 0
+        total_bought_value_usd: 0
+        total_sold_value_usd: 540000000
+        new_position_value_usd: 0
+        exit_value_usd: 360000000
+        new_positions_count: 0
+        added_count: 0
+        reduced_count: 6
+        exits_count: 6
+        total_tracked_value_usd: 0
+        institutional_avg_holding_price: 0
+        key_institution_bought: false
+stocks:
+  AAPL.US:
+    symbol: "AAPL.US"
+    slug: "aapl-us"
+    company_name: "Apple Inc."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Consumer Electronics"
+    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    market:
+      price: 190.12
+      price_change_pct: 1.25
+      market_cap_usd: 2900000000000
+      pe: 29.4
+      forward_pe: 24.8
+      ps: 7.1
+    metrics:
+      manager_count: 200
+      buyers_count: 11
+      sellers_count: 22
+      holders_count: 38
+      new_positions_count: 4
+      added_count: 7
+      reduced_count: 19
+      exits_count: 3
+      total_bought_value_usd: 850000000
+      total_sold_value_usd: 420000000
+      total_tracked_value_usd: 12500000000
+      institutional_avg_holding_price: 195.4
+      key_institution_bought: true
+      key_institution_bought_value_usd: 300000000
+      key_institution_holders: ["段永平", "伯克希尔"]
+    managers:
+      - name: "H&H International Investment, LLC"
+        display_name: "段永平"
+        status: "added"
+        change_value_usd: 180000000
+        current_value_usd: 7346105601
+        portfolio_weight_pct: 36.72
+        filing_date: "2026-05-19"
+        report_period: "2026-03-31"
+      - name: "Berkshire Hathaway Inc"
+        display_name: "伯克希尔"
+        status: "new_position"
+        change_value_usd: 120000000
+        current_value_usd: 120000000
+        portfolio_weight_pct: 0.04
+        filing_date: "2026-05-15"
+        report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构买入榜"
+        rank: 1
+      - date: "2026-05-29"
+        ranking: "机构持有榜"
+        rank: 1
+  NVDA.US:
+    symbol: "NVDA.US"
+    slug: "nvda-us"
+    company_name: "NVIDIA Corp."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Semiconductors"
+    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    market:
+      price: 121.8
+      price_change_pct: 3.1
+      market_cap_usd: 3000000000000
+      pe: 42.1
+      forward_pe: 28.5
+      ps: 19.4
+    metrics:
+      manager_count: 200
+      buyers_count: 15
+      sellers_count: 8
+      holders_count: 42
+      new_positions_count: 6
+      added_count: 9
+      reduced_count: 7
+      exits_count: 1
+      total_bought_value_usd: 790000000
+      total_sold_value_usd: 110000000
+      total_tracked_value_usd: 9800000000
+      institutional_avg_holding_price: 132.6
+      key_institution_bought: true
+      key_institution_bought_value_usd: 220000000
+      key_institution_holders: ["李录"]
+    managers:
+      - name: "Himalaya Capital Management LLC"
+        display_name: "李录"
+        status: "new_position"
+        change_value_usd: 220000000
+        current_value_usd: 220000000
+        portfolio_weight_pct: 6.1
+        filing_date: "2026-05-15"
+        report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构买入榜"
+        rank: 2
+  BRK.B.US:
+    symbol: "BRK.B.US"
+    slug: "brk-b-us"
+    company_name: "Berkshire Hathaway Inc."
+    exchange: "NYSE"
+    sector: "Financials"
+    industry: "Insurance"
+    tags: ["S&P 500", "Russell 1000", "Russell 3000"]
+    risk_tags: []
+    market:
+      price: 417.3
+      price_change_pct: 0.4
+      market_cap_usd: 900000000000
+      pe: 21.3
+      forward_pe: 19.8
+      ps: 2.6
+    metrics:
+      manager_count: 200
+      buyers_count: 5
+      sellers_count: 2
+      holders_count: 54
+      new_positions_count: 1
+      added_count: 4
+      reduced_count: 2
+      exits_count: 0
+      total_bought_value_usd: 120000000
+      total_sold_value_usd: 50000000
+      total_tracked_value_usd: 10800000000
+      institutional_avg_holding_price: 430.1
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+    managers:
+      - name: "Dodge & Cox"
+        display_name: "Dodge & Cox"
+        status: "unchanged"
+        change_value_usd: 0
+        current_value_usd: 650000000
+        portfolio_weight_pct: 2.4
+        filing_date: "2026-05-15"
+        report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构持有榜"
+        rank: 2
+  TSLA.US:
+    symbol: "TSLA.US"
+    slug: "tsla-us"
+    company_name: "Tesla Inc."
+    exchange: "NASDAQ"
+    sector: "Consumer Discretionary"
+    industry: "Automobiles"
+    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: ["high-volatility"]
+    market:
+      price: 176.0
+      price_change_pct: -2.4
+      market_cap_usd: 560000000000
+      pe: 65.2
+      forward_pe: 48.3
+      ps: 6.2
+    metrics:
+      manager_count: 200
+      buyers_count: 9
+      sellers_count: 18
+      holders_count: 25
+      new_positions_count: 2
+      added_count: 7
+      reduced_count: 14
+      exits_count: 4
+      total_bought_value_usd: 320000000
+      total_sold_value_usd: 680000000
+      total_tracked_value_usd: 4200000000
+      institutional_avg_holding_price: 190.0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+    managers:
+      - name: "ARK Investment Management LLC"
+        display_name: "木头姐"
+        status: "reduced"
+        change_value_usd: -180000000
+        current_value_usd: 1052546690
+        portfolio_weight_pct: 8.18
+        filing_date: "2026-05-12"
+        report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构卖出榜"
+        rank: 1
+  MSFT.US:
+    symbol: "MSFT.US"
+    slug: "msft-us"
+    company_name: "Microsoft Corp."
+    exchange: "NASDAQ"
+    sector: "Technology"
+    industry: "Software"
+    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: []
+    market:
+      price: 438.5
+      price_change_pct: 0.8
+      market_cap_usd: 3300000000000
+      pe: 34.8
+      forward_pe: 27.4
+      ps: 11.8
+    metrics:
+      manager_count: 200
+      buyers_count: 7
+      sellers_count: 5
+      holders_count: 47
+      new_positions_count: 2
+      added_count: 5
+      reduced_count: 5
+      exits_count: 0
+      total_bought_value_usd: 240000000
+      total_sold_value_usd: 90000000
+      total_tracked_value_usd: 9700000000
+      institutional_avg_holding_price: 452.0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+    managers:
+      - name: "Capital International Investors"
+        display_name: "Capital International"
+        status: "added"
+        change_value_usd: 95000000
+        current_value_usd: 1500000000
+        portfolio_weight_pct: 1.8
+        filing_date: "2026-05-15"
+        report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构持有榜"
+        rank: 3
+  META.US:
+    symbol: "META.US"
+    slug: "meta-us"
+    company_name: "Meta Platforms Inc."
+    exchange: "NASDAQ"
+    sector: "Communication Services"
+    industry: "Internet Content & Information"
+    tags: ["S&P 500", "Nasdaq 100", "Russell 1000", "Russell 3000", "Mag7"]
+    risk_tags: ["fully-exited-by-tracked-managers"]
+    market:
+      price: 485.4
+      price_change_pct: -0.6
+      market_cap_usd: 1220000000000
+      pe: 24.6
+      forward_pe: 20.9
+      ps: 8.4
+    metrics:
+      manager_count: 200
+      buyers_count: 0
+      sellers_count: 12
+      holders_count: 0
+      new_positions_count: 0
+      added_count: 0
+      reduced_count: 6
+      exits_count: 6
+      total_bought_value_usd: 0
+      total_sold_value_usd: 540000000
+      total_tracked_value_usd: 0
+      institutional_avg_holding_price: 0
+      key_institution_bought: false
+      key_institution_bought_value_usd: 0
+      key_institution_holders: []
+    managers:
+      - name: "Sample Growth Fund"
+        display_name: "Sample Growth"
+        status: "exit"
+        change_value_usd: -210000000
+        current_value_usd: 0
+        portfolio_weight_pct: 0
+        filing_date: "2026-05-16"
+        report_period: "2026-03-31"
+    ranking_history:
+      - date: "2026-05-29"
+        ranking: "机构综合榜"
+        rank: 6

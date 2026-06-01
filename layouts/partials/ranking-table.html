@@ -1,0 +1,66 @@
+{{ $ranking := .ranking }}
+<section class="panel ranking-panel" id="{{ $ranking.type }}">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">{{ $ranking.sort_label }}</p>
+      <h2>{{ $ranking.title }}</h2>
+      <p>{{ $ranking.description }}</p>
+    </div>
+    <button class="ghost-button ranking-toggle" type="button" aria-expanded="false">
+      <span>展开</span>
+      <span class="chevron" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table ranking-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>股票</th>
+          <th>信号</th>
+          <th>价格</th>
+          <th>市值</th>
+          <th>估值</th>
+          <th>买入</th>
+          <th>卖出</th>
+          <th>持有</th>
+          <th>{{ $ranking.sort_label }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $idx, $row := $ranking.rows }}
+          <tr {{ if ge $idx 10 }}class="extra-row is-hidden"{{ end }}>
+            <td class="rank-cell">#{{ add $idx 1 }}</td>
+            <td>
+              <a class="stock-link" href="{{ printf "/stocks/%s/" $row.slug | relURL }}">
+                <strong>{{ $row.symbol }}</strong>
+                <span>{{ $row.company_name }}</span>
+              </a>
+            </td>
+            <td>
+              {{ partial "badges.html" $row.badges }}
+              {{ partial "tags.html" $row.tags }}
+            </td>
+            <td>
+              <div class="price-stack">
+                <strong>${{ printf "%.2f" $row.price }}</strong>
+                <span class="{{ if lt $row.price_change_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.2f%%" $row.price_change_pct }}</span>
+              </div>
+            </td>
+            <td>
+              <strong data-money="{{ $row.market_cap_usd }}">--</strong>
+            </td>
+            <td>
+              <span>PE {{ $row.pe | default "--" }}</span>
+              <span class="muted block">Fwd {{ $row.forward_pe | default "--" }} / PS {{ $row.ps | default "--" }}</span>
+            </td>
+            <td><span title="{{ $row.manager_count }} 家追踪机构中有 {{ $row.buyers_count }} 家本期买入">{{ $row.buyers_count | default 0 }} / {{ $row.manager_count | default "--" }}</span></td>
+            <td><span title="{{ $row.manager_count }} 家追踪机构中有 {{ $row.sellers_count }} 家本期卖出">{{ $row.sellers_count | default 0 }} / {{ $row.manager_count | default "--" }}</span></td>
+            <td><span title="{{ $row.manager_count }} 家追踪机构中有 {{ $row.holders_count }} 家当前持有">{{ $row.holders_count | default 0 }} / {{ $row.manager_count | default "--" }}</span></td>
+            <td class="strong-cell">{{ partial "ranking-primary-value.html" (dict "type" $ranking.type "row" $row) }}</td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</section>

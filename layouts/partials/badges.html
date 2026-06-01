@@ -1,0 +1,7 @@
+{{ with . }}
+  <div class="badge-list">
+    {{ range . }}
+      <span class="activity-badge badge-{{ .tone | default "neutral" }}">{{ .label }}</span>
+    {{ end }}
+  </div>
+{{ end }}

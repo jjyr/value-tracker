@@ -1,0 +1,4 @@
+---
+title: "StockHunt"
+layout: "index"
+---

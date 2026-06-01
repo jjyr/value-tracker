@@ -1,0 +1,68 @@
+version: "2026-06-01-v1"
+
+data:
+  timezone: "Asia/Ho_Chi_Minh"
+  currency: "USD"
+  market: "US"
+  symbol_format: "longbridge"
+  output_dir: "public"
+  sqlite_path: "data/stockhunt.sqlite"
+
+institutions:
+  whitelist_version: "2026-06-01-whitelist-v1"
+  managers:
+    - cik: "0001709323"
+      name: "Himalaya Capital Management LLC"
+      display_name: "李录"
+      enabled: true
+      style: "value"
+    - cik: "0001759760"
+      name: "H&H International Investment, LLC"
+      display_name: "段永平"
+      enabled: true
+      style: "value"
+    - cik: "0001067983"
+      name: "Berkshire Hathaway Inc"
+      display_name: "伯克希尔"
+      enabled: true
+      style: "value"
+
+key_institutions:
+  version: "2026-06-01-key-v1"
+  members:
+    - cik: "0001759760"
+      display_name: "段永平"
+      enabled: true
+    - cik: "0001709323"
+      display_name: "李录"
+      enabled: true
+    - cik: "0001067983"
+      display_name: "伯克希尔"
+      enabled: true
+
+strategy:
+  version: "2026-06-01-strategy-v1"
+  id: "institutional_signal_weekly"
+  lookback_trading_days: 21
+  max_positions: 10
+  min_position_weight_pct: 5
+  max_position_weight_pct: 50
+  rebalance_weekday: "monday"
+  if_market_closed: "next_trading_day"
+  if_no_candidates: "hold_existing_positions"
+  allocation_score:
+    buying_top10_score: 10
+    holding_top10_score: 10
+    below_institution_avg_score: 20
+    buying_top10_key_institution_bonus: 10
+    holding_top10_key_institution_bonus: 10
+    selling_top10_penalty: -50
+
+defaults:
+  display:
+    missing_text: "--"
+  market_data_failure:
+    use_last_successful_snapshot: true
+    mark_stale: true
+    max_stale_days: 5
+    if_no_snapshot: "exclude_from_rankings_and_simulation"

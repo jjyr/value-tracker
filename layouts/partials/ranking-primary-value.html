@@ -1,0 +1,22 @@
+{{ $type := .type }}
+{{ $row := .row }}
+{{ $value := "" }}
+{{ $hasValue := false }}
+{{ if eq $type "institutional_combined" }}
+  {{ if isset $row "total_tracked_value_usd" }}{{ $value = $row.total_tracked_value_usd }}{{ $hasValue = true }}{{ end }}
+{{ else if eq $type "institutional_buying" }}
+  {{ if isset $row "total_bought_value_usd" }}{{ $value = $row.total_bought_value_usd }}{{ $hasValue = true }}{{ end }}
+{{ else if eq $type "institutional_holding" }}
+  {{ if isset $row "total_tracked_value_usd" }}{{ $value = $row.total_tracked_value_usd }}{{ $hasValue = true }}{{ end }}
+{{ else if eq $type "institutional_selling" }}
+  {{ if isset $row "total_sold_value_usd" }}{{ $value = $row.total_sold_value_usd }}{{ $hasValue = true }}{{ end }}
+{{ else if eq $type "new_positions" }}
+  {{ if isset $row "new_position_value_usd" }}{{ $value = $row.new_position_value_usd }}{{ $hasValue = true }}{{ end }}
+{{ else if eq $type "exits" }}
+  {{ if isset $row "exit_value_usd" }}{{ $value = $row.exit_value_usd }}{{ $hasValue = true }}{{ end }}
+{{ end }}
+{{ if $hasValue }}
+  <span data-money="{{ $value }}">--</span>
+{{ else }}
+  --
+{{ end }}

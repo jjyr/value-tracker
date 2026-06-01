@@ -1,0 +1,190 @@
+{{ define "main" }}
+{{ $data := site.Data.stockhunt }}
+{{ $sim := $data.simulation }}
+{{ $scoreTooltip := "评分规则：买入榜 Top 10 +10；持有榜 Top 10 +10；命中买入榜或持有榜且低于机构平均持有价 +20；买入榜 Top 10 且重点机构买入 +10；持有榜 Top 10 且重点机构买入 +10；卖出榜 Top 10 -50。" }}
+{{ partial "topbar.html" . }}
+
+<main class="page-shell">
+  <section class="dashboard-grid">
+    <div class="panel hero-panel">
+      <p class="eyebrow">模拟盘净值</p>
+      <div class="hero-value" data-money="{{ $sim.summary.current_value }}">--</div>
+      <div class="hero-change positive">{{ printf "%+.1f%%" $sim.summary.total_return_pct }} 累计</div>
+      <div class="metric-grid">
+        <div>
+          <span>本周</span>
+          <strong class="{{ if lt $sim.summary.weekly_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.weekly_return_pct }}</strong>
+        </div>
+        <div>
+          <span>YTD</span>
+          <strong class="{{ if lt $sim.summary.ytd_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.ytd_return_pct }}</strong>
+        </div>
+        <div>
+          <span>最大回撤</span>
+          <strong class="negative">{{ printf "%.1f%%" $sim.summary.max_drawdown_pct }}</strong>
+        </div>
+        <div>
+          <span>现金</span>
+          <strong>{{ printf "%.1f%%" $sim.summary.cash_weight_pct }}</strong>
+        </div>
+      </div>
+      <div class="benchmark-row">
+        <span>vs SPY <strong class="positive">{{ printf "%+.1f%%" $sim.summary.excess_vs_spy_pct }}</strong></span>
+        <span>vs QQQ <strong class="positive">{{ printf "%+.1f%%" $sim.summary.excess_vs_qqq_pct }}</strong></span>
+      </div>
+    </div>
+
+    <div class="panel chart-panel">
+      <div class="panel-heading compact">
+        <div>
+          <p class="eyebrow">Equity Curve</p>
+          <h2>模拟盘 vs SPY / QQQ</h2>
+        </div>
+        <div class="segmented-control" aria-label="图表范围">
+          <button class="range-button is-active" type="button" data-range="all">ALL</button>
+          <button class="range-button" type="button" data-range="ytd">YTD</button>
+          <button class="range-button" type="button" data-range="3m">3M</button>
+          <button class="range-button" type="button" data-range="1m">1M</button>
+        </div>
+      </div>
+      <svg class="equity-chart" data-points='{{ $sim.equity_curve | jsonify }}' role="img" aria-label="模拟盘净值曲线"></svg>
+      <div class="legend">
+        <span><i class="legend-dot portfolio"></i>StockHunt</span>
+        <span><i class="legend-dot spy"></i>SPY</span>
+        <span><i class="legend-dot qqq"></i>QQQ</span>
+      </div>
+    </div>
+
+    <div class="panel rebalance-panel">
+      <p class="eyebrow">最近调仓</p>
+      <h2>{{ $sim.meta.last_rebalance_date }}</h2>
+      <div class="rebalance-stats">
+        <span>候选 {{ $sim.summary.candidates_count }}</span>
+        <span>持仓 {{ $sim.summary.positions_count }}</span>
+        <span>下次 {{ $sim.meta.next_rebalance_date }}</span>
+      </div>
+      {{ with index $sim.rebalance_history 0 }}
+        <div class="action-list">
+          <h3>买入</h3>
+          {{ range .buys }}
+            <a href="{{ printf "/stocks/%s/" .slug | relURL }}">
+              <strong>{{ .symbol }}</strong>
+              <span>{{ .reason }}</span>
+              <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · {{ printf "%.2f" .shares }} 股</span>
+            </a>
+          {{ end }}
+          <h3>卖出</h3>
+          {{ range .sells }}
+            <div><strong>{{ .symbol }}</strong><span>{{ .reason }}</span></div>
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Portfolio</p>
+        <h2>当前模拟盘持仓</h2>
+      </div>
+      <span class="subtle-badge">自动再平衡 / 周一</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>股票</th>
+            <th>权重</th>
+            <th>价格</th>
+            <th>入场</th>
+            <th>收益</th>
+            <th title="{{ $scoreTooltip }}">评分</th>
+            <th>信号</th>
+            <th>机构均价</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ range $sim.current_positions }}
+            <tr>
+              <td>
+                <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+                  <strong>{{ .symbol }}</strong>
+                  <span>{{ .company_name }}</span>
+                </a>
+              </td>
+              <td>
+                <div class="weight-bar" style="--weight: {{ .actual_weight_pct }}%">
+                  <span>{{ printf "%.1f%%" .actual_weight_pct }}</span>
+                </div>
+              </td>
+              <td>${{ printf "%.2f" .current_price }}</td>
+              <td>${{ printf "%.2f" .entry_price }}</td>
+              <td class="{{ if lt .return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.2f%%" .return_pct }}</td>
+              <td><span class="score-pill has-tooltip" data-tooltip="{{ $scoreTooltip }}" title="{{ $scoreTooltip }}" aria-label="{{ $scoreTooltip }}">{{ .allocation_score }}</span></td>
+              <td>
+                {{ partial "badges.html" .badges }}
+              </td>
+              <td>
+                <strong>${{ printf "%.2f" .institutional_avg_holding_price }}</strong>
+                <span class="{{ if lt .discount_to_institutional_avg_pct 0 }}negative{{ else }}positive{{ end }} block">{{ printf "%+.1f%%" .discount_to_institutional_avg_pct }}</span>
+              </td>
+            </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel rebalance-log-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Rebalance Log</p>
+        <h2>调仓记录</h2>
+      </div>
+      <div class="pagination-controls" aria-label="调仓记录分页">
+        <button class="ghost-button" type="button" data-rebalance-prev>上一页</button>
+        <span class="timeline-page-indicator" data-rebalance-page>1 / 1</span>
+        <button class="ghost-button" type="button" data-rebalance-next>下一页</button>
+      </div>
+    </div>
+    <div class="timeline" data-rebalance-list data-page-size="1">
+      {{ range $sim.rebalance_history }}
+        <article class="timeline-item" data-rebalance-item>
+          <time>{{ .date }}</time>
+          <div class="timeline-body">
+            {{ range .buys }}
+              <div class="timeline-row buy">
+                <div>
+                  <strong>买入 {{ .symbol }}</strong>
+                  <span>{{ .reason }} · 目标 {{ printf "%.1f%%" .target_weight_pct }}</span>
+                </div>
+                <div class="trade-meta">
+                  <strong data-money="{{ .buy_value_usd }}">--</strong>
+                  <span>${{ printf "%.2f" .buy_price }} · {{ printf "%.2f" .shares }} 股</span>
+                </div>
+              </div>
+            {{ end }}
+            {{ range .sells }}
+              <div class="timeline-row sell"><div><strong>卖出 {{ .symbol }}</strong><span>{{ .reason }} · 原权重 {{ printf "%.1f%%" .from_weight_pct }}</span></div></div>
+            {{ end }}
+            {{ range .resizes }}
+              <div class="timeline-row resize"><div><strong>调整 {{ .symbol }}</strong><span>{{ .reason }} · {{ printf "%.1f%%" .from_weight_pct }} → {{ printf "%.1f%%" .to_weight_pct }}</span></div></div>
+            {{ end }}
+          </div>
+        </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="rankings-stack" aria-label="机构榜单">
+    {{ range $data.rankings }}
+      {{ partial "ranking-table.html" (dict "ranking" .) }}
+    {{ end }}
+  </section>
+
+  <footer class="risk-note">
+    本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。模拟盘为历史回测，不代表未来收益。
+  </footer>
+</main>
+{{ end }}

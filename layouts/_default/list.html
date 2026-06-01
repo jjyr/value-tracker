@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{ partial "topbar.html" . }}
+<main class="page-shell">
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Stocks</p>
+        <h1>{{ .Title }}</h1>
+      </div>
+    </div>
+    <div class="stock-grid">
+      {{ range .Pages }}
+        <a class="stock-tile" href="{{ .RelPermalink }}">
+          <strong>{{ .Params.symbol }}</strong>
+          <span>{{ .Title }}</span>
+        </a>
+      {{ end }}
+    </div>
+  </section>
+</main>
+{{ end }}

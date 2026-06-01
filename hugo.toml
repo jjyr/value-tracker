@@ -1,0 +1,11 @@
+baseURL = "http://localhost:1313/"
+languageCode = "zh-CN"
+title = "StockHunt"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap", "robotsTXT"]
+
+[params]
+  description = "机构 13F 信号研究仪表盘"
+  buildStatus = "MVP"
+
+[markup.goldmark.renderer]
+  unsafe = true

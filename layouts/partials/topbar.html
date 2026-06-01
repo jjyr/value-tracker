@@ -1,0 +1,16 @@
+{{ $build := site.Data.stockhunt.build }}
+<header class="topbar">
+  <a class="brand" href="{{ "/" | relURL }}" aria-label="StockHunt 首页">
+    <span class="brand-mark">S</span>
+    <span>
+      <strong>StockHunt</strong>
+      <small>13F Signal Lab</small>
+    </span>
+  </a>
+  <div class="topbar-meta" aria-label="数据状态">
+    <span class="status-pill status-{{ lower ($build.status | default "unknown") }}">{{ $build.status | default "--" }}</span>
+    <span>数据 {{ $build.data_date | default "--" }}</span>
+    <span>13F {{ $build.latest_13f_report_period | default "--" }}</span>
+    <span>构建 {{ $build.built_at | default "--" }}</span>
+  </div>
+</header>
