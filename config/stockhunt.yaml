@@ -46,22 +46,27 @@ rankings:
   activity_tag_limit: 10
 
 strategy:
-  version: "2026-06-01-strategy-v1"
+  version: "2026-06-02-strategy-v2"
   id: "institutional_signal_weekly"
   lookback_trading_days: 21
   max_positions: 10
-  min_position_weight_pct: 5
   max_position_weight_pct: 50
+  min_trade_weight_pct: 1
+  weighting_method: "key_institution_signal_score"
+  score_weight_exponent: 1.0
   rebalance_weekday: "monday"
   if_market_closed: "next_trading_day"
   if_no_candidates: "hold_existing_positions"
-  allocation_score:
-    buying_top10_score: 10
-    holding_top10_score: 10
-    below_institution_avg_score: 20
-    buying_top10_key_institution_bonus: 10
-    holding_top10_key_institution_bonus: 10
-    selling_top10_penalty: -50
+  allocation_signal:
+    key_new_position_score: 30
+    key_added_score: 20
+    key_holding_score: 8
+    key_buy_intensity_score_per_pct: 8
+    key_buy_intensity_max_score: 40
+    below_key_latest_buy_price_bonus: 15
+    multiple_key_institution_bonus: 8
+    key_reduced_penalty: -15
+    key_exit_penalty: -50
 
 defaults:
   display:

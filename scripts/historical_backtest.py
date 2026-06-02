@@ -531,6 +531,9 @@ def metric_seed(symbol: str, manager_count: int) -> Dict[str, Any]:
         "total_tracked_value_usd": 0.0,
         "total_tracked_shares": 0.0,
         "institutional_avg_holding_price": 0.0,
+        "latest_institutional_buy_price": 0.0,
+        "_latest_buy_value_usd": 0.0,
+        "_latest_buy_shares": 0.0,
         "key_institution_bought": False,
         "key_institution_bought_value_usd": 0.0,
         "key_institution_holders": [],
@@ -567,6 +570,10 @@ def metrics_as_of(
         symbols.update(current.get("aggregated_holdings", {}))
         if previous:
             symbols.update(previous.get("aggregated_holdings", {}))
+    portfolio_value_by_cik = {
+        cik: sum(float(holding.get("value_usd") or 0) for holding in filing.get("aggregated_holdings", {}).values())
+        for cik, filing in current_by_cik.items()
+    }
 
     metrics = {symbol: metric_seed(symbol, len(managers)) for symbol in symbols}
     for symbol in sorted(symbols):
@@ -588,6 +595,8 @@ def metrics_as_of(
             previous_shares = float(prev.get("shares") or 0) if prev else 0.0
             current_value = float(cur.get("value_usd") or 0) if cur else 0.0
             previous_value = float(prev.get("value_usd") or 0) if prev else 0.0
+            portfolio_total = portfolio_value_by_cik.get(cik) or 0.0
+            portfolio_weight = current_value / portfolio_total * 100 if portfolio_total > 0 and current_value > 0 else 0.0
             report_price = current_value / current_shares if current_shares > 0 and current_value > 0 else None
             if report_price is None:
                 report_price = price_at(price_index, symbol, as_of) or 0.0
@@ -605,10 +614,15 @@ def metrics_as_of(
                     metric["new_positions_count"] += 1
                     metric["new_position_value_usd"] += current_value
                     bought_value = current_value
+                    bought_shares = current_shares
                 else:
                     metric["added_count"] += 1
                     bought_value = max(change_value, 0)
+                    bought_shares = max(current_shares - previous_shares, 0)
                 metric["total_bought_value_usd"] += bought_value
+                if bought_value > 0 and bought_shares > 0:
+                    metric["_latest_buy_value_usd"] += bought_value
+                    metric["_latest_buy_shares"] += bought_shares
                 if cik in key_set:
                     metric["key_institution_bought"] = True
                     metric["key_institution_bought_value_usd"] += bought_value
@@ -633,12 +647,15 @@ def metrics_as_of(
                     "change_shares": current_shares - previous_shares,
                     "change_value_usd": change_value,
                     "current_value_usd": current_value,
+                    "portfolio_weight_pct": portfolio_weight,
                     "filing_date": current_filing["filing_date"],
                     "report_period": current_filing["report_period"],
                 }
             )
         if metric["total_tracked_shares"] > 0:
             metric["institutional_avg_holding_price"] = metric["total_tracked_value_usd"] / metric["total_tracked_shares"]
+        if metric["_latest_buy_shares"] > 0:
+            metric["latest_institutional_buy_price"] = metric["_latest_buy_value_usd"] / metric["_latest_buy_shares"]
 
     rows = []
     for symbol, metric in metrics.items():
@@ -659,6 +676,8 @@ def metrics_as_of(
             "ps": None,
             **metric,
         }
+        row.pop("_latest_buy_value_usd", None)
+        row.pop("_latest_buy_shares", None)
         rows.append(row)
     return rows
 
@@ -673,31 +692,13 @@ def ranks_for_rows(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
     }
 
 
-def candidates_for_date(config: Dict[str, Any], rows: List[Dict[str, Any]], ranks: Dict[str, Dict[str, int]]) -> List[Dict[str, Any]]:
-    rules = hugo_data.allocation_rules(config)
-    top_n = int(config.get("rankings", {}).get("top_n_for_simulation", 10))
-    candidates = []
-    for row in rows:
-        score, components, source_rankings = hugo_data.score_components(row, ranks, rules, top_n)
-        if score <= 0 or not row.get("price"):
-            continue
-        item = dict(row)
-        item["allocation_score"] = score
-        item["allocation_components"] = components
-        item["source_rankings"] = source_rankings
-        item["discount_to_institutional_avg_pct"] = hugo_data.discount_to_institutional_avg(row)
-        candidates.append(item)
-    candidates.sort(
-        key=lambda row: (
-            -row["allocation_score"],
-            -int(bool(row.get("key_institution_bought"))),
-            -row.get("discount_to_institutional_avg_pct", 0),
-            -(row.get("total_bought_value_usd") or 0),
-            row["symbol"],
-        )
-    )
-    max_positions = int(config.get("strategy", {}).get("max_positions", 10))
-    return hugo_data.normalize_weights(candidates[:max_positions], config)
+def candidates_for_date(
+    config: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+    ranks: Dict[str, Dict[str, int]],
+    existing_symbols: Optional[set] = None,
+) -> List[Dict[str, Any]]:
+    return hugo_data.simulation_candidates(config, rows, ranks, existing_symbols)
 
 
 def portfolio_value(positions: Dict[str, Dict[str, Any]], cash: float, price_index: Dict[str, Dict[str, Any]], date: dt.date) -> float:
@@ -771,6 +772,41 @@ def build_trade(
     return payload
 
 
+def trade_weight_pct(value: float, total_value: float) -> float:
+    return abs(value) / total_value * 100 if total_value else 0.0
+
+
+def is_material_trade(value: float, total_value: float, min_trade_weight_pct: float) -> bool:
+    return trade_weight_pct(value, total_value) >= min_trade_weight_pct
+
+
+def build_position(
+    symbol: str,
+    row: Dict[str, Any],
+    shares: int,
+    avg_cost: float,
+    entry_date: str,
+    price: float,
+    badges: List[Dict[str, str]],
+) -> Dict[str, Any]:
+    return {
+        "shares": shares,
+        "avg_cost": avg_cost,
+        "entry_date": entry_date,
+        "target_weight_pct": row["target_weight_pct"],
+        "allocation_score": row["allocation_score"],
+        "allocation_components": row["allocation_components"],
+        "source_rankings": row["source_rankings"],
+        "badges": badges,
+        "company_name": row.get("company_name") or symbol,
+        "institutional_avg_holding_price": row.get("institutional_avg_holding_price") or 0,
+        "latest_institutional_buy_price": row.get("latest_institutional_buy_price") or 0,
+        "discount_to_institutional_avg_pct": row.get("discount_to_institutional_avg_pct") or 0,
+        "key_institution_bought": bool(row.get("key_institution_bought")),
+        "last_price": price,
+    }
+
+
 def run_simulation(
     config: Dict[str, Any],
     filings: List[Dict[str, Any]],
@@ -781,6 +817,7 @@ def run_simulation(
     rebalance_until: Optional[dt.date] = None,
 ) -> Dict[str, Any]:
     initial_value = float(config.get("strategy", {}).get("initial_value", 100000))
+    min_trade_weight = float(config.get("strategy", {}).get("min_trade_weight_pct", 1))
     filings_by_cik = group_filings_by_cik(filings)
     price_index = build_price_index(price_history)
     trading_days = trading_dates(price_index, start_date, end_date)
@@ -805,36 +842,94 @@ def run_simulation(
             total_value = portfolio_value(positions, cash, price_index, date)
             rows = metrics_as_of(config, filings_by_cik, price_index, cusip_map, date)
             ranks = ranks_for_rows(rows)
-            selected = candidates_for_date(config, rows, ranks)
+            selected = candidates_for_date(config, rows, ranks, set(positions))
             last_candidates_count = len(selected)
             last_rebalance_date = date
             if selected:
                 key_name_set = key_names(config)
+                manager_links = hugo_data.manager_links_by_name(config)
                 activity_limit = int(config.get("rankings", {}).get("activity_tag_limit", 10))
                 target_by_symbol = {row["symbol"]: row for row in selected}
                 last_candidate_rows = target_by_symbol
                 buys = []
                 sells = []
                 new_positions: Dict[str, Dict[str, Any]] = {}
+                sold_out_symbols = set()
 
                 for symbol, position in positions.items():
-                    if symbol in target_by_symbol:
-                        continue
                     price = price_at(price_index, symbol, date) or position.get("last_price") or position.get("avg_cost") or 0.0
-                    value = position["shares"] * price
-                    sells.append(
-                        {
-                            "symbol": symbol,
-                            "slug": hugo_data.slugify_symbol(symbol),
-                            "action": "exit",
-                            "reason": "不在本期目标持仓",
-                            "from_weight_pct": round(value / total_value * 100, 2) if total_value else 0,
-                            "trade_weight_pct": round(value / total_value * 100, 2) if total_value else 0,
-                            "sell_value_usd": round(value, 2),
-                            "sell_price": price,
-                            "shares": int(position["shares"]),
-                        }
-                    )
+                    current_shares = int(position["shares"])
+                    row = target_by_symbol.get(symbol)
+                    target_shares = 0
+                    if row and price:
+                        target_value = total_value * row["target_weight_pct"] / 100
+                        target_shares = math.floor(target_value / price)
+                    if target_shares >= current_shares:
+                        continue
+                    sell_shares = current_shares - target_shares
+                    sell_value = sell_shares * price
+                    if not is_material_trade(sell_value, total_value, min_trade_weight):
+                        if row:
+                            badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit, manager_links)
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                current_shares,
+                                position["avg_cost"],
+                                position["entry_date"],
+                                price,
+                                badges,
+                            )
+                        else:
+                            carried = dict(position)
+                            carried["target_weight_pct"] = 0
+                            carried["last_price"] = price
+                            new_positions[symbol] = carried
+                        continue
+                    cash += sell_value
+                    if row:
+                        if target_shares <= 0:
+                            sold_out_symbols.add(symbol)
+                        sells.append(
+                            {
+                                "symbol": symbol,
+                                "slug": hugo_data.slugify_symbol(symbol),
+                                "action": "exit" if target_shares <= 0 else "sell",
+                                "reason": "目标权重降至 0" if target_shares <= 0 else "目标权重下降",
+                                "from_weight_pct": round(current_shares * price / total_value * 100, 2) if total_value else 0,
+                                "to_weight_pct": round(row["target_weight_pct"], 2),
+                                "trade_weight_pct": round(trade_weight_pct(sell_value, total_value), 2),
+                                "sell_value_usd": round(sell_value, 2),
+                                "sell_price": price,
+                                "shares": sell_shares,
+                            }
+                        )
+                        if target_shares > 0:
+                            badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit, manager_links)
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                target_shares,
+                                position["avg_cost"],
+                                position["entry_date"],
+                                price,
+                                badges,
+                        )
+                    else:
+                        sold_out_symbols.add(symbol)
+                        sells.append(
+                            {
+                                "symbol": symbol,
+                                "slug": hugo_data.slugify_symbol(symbol),
+                                "action": "exit",
+                                "reason": "不在本期目标持仓",
+                                "from_weight_pct": round(current_shares * price / total_value * 100, 2) if total_value else 0,
+                                "trade_weight_pct": round(trade_weight_pct(sell_value, total_value), 2),
+                                "sell_value_usd": round(sell_value, 2),
+                                "sell_price": price,
+                                "shares": current_shares,
+                            }
+                        )
 
                 for symbol, row in target_by_symbol.items():
                     price = price_at(price_index, symbol, date)
@@ -842,64 +937,88 @@ def run_simulation(
                         continue
                     target_value = total_value * row["target_weight_pct"] / 100
                     target_shares = math.floor(target_value / price)
-                    existing = positions.get(symbol)
-                    previous_shares = int(existing["shares"]) if existing else 0
-                    previous_value = previous_shares * price
+                    existing = new_positions.get(symbol) or positions.get(symbol)
+                    if symbol in sold_out_symbols and symbol not in new_positions:
+                        previous_shares = 0
+                    else:
+                        previous_shares = int(existing["shares"]) if existing else 0
                     delta_shares = target_shares - previous_shares
                     delta_value = delta_shares * price
                     reason = hugo_data.buy_reason(row.get("source_rankings") or [])
-                    badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit)
-                    if delta_shares:
-                        if previous_shares <= 0 and delta_value > 0:
-                            buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares, total_value, "initial-buy"))
-                            avg_cost = price
-                            entry_date = date.isoformat()
-                        elif delta_value > 0:
-                            buys.append(build_trade(reason, symbol, row, delta_value, price, delta_shares, total_value))
-                            old_cost_value = existing["avg_cost"] * previous_shares
-                            avg_cost = (old_cost_value + delta_value) / target_shares if target_shares else price
-                            entry_date = existing["entry_date"]
-                        else:
-                            sells.append(
-                                {
-                                    "symbol": symbol,
-                                    "slug": hugo_data.slugify_symbol(symbol),
-                                    "action": "sell",
-                                    "reason": "目标权重下降",
-                                    "from_weight_pct": round(previous_value / total_value * 100, 2) if total_value else 0,
-                                    "to_weight_pct": round(row["target_weight_pct"], 2),
-                                    "trade_weight_pct": round(abs(delta_value) / total_value * 100, 2) if total_value else 0,
-                                    "sell_value_usd": round(abs(delta_value), 2),
-                                    "sell_price": price,
-                                    "shares": int(abs(delta_shares)),
-                                }
+                    badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit, manager_links)
+                    if delta_shares <= 0:
+                        if previous_shares > 0 and symbol not in new_positions:
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                previous_shares,
+                                existing["avg_cost"],
+                                existing["entry_date"],
+                                price,
+                                badges,
                             )
-                            avg_cost = existing["avg_cost"] if existing else price
-                            entry_date = existing["entry_date"] if existing else date.isoformat()
-                    else:
-                        avg_cost = existing["avg_cost"] if existing else price
-                        entry_date = existing["entry_date"] if existing else date.isoformat()
-                    if target_shares <= 0:
                         continue
-                    new_positions[symbol] = {
-                        "shares": target_shares,
-                        "avg_cost": avg_cost,
-                        "entry_date": entry_date,
-                        "target_weight_pct": row["target_weight_pct"],
-                        "allocation_score": row["allocation_score"],
-                        "allocation_components": row["allocation_components"],
-                        "source_rankings": row["source_rankings"],
-                        "badges": badges,
-                        "company_name": row.get("company_name") or symbol,
-                        "institutional_avg_holding_price": row.get("institutional_avg_holding_price") or 0,
-                        "discount_to_institutional_avg_pct": row.get("discount_to_institutional_avg_pct") or 0,
-                        "key_institution_bought": bool(row.get("key_institution_bought")),
-                        "last_price": price,
-                    }
+                    if not is_material_trade(delta_value, total_value, min_trade_weight):
+                        if previous_shares > 0 and symbol not in new_positions:
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                previous_shares,
+                                existing["avg_cost"],
+                                existing["entry_date"],
+                                price,
+                                badges,
+                            )
+                        continue
+                    buy_shares = min(delta_shares, math.floor(cash / price)) if price else 0
+                    if buy_shares <= 0:
+                        if previous_shares > 0 and symbol not in new_positions:
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                previous_shares,
+                                existing["avg_cost"],
+                                existing["entry_date"],
+                                price,
+                                badges,
+                            )
+                        continue
+                    buy_value = buy_shares * price
+                    if not is_material_trade(buy_value, total_value, min_trade_weight):
+                        if previous_shares > 0 and symbol not in new_positions:
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                previous_shares,
+                                existing["avg_cost"],
+                                existing["entry_date"],
+                                price,
+                                badges,
+                            )
+                        continue
+                    action = "initial-buy" if previous_shares <= 0 else "buy"
+                    buys.append(build_trade(reason, symbol, row, buy_value, price, buy_shares, total_value, action))
+                    cash -= buy_value
+                    final_shares = previous_shares + buy_shares
+                    if previous_shares <= 0:
+                        avg_cost = price
+                        entry_date = date.isoformat()
+                    else:
+                        old_cost_value = existing["avg_cost"] * previous_shares
+                        avg_cost = (old_cost_value + buy_value) / final_shares if final_shares else price
+                        entry_date = existing["entry_date"]
+                    new_positions[symbol] = build_position(
+                        symbol,
+                        row,
+                        final_shares,
+                        avg_cost,
+                        entry_date,
+                        price,
+                        badges,
+                    )
 
                 positions = new_positions
-                invested_value = sum((price_at(price_index, symbol, date) or 0) * row["shares"] for symbol, row in positions.items())
-                cash = max(0.0, total_value - invested_value)
+                cash = max(0.0, cash)
                 if buys or sells:
                     history.append({"date": date.isoformat(), "buys": buys, "sells": sells})
 
@@ -946,6 +1065,7 @@ def run_simulation(
                 "current_price": round(current_price, 4),
                 "return_pct": round(percent_change(current_price, position["avg_cost"]), 2),
                 "institutional_avg_holding_price": round(position.get("institutional_avg_holding_price") or 0, 4),
+                "latest_institutional_buy_price": round(position.get("latest_institutional_buy_price") or 0, 4),
                 "discount_to_institutional_avg_pct": round(position.get("discount_to_institutional_avg_pct") or 0, 2),
                 "key_institution_bought": bool(position.get("key_institution_bought")),
                 "shares": int(position["shares"]),
@@ -962,7 +1082,8 @@ def run_simulation(
             "end_date": final_date.isoformat(),
             "lookback_trading_days": config.get("strategy", {}).get("lookback_trading_days", 21),
             "max_positions": int(config.get("strategy", {}).get("max_positions", 10)),
-            "weighting_method": "allocation_score_clamped_5_50",
+            "weighting_method": config.get("strategy", {}).get("weighting_method", "key_institution_signal_score"),
+            "min_trade_weight_pct": min_trade_weight,
             "last_rebalance_date": last_rebalance_date.isoformat() if last_rebalance_date else None,
             "rebalance_until": rebalance_until.isoformat() if rebalance_until else None,
             "next_rebalance_date": hugo_data.next_monday(final_date.isoformat()),

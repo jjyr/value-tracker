@@ -1,0 +1,161 @@
+{{ define "main" }}
+{{ partial "topbar.html" . }}
+{{ $institution := index site.Data.stockhunt.institutions .Params.cik }}
+{{ if not $institution }}
+  <main class="page-shell">
+    <section class="panel">
+      <h1>{{ .Title }}</h1>
+      <p>暂无该机构的数据。</p>
+    </section>
+  </main>
+{{ else }}
+  <main class="page-shell detail-shell">
+    <a class="back-link" href="{{ "/" | relURL }}">← 返回首页</a>
+    <section class="detail-hero">
+      <div>
+        <p class="eyebrow">Institution · {{ $institution.cik }}</p>
+        <h1>{{ $institution.display_name }}</h1>
+        <p>{{ $institution.name }}</p>
+      </div>
+    </section>
+
+    <section class="detail-grid">
+      <div class="panel">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">Holdings</p>
+            <h2>当前持仓概览</h2>
+          </div>
+        </div>
+        <div class="stat-list">
+          <div><span>持仓数量</span><strong>{{ $institution.summary.holdings_count }}</strong></div>
+          <div><span>本期变动</span><strong>{{ $institution.summary.changes_count }}</strong></div>
+          <div><span>持有市值</span><strong data-money="{{ $institution.summary.total_value_usd }}">--</strong></div>
+          <div><span>买入金额</span><strong data-money="{{ $institution.summary.bought_value_usd }}">--</strong></div>
+          <div><span>卖出金额</span><strong data-money="{{ $institution.summary.sold_value_usd }}">--</strong></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">Recent Activity</p>
+            <h2>最近变动</h2>
+          </div>
+        </div>
+        <div class="action-list">
+          {{ range first 5 $institution.recent_changes }}
+            {{ $badgeTone := "holding" }}
+            {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+            <a class="action-card {{ if eq .status_tone "sell" }}sell{{ else }}buy{{ end }}" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+              <strong>{{ .status_label }} {{ .symbol }}</strong>
+              <span>{{ .company_name }}</span>
+              <span><b data-money="{{ .change_value_usd }}">--</b> · <em class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</em></span>
+            </a>
+          {{ else }}
+            <p class="muted">本期没有明显变动。</p>
+          {{ end }}
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Portfolio</p>
+          <h2>当前持仓</h2>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>股票</th>
+              <th>状态</th>
+              <th>当前持有</th>
+              <th>组合权重</th>
+              <th>价格</th>
+              <th>估值</th>
+              <th>披露日期</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ range $institution.holdings }}
+              {{ $badgeTone := "holding" }}
+              {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+              <tr>
+                <td>
+                  <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+                    <strong>{{ .symbol }}</strong>
+                    <span>{{ .company_name }}</span>
+                  </a>
+                </td>
+                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span></td>
+                <td><span data-money="{{ .current_value_usd }}">--</span></td>
+                <td>{{ printf "%.2f%%" .portfolio_weight_pct }}</td>
+                <td>
+                  <div class="price-stack">
+                    <strong>${{ printf "%.2f" .price }}</strong>
+                    <span class="{{ if lt .price_change_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.2f%%" .price_change_pct }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span>PE {{ .pe | default "--" }}</span>
+                  <span class="muted block">Fwd {{ .forward_pe | default "--" }} / PS {{ .ps | default "--" }}</span>
+                </td>
+                <td>{{ .filing_date }}</td>
+              </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Changes</p>
+          <h2>最近变动明细</h2>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>股票</th>
+              <th>状态</th>
+              <th>变动金额</th>
+              <th>变动股数</th>
+              <th>当前持有</th>
+              <th>披露日期</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ range $institution.recent_changes }}
+              {{ $badgeTone := "holding" }}
+              {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+              <tr>
+                <td>
+                  <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+                    <strong>{{ .symbol }}</strong>
+                    <span>{{ .company_name }}</span>
+                  </a>
+                </td>
+                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span></td>
+                <td><span data-money="{{ .change_value_usd }}">--</span></td>
+                <td>{{ printf "%+.0f" .change_shares }}</td>
+                <td><span data-money="{{ .current_value_usd }}">--</span></td>
+                <td>{{ .filing_date }}</td>
+              </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="risk-note">
+      本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。
+    </footer>
+  </main>
+{{ end }}
+{{ end }}

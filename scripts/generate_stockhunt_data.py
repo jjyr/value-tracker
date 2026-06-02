@@ -61,6 +61,21 @@ def ensure_content_pages(content_dir: pathlib.Path, rows: Iterable[Dict[str, Any
         )
 
 
+def ensure_institution_pages(content_dir: pathlib.Path, managers: Iterable[Dict[str, Any]]) -> None:
+    content_dir.mkdir(parents=True, exist_ok=True)
+    for manager in managers:
+        cik = normalize_cik(manager.get("cik"))
+        path = content_dir / f"{manager_slug(cik)}.md"
+        if path.exists():
+            continue
+        title = content_title(manager.get("display_name") or manager.get("name") or cik)
+        name = content_title(manager.get("name") or title)
+        path.write_text(
+            f'---\ntitle: "{title}"\ncik: "{cik}"\nmanager_name: "{name}"\n---\n',
+            encoding="utf-8",
+        )
+
+
 def enabled_manager_count(config: Dict[str, Any]) -> int:
     managers = config.get("institutions", {}).get("managers", [])
     return sum(1 for manager in managers if manager.get("enabled", True))
@@ -74,6 +89,10 @@ def normalize_cik(value: Any) -> str:
 def enabled_manager_map(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     managers = config.get("institutions", {}).get("managers", [])
     return {normalize_cik(manager.get("cik")): manager for manager in managers if manager.get("enabled", True)}
+
+
+def enabled_managers(config: Dict[str, Any]) -> List[Dict[str, Any]]:
+    return [manager for manager in config.get("institutions", {}).get("managers", []) if manager.get("enabled", True)]
 
 
 def key_institution_ciks(config: Dict[str, Any]) -> set:
@@ -108,6 +127,46 @@ def badge(label: str, tone: str) -> Dict[str, str]:
     return {"label": label, "tone": tone}
 
 
+def linked_badge(label: str, tone: str, href: Optional[str] = None, tip: Optional[str] = None) -> Dict[str, str]:
+    item = badge(label, tone)
+    if href:
+        item["href"] = href
+    if tip:
+        item["tip"] = tip
+    return item
+
+
+def manager_slug(cik: Any) -> str:
+    return normalize_cik(cik)
+
+
+def manager_href(cik: Any) -> str:
+    return f"/institutions/{manager_slug(cik)}/"
+
+
+def manager_links_by_name(config: Dict[str, Any]) -> Dict[str, str]:
+    links: Dict[str, str] = {}
+    for manager in enabled_managers(config):
+        display_name = manager.get("display_name") or manager.get("name")
+        if display_name:
+            links[display_name] = manager_href(manager.get("cik"))
+    return links
+
+
+def institution_badge_tip(name: str, status: Optional[str], current_shares: float) -> str:
+    if status in {"new_position", "unknown_previous"}:
+        return f"{name}：重点机构本期新建仓该股票。"
+    if status == "added":
+        return f"{name}：重点机构本期增持该股票。"
+    if status == "reduced":
+        return f"{name}：重点机构本期减持该股票。"
+    if status == "exited":
+        return f"{name}：重点机构本期清仓该股票。"
+    if current_shares > 0:
+        return f"{name}：重点机构当前持有该股票。"
+    return f"{name}：重点机构与该股票有关。"
+
+
 def rank_in_limit(ranks: Dict[str, Dict[str, int]], kind: str, symbol: str, limit: int) -> Optional[int]:
     rank = ranks[kind].get(symbol)
     return rank if rank and rank <= limit else None
@@ -118,25 +177,24 @@ def build_badges(
     ranks: Dict[str, Dict[str, int]],
     key_names: set,
     activity_tag_limit: int = 10,
+    manager_links: Optional[Dict[str, str]] = None,
 ) -> List[Dict[str, str]]:
-    symbol = row["symbol"]
+    del ranks, activity_tag_limit
     badges: List[Dict[str, str]] = []
-    if rank := rank_in_limit(ranks, "buying", symbol, activity_tag_limit):
-        badges.append(badge(f"买入 #{rank}", "buying"))
-    if rank := rank_in_limit(ranks, "selling", symbol, activity_tag_limit):
-        badges.append(badge(f"卖出 #{rank}", "selling"))
-    if rank := rank_in_limit(ranks, "new", symbol, activity_tag_limit):
-        badges.append(badge(f"新建仓 #{rank}", "new"))
-    if rank := rank_in_limit(ranks, "exit", symbol, activity_tag_limit):
-        badges.append(badge(f"清仓 #{rank}", "exit"))
-
-    if (row.get("holders_count") or 0) == 0 and (row.get("total_tracked_value_usd") or 0) == 0 and ranks["exit"].get(symbol):
-        badges.append(badge("已清仓", "cleared"))
-
-    row_key_holders = row.get("key_institution_holders") or []
-    for holder in row_key_holders:
+    manager_links = manager_links or {}
+    institution_tips: Dict[str, str] = {}
+    for holder in row.get("key_institution_holders") or []:
         if holder in key_names:
-            badges.append(badge(holder, "key"))
+            institution_tips.setdefault(holder, institution_badge_tip(holder, None, 1.0))
+    for manager in row.get("managers") or []:
+        name = manager.get("display_name") or manager.get("name")
+        status = manager.get("status")
+        current_shares = float(manager.get("current_shares") or 0)
+        changed = status in {"new_position", "unknown_previous", "added", "reduced", "exited"}
+        if name in key_names and (current_shares > 0 or changed):
+            institution_tips[name] = institution_badge_tip(name, status, current_shares)
+    for name, tip in institution_tips.items():
+        badges.append(linked_badge(name, "key", manager_links.get(name), tip))
     return badges
 
 
@@ -148,6 +206,13 @@ def sort_combined_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             -(row.get("holders_count") or 0),
             row["symbol"],
         ),
+    )
+
+
+def sort_rows_by_value(rows: List[Dict[str, Any]], key: str) -> List[Dict[str, Any]]:
+    return sorted(
+        [row for row in rows if (row.get(key) or 0) > 0],
+        key=lambda row: (-(row.get(key) or 0), row["symbol"]),
     )
 
 
@@ -163,8 +228,43 @@ def market_row(raw: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def activity_share_metrics(managers: List[Dict[str, Any]]) -> Dict[str, float]:
+    bought_shares = 0.0
+    bought_reference_shares = 0.0
+    sold_shares = 0.0
+    sold_reference_shares = 0.0
+    for manager in managers:
+        status = manager.get("status")
+        previous_shares = float(manager.get("previous_shares") or 0)
+        current_shares = float(manager.get("current_shares") or 0)
+        change_shares = float(manager.get("change_shares") or 0)
+        if status in {"new_position", "unknown_previous", "added"}:
+            shares = current_shares if status in {"new_position", "unknown_previous"} else max(change_shares, 0.0)
+            reference = current_shares if status in {"new_position", "unknown_previous"} else previous_shares
+            if shares > 0:
+                bought_shares += shares
+                bought_reference_shares += reference if reference > 0 else shares
+        elif status in {"reduced", "exited"}:
+            shares = abs(change_shares) or max(previous_shares - current_shares, 0.0)
+            if shares > 0:
+                sold_shares += shares
+                sold_reference_shares += previous_shares if previous_shares > 0 else shares
+    return {
+        "total_bought_shares": round(bought_shares, 4),
+        "total_sold_shares": round(sold_shares, 4),
+        "total_bought_shares_pct": round(bought_shares / bought_reference_shares * 100, 4)
+        if bought_reference_shares > 0
+        else 0.0,
+        "total_sold_shares_pct": round(sold_shares / sold_reference_shares * 100, 4)
+        if sold_reference_shares > 0
+        else 0.0,
+    }
+
+
 def ranking_row(raw: Dict[str, Any], badges: List[Dict[str, str]]) -> Dict[str, Any]:
     institution = raw.get("institution") or {}
+    managers = institution.get("managers") or []
+    latest_buy_price = latest_institutional_buy_price(raw)
     row = {
         "symbol": raw["symbol"],
         "slug": raw.get("slug") or slugify_symbol(raw["symbol"]),
@@ -189,9 +289,12 @@ def ranking_row(raw: Dict[str, Any], badges: List[Dict[str, str]]) -> Dict[str, 
             "exits_count": institution.get("exits_count", 0),
             "total_tracked_value_usd": institution.get("total_tracked_value_usd", 0),
             "institutional_avg_holding_price": institution.get("institutional_avg_holding_price", 0),
+            "latest_institutional_buy_price": latest_buy_price,
             "key_institution_bought": institution.get("key_institution_bought", False),
+            "managers": managers,
         }
     )
+    row.update(activity_share_metrics(managers))
     return row
 
 
@@ -373,6 +476,7 @@ def build_ranking_scope(
     metrics_by_symbol: Dict[str, Dict[str, Any]],
     key_names: set,
     activity_tag_limit: int,
+    manager_links: Dict[str, str],
 ) -> Dict[str, Any]:
     metric_rows = list(metrics_by_symbol.values())
     ranks = {
@@ -389,7 +493,9 @@ def build_ranking_scope(
             continue
         scoped_raw = copy.deepcopy(row)
         scoped_raw["institution"] = metric
-        scoped_rows.append(ranking_row(scoped_raw, build_badges({**scoped_raw, **metric}, ranks, key_names, activity_tag_limit)))
+        scoped_rows.append(
+            ranking_row(scoped_raw, build_badges({**scoped_raw, **metric}, ranks, key_names, activity_tag_limit, manager_links))
+        )
     return {"key": key, "label": label, "rows": sort_combined_rows(scoped_rows)}
 
 
@@ -400,6 +506,7 @@ def build_historical_ranking_scopes(
     historical_13f_path: Optional[pathlib.Path],
     key_names: set,
     activity_tag_limit: int,
+    manager_links: Dict[str, str],
 ) -> List[Dict[str, Any]]:
     manager_by_cik = enabled_manager_map(config)
     history_index = historical_holding_index(historical_13f_path, set(manager_by_cik))
@@ -413,13 +520,18 @@ def build_historical_ranking_scopes(
         ("all", "All", periods),
     ]:
         metrics = aggregate_scope_metrics(config, rows, history_index, scope_periods)
-        scopes.append(build_ranking_scope(key, label, rows, metrics, key_names, activity_tag_limit))
+        scopes.append(build_ranking_scope(key, label, rows, metrics, key_names, activity_tag_limit, manager_links))
     return scopes
 
 
 def stock_entry(raw: Dict[str, Any], key_names: set) -> Dict[str, Any]:
     institution = raw.get("institution") or {}
     key_holders = [name for name in institution.get("key_institution_holders", []) if name in key_names]
+    managers = []
+    for manager in institution.get("managers") or []:
+        manager_row = dict(manager)
+        manager_row["href"] = manager_href(manager_row.get("cik"))
+        managers.append(manager_row)
     return {
         "symbol": raw["symbol"],
         "slug": raw.get("slug") or slugify_symbol(raw["symbol"]),
@@ -443,13 +555,119 @@ def stock_entry(raw: Dict[str, Any], key_names: set) -> Dict[str, Any]:
             "total_sold_value_usd": institution.get("total_sold_value_usd", 0),
             "total_tracked_value_usd": institution.get("total_tracked_value_usd", 0),
             "institutional_avg_holding_price": institution.get("institutional_avg_holding_price", 0),
+            "latest_institutional_buy_price": institution.get("latest_institutional_buy_price", 0)
+            or latest_institutional_buy_price(raw),
             "key_institution_bought": institution.get("key_institution_bought", False),
             "key_institution_bought_value_usd": institution.get("key_institution_bought_value_usd", 0),
             "key_institution_holders": key_holders,
         },
-        "managers": institution.get("managers") or [],
+        "managers": managers,
         "ranking_history": raw.get("ranking_history") or [],
     }
+
+
+def status_label(status: str) -> str:
+    labels = {
+        "new_position": "新建仓",
+        "unknown_previous": "新建仓",
+        "added": "增持",
+        "reduced": "减持",
+        "exited": "清仓",
+        "unchanged": "持有",
+    }
+    return labels.get(status, status or "--")
+
+
+def status_tone(status: str) -> str:
+    if status in {"new_position", "unknown_previous", "added"}:
+        return "buy"
+    if status in {"reduced", "exited"}:
+        return "sell"
+    return "hold"
+
+
+def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str, Any]:
+    status = manager.get("status") or ""
+    row = {
+        "symbol": raw["symbol"],
+        "slug": raw.get("slug") or slugify_symbol(raw["symbol"]),
+        "company_name": raw.get("company_name") or raw["symbol"],
+        "status": status,
+        "status_label": status_label(status),
+        "status_tone": status_tone(status),
+        "previous_shares": manager.get("previous_shares") or 0,
+        "current_shares": manager.get("current_shares") or 0,
+        "change_shares": manager.get("change_shares") or 0,
+        "change_value_usd": manager.get("change_value_usd") or 0,
+        "current_value_usd": manager.get("current_value_usd") or 0,
+        "portfolio_weight_pct": manager.get("portfolio_weight_pct") or 0,
+        "filing_date": manager.get("filing_date"),
+        "report_period": manager.get("report_period"),
+    }
+    row.update(market_row(raw))
+    return row
+
+
+def build_institutions(config: Dict[str, Any], rows: List[Dict[str, Any]]) -> Dict[str, Any]:
+    output: Dict[str, Any] = {}
+    rows_by_symbol = {row["symbol"]: row for row in rows}
+    for manager in enabled_managers(config):
+        cik = normalize_cik(manager.get("cik"))
+        slug = manager_slug(cik)
+        holdings = []
+        changes = []
+        for raw in rows_by_symbol.values():
+            institution = raw.get("institution") or {}
+            for manager_row in institution.get("managers") or []:
+                if normalize_cik(manager_row.get("cik")) != cik:
+                    continue
+                stock_row = manager_stock_row(raw, manager_row)
+                if (stock_row.get("current_shares") or 0) > 0:
+                    holdings.append(stock_row)
+                if stock_row["status"] not in {"", "unchanged", "not_held"} and abs(float(stock_row.get("change_value_usd") or 0)) > 0:
+                    changes.append(stock_row)
+        holdings.sort(
+            key=lambda row: (
+                -(row.get("current_value_usd") or 0),
+                -(row.get("portfolio_weight_pct") or 0),
+                row["symbol"],
+            )
+        )
+        changes.sort(
+            key=lambda row: (
+                -abs(float(row.get("change_value_usd") or 0)),
+                row["symbol"],
+            )
+        )
+        total_value = sum(float(row.get("current_value_usd") or 0) for row in holdings)
+        bought_value = sum(
+            max(float(row.get("change_value_usd") or 0), 0.0)
+            for row in changes
+            if row.get("status") in {"new_position", "unknown_previous", "added"}
+        )
+        sold_value = sum(
+            abs(min(float(row.get("change_value_usd") or 0), 0.0))
+            for row in changes
+            if row.get("status") in {"reduced", "exited"}
+        )
+        output[slug] = {
+            "cik": cik,
+            "slug": slug,
+            "href": manager_href(cik),
+            "name": manager.get("name"),
+            "display_name": manager.get("display_name") or manager.get("name"),
+            "style": manager.get("style"),
+            "summary": {
+                "holdings_count": len(holdings),
+                "changes_count": len(changes),
+                "total_value_usd": total_value,
+                "bought_value_usd": bought_value,
+                "sold_value_usd": sold_value,
+            },
+            "holdings": holdings,
+            "recent_changes": changes,
+        }
+    return output
 
 
 def build_metadata(config: Dict[str, Any], snapshot: Dict[str, Any]) -> Dict[str, Any]:
@@ -494,14 +712,17 @@ def date_offset(value: Optional[str], days: int) -> Optional[str]:
 
 
 def allocation_rules(config: Dict[str, Any]) -> Dict[str, float]:
-    rules = config.get("strategy", {}).get("allocation_score", {})
+    rules = config.get("strategy", {}).get("allocation_signal", {})
     return {
-        "buying_top10_score": rules.get("buying_top10_score", 10),
-        "holding_top10_score": rules.get("holding_top10_score", 10),
-        "below_institution_avg_score": rules.get("below_institution_avg_score", 20),
-        "buying_top10_key_institution_bonus": rules.get("buying_top10_key_institution_bonus", 10),
-        "holding_top10_key_institution_bonus": rules.get("holding_top10_key_institution_bonus", 10),
-        "selling_top10_penalty": rules.get("selling_top10_penalty", -50),
+        "key_new_position_score": rules.get("key_new_position_score", 30),
+        "key_added_score": rules.get("key_added_score", 20),
+        "key_holding_score": rules.get("key_holding_score", 8),
+        "key_buy_intensity_score_per_pct": rules.get("key_buy_intensity_score_per_pct", 8),
+        "key_buy_intensity_max_score": rules.get("key_buy_intensity_max_score", 40),
+        "below_key_latest_buy_price_bonus": rules.get("below_key_latest_buy_price_bonus", 15),
+        "multiple_key_institution_bonus": rules.get("multiple_key_institution_bonus", 8),
+        "key_reduced_penalty": rules.get("key_reduced_penalty", -15),
+        "key_exit_penalty": rules.get("key_exit_penalty", -50),
     }
 
 
@@ -513,35 +734,118 @@ def discount_to_institutional_avg(row: Dict[str, Any]) -> float:
     return (avg - price) / avg * 100
 
 
+def key_manager_events(row: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, Any]:
+    key_ciks = key_institution_ciks(config)
+    key_names = key_institution_names(config)
+    events: Dict[str, Any] = {
+        "new_count": 0,
+        "added_count": 0,
+        "holding_count": 0,
+        "reduced_count": 0,
+        "exit_count": 0,
+        "bought_value_usd": 0.0,
+        "sold_value_usd": 0.0,
+        "holding_value_usd": 0.0,
+        "latest_buy_value_usd": 0.0,
+        "latest_buy_shares": 0.0,
+        "max_buy_portfolio_weight_pct": 0.0,
+        "buy_intensity_score": 0.0,
+        "buy_intensity_manager": None,
+        "holders": [],
+    }
+    rules = allocation_rules(config)
+    institution = row.get("institution") or row
+    for manager in institution.get("managers") or row.get("managers") or []:
+        cik = normalize_cik(manager.get("cik"))
+        name = manager.get("display_name") or manager.get("name")
+        if cik not in key_ciks and name not in key_names:
+            continue
+        status = manager.get("status")
+        current_shares = float(manager.get("current_shares") or 0)
+        current_value = float(manager.get("current_value_usd") or 0)
+        change_value = float(manager.get("change_value_usd") or 0)
+        change_shares = float(manager.get("change_shares") or 0)
+        portfolio_weight_pct = float(manager.get("portfolio_weight_pct") or 0)
+        if current_shares > 0:
+            events["holding_count"] += 1
+            events["holding_value_usd"] += current_value
+            if name:
+                events["holders"].append(name)
+        if status in {"new_position", "unknown_previous", "added"}:
+            bought_value = current_value if status in {"new_position", "unknown_previous"} else max(change_value, 0.0)
+            bought_shares = current_shares if status in {"new_position", "unknown_previous"} else max(change_shares, 0.0)
+            events["bought_value_usd"] += bought_value
+            if status in {"new_position", "unknown_previous"}:
+                events["new_count"] += 1
+            else:
+                events["added_count"] += 1
+            if bought_value > 0 and bought_shares > 0:
+                events["latest_buy_value_usd"] += bought_value
+                events["latest_buy_shares"] += bought_shares
+            if bought_value > 0 and current_value > 0 and portfolio_weight_pct > 0:
+                buy_portfolio_weight_pct = bought_value / current_value * portfolio_weight_pct
+                if buy_portfolio_weight_pct > events["max_buy_portfolio_weight_pct"]:
+                    events["max_buy_portfolio_weight_pct"] = buy_portfolio_weight_pct
+                    events["buy_intensity_manager"] = name
+        elif status in {"reduced", "exited"}:
+            sold_value = abs(change_value)
+            events["sold_value_usd"] += sold_value
+            if status == "reduced":
+                events["reduced_count"] += 1
+            else:
+                events["exit_count"] += 1
+    events["holders"] = list(dict.fromkeys(events["holders"]))
+    events["latest_buy_price"] = (
+        events["latest_buy_value_usd"] / events["latest_buy_shares"] if events["latest_buy_shares"] > 0 else 0.0
+    )
+    events["buy_intensity_score"] = min(
+        float(rules["key_buy_intensity_max_score"]),
+        events["max_buy_portfolio_weight_pct"] * float(rules["key_buy_intensity_score_per_pct"]),
+    )
+    return events
+
+
 def score_components(
     row: Dict[str, Any],
     ranks: Dict[str, Dict[str, int]],
     rules: Dict[str, float],
     top_n: int,
-) -> Tuple[float, Dict[str, float], List[str]]:
-    symbol = row["symbol"]
-    buying_top = ranks["buying"].get(symbol, 10**9) <= top_n
-    holding_top = ranks["holding"].get(symbol, 10**9) <= top_n
-    selling_top = ranks["selling"].get(symbol, 10**9) <= top_n
-    below_avg = (buying_top or holding_top) and (row.get("price") or 0) < (row.get("institutional_avg_holding_price") or 0)
-    key_bought = bool(row.get("key_institution_bought"))
+    config: Dict[str, Any],
+) -> Tuple[float, Dict[str, float], List[str], Dict[str, Any]]:
+    del ranks, top_n
+    events = key_manager_events(row, config)
+    price = float(row.get("price") or 0)
+    latest_buy_price = float(events.get("latest_buy_price") or 0)
+    below_latest_buy = price > 0 and latest_buy_price > 0 and price < latest_buy_price
+    active_key_count = events["new_count"] + events["added_count"] + events["holding_count"]
+    buy_intensity_score = round(float(events["buy_intensity_score"]), 4)
 
     components = {
-        "buying_top10_score": rules["buying_top10_score"] if buying_top else 0,
-        "holding_top10_score": rules["holding_top10_score"] if holding_top else 0,
-        "below_institution_avg_score": rules["below_institution_avg_score"] if below_avg else 0,
-        "buying_top10_key_institution_bonus": rules["buying_top10_key_institution_bonus"] if buying_top and key_bought else 0,
-        "holding_top10_key_institution_bonus": rules["holding_top10_key_institution_bonus"] if holding_top and key_bought else 0,
-        "selling_top10_penalty": rules["selling_top10_penalty"] if selling_top else 0,
+        "key_new_position_score": rules["key_new_position_score"] * events["new_count"],
+        "key_added_score": rules["key_added_score"] * events["added_count"],
+        "key_holding_score": rules["key_holding_score"] * events["holding_count"],
+        "key_buy_intensity_score": buy_intensity_score,
+        "below_key_latest_buy_price_bonus": rules["below_key_latest_buy_price_bonus"] if below_latest_buy else 0,
+        "multiple_key_institution_bonus": rules["multiple_key_institution_bonus"] if active_key_count >= 2 else 0,
+        "key_reduced_penalty": rules["key_reduced_penalty"] * events["reduced_count"],
+        "key_exit_penalty": rules["key_exit_penalty"] * events["exit_count"],
     }
     source_rankings: List[str] = []
-    if buying_top:
-        source_rankings.append("institutional_buying")
-    if holding_top:
-        source_rankings.append("institutional_holding")
-    if selling_top:
-        source_rankings.append("institutional_selling")
-    return sum(components.values()), components, source_rankings
+    if events["new_count"]:
+        source_rankings.append("key_new_position")
+    if events["added_count"]:
+        source_rankings.append("key_added")
+    if events["holding_count"]:
+        source_rankings.append("key_holding")
+    if buy_intensity_score > 0:
+        source_rankings.append("key_buy_intensity")
+    if below_latest_buy:
+        source_rankings.append("below_key_latest_buy")
+    if events["reduced_count"]:
+        source_rankings.append("key_reduced")
+    if events["exit_count"]:
+        source_rankings.append("key_exit")
+    return sum(components.values()), components, source_rankings, events
 
 
 def source_ranking_label(source: str) -> str:
@@ -549,31 +853,128 @@ def source_ranking_label(source: str) -> str:
         "institutional_buying": "买入榜 Top 10",
         "institutional_holding": "持有榜 Top 10",
         "institutional_selling": "卖出榜 Top 10",
+        "key_new_position": "重点机构新建仓",
+        "key_added": "重点机构增持",
+        "key_holding": "重点机构持有",
+        "key_buy_intensity": "重点机构买入力度",
+        "below_key_latest_buy": "低于重点机构最近买入价",
+        "key_reduced": "重点机构减持",
+        "key_exit": "重点机构清仓",
     }
     return labels.get(source, source)
 
 
 def buy_reason(source_rankings: List[str]) -> str:
-    return " + ".join(source_ranking_label(source) for source in source_rankings) or "评分入选"
+    return " + ".join(source_ranking_label(source) for source in source_rankings) or "重点机构信号"
+
+
+def latest_institutional_buy_price(row: Dict[str, Any]) -> float:
+    institution = row.get("institution") or row
+    direct = institution.get("latest_institutional_buy_price") or row.get("latest_institutional_buy_price")
+    if direct:
+        return float(direct)
+    value = 0.0
+    shares = 0.0
+    for manager in institution.get("managers") or row.get("managers") or []:
+        status = manager.get("status")
+        if status not in {"new_position", "unknown_previous", "added"}:
+            continue
+        change_shares = float(manager.get("change_shares") or 0)
+        if status in {"new_position", "unknown_previous"}:
+            change_shares = float(manager.get("current_shares") or change_shares or 0)
+            change_value = float(manager.get("current_value_usd") or manager.get("change_value_usd") or 0)
+        else:
+            change_value = max(float(manager.get("change_value_usd") or 0), 0.0)
+        if change_shares > 0 and change_value > 0:
+            shares += change_shares
+            value += change_value
+    return value / shares if shares > 0 else 0.0
+
+
+def latest_key_institutional_buy_price(row: Dict[str, Any], config: Dict[str, Any]) -> float:
+    return float(key_manager_events(row, config).get("latest_buy_price") or 0.0)
+
+
+def price_factor_to_latest_buy(row: Dict[str, Any], config: Optional[Dict[str, Any]] = None) -> float:
+    price = float(row.get("price") or 0)
+    latest_buy_price = latest_key_institutional_buy_price(row, config) if config else latest_institutional_buy_price(row)
+    if price <= 0 or latest_buy_price <= 0:
+        return 1.0
+    return max(0.5, min(latest_buy_price / price, 1.5))
+
+
+def allocation_signal_value(row: Dict[str, Any], config: Dict[str, Any]) -> float:
+    score = max(float(row.get("allocation_score") or 0), 0.0)
+    if score <= 0:
+        return 0.0
+    exponent = float(config.get("strategy", {}).get("score_weight_exponent", 0.5))
+    return (score**exponent) * price_factor_to_latest_buy(row, config)
 
 
 def normalize_weights(rows: List[Dict[str, Any]], config: Dict[str, Any]) -> List[Dict[str, Any]]:
     if not rows:
         return rows
-    min_weight = float(config.get("strategy", {}).get("min_position_weight_pct", 5))
     max_weight = float(config.get("strategy", {}).get("max_position_weight_pct", 50))
-    total_score = sum(max(row["allocation_score"], 0) for row in rows)
-    if total_score <= 0:
-        return []
     for row in rows:
-        raw_weight = row["allocation_score"] / total_score * 100
-        row["target_weight_pct"] = min(max(raw_weight, min_weight), max_weight)
-    total_weight = sum(row["target_weight_pct"] for row in rows)
-    if total_weight > 100:
-        scale = 100 / total_weight
-        for row in rows:
-            row["target_weight_pct"] *= scale
+        row["latest_institutional_buy_price"] = latest_key_institutional_buy_price(row, config) or latest_institutional_buy_price(row)
+        row["price_factor"] = round(price_factor_to_latest_buy(row, config), 4)
+        row["allocation_value"] = allocation_signal_value(row, config)
+    total_value = sum(row["allocation_value"] for row in rows)
+    for row in rows:
+        raw_weight = row["allocation_value"] / total_value * 100 if total_value > 0 else 0.0
+        row["target_weight_pct"] = min(raw_weight, max_weight)
     return rows
+
+
+def simulation_candidates(
+    config: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+    ranks: Dict[str, Dict[str, int]],
+    existing_symbols: Optional[set] = None,
+) -> List[Dict[str, Any]]:
+    rules = allocation_rules(config)
+    top_n = int(config.get("rankings", {}).get("top_n_for_simulation", 10))
+    existing_symbols = existing_symbols or set()
+    positive_candidates = []
+    exit_candidates = []
+    for row in rows:
+        symbol = row["symbol"]
+        is_existing = symbol in existing_symbols
+        if not (row.get("price") or 0):
+            continue
+        score, components, source_rankings, events = score_components(row, ranks, rules, top_n, config)
+        key_bought = events["bought_value_usd"] > 0
+        if not (is_existing or key_bought):
+            continue
+        item = dict(row)
+        item["allocation_score"] = score
+        item["allocation_components"] = components
+        item["source_rankings"] = source_rankings
+        item["key_signal"] = events
+        item["key_institution_bought"] = key_bought
+        item["key_institution_bought_value_usd"] = events["bought_value_usd"]
+        item["key_institution_holders"] = events["holders"]
+        item["discount_to_institutional_avg_pct"] = discount_to_institutional_avg(row)
+        item["latest_institutional_buy_price"] = latest_key_institutional_buy_price(row, config) or latest_institutional_buy_price(row)
+        if score > 0:
+            positive_candidates.append(item)
+        elif is_existing and (events["sold_value_usd"] > 0 or events["exit_count"] > 0):
+            item["target_weight_pct"] = 0.0
+            item["price_factor"] = round(price_factor_to_latest_buy(item, config), 4)
+            item["allocation_value"] = 0.0
+            exit_candidates.append(item)
+    positive_candidates.sort(
+        key=lambda row: (
+            -allocation_signal_value(row, config),
+            -int(row["symbol"] in existing_symbols),
+            -(row.get("key_institution_bought_value_usd") or 0),
+            row["symbol"],
+        )
+    )
+    max_positions = int(config.get("strategy", {}).get("max_positions", 10))
+    selected = normalize_weights(positive_candidates[:max_positions], config)
+    selected_symbols = {row["symbol"] for row in selected}
+    return selected + [row for row in exit_candidates if row["symbol"] not in selected_symbols]
 
 
 def build_snapshot_simulation(
@@ -586,31 +987,9 @@ def build_snapshot_simulation(
     strategy = config.get("strategy", {})
     top_n = int(config.get("rankings", {}).get("top_n_for_simulation", 10))
     max_positions = int(strategy.get("max_positions", 10))
+    min_trade_weight = float(strategy.get("min_trade_weight_pct", 1))
     initial_value = 100000.0
-    rules = allocation_rules(config)
-    candidates = []
-
-    for row in rows:
-        score, components, source_rankings = score_components(row, ranks, rules, top_n)
-        if score <= 0 or not (row.get("price") or 0):
-            continue
-        row_copy = dict(row)
-        row_copy["allocation_score"] = score
-        row_copy["allocation_components"] = components
-        row_copy["source_rankings"] = source_rankings
-        row_copy["discount_to_institutional_avg_pct"] = discount_to_institutional_avg(row)
-        candidates.append(row_copy)
-
-    candidates.sort(
-        key=lambda row: (
-            -row["allocation_score"],
-            -int(bool(row.get("key_institution_bought"))),
-            -row.get("discount_to_institutional_avg_pct", 0),
-            -(row.get("total_bought_value_usd") or 0),
-            row["symbol"],
-        )
-    )
-    selected = normalize_weights(candidates[:max_positions], config)
+    selected = simulation_candidates(config, rows, ranks)
     data_date = snapshot.get("data_date")
     baseline_date = date_offset(data_date, -7)
     next_rebalance = next_monday(data_date)
@@ -626,6 +1005,8 @@ def build_snapshot_simulation(
         if shares <= 0:
             continue
         buy_value = shares * price
+        if initial_value and buy_value / initial_value * 100 < min_trade_weight:
+            continue
         invested_value += buy_value
         position = {
             "symbol": row["symbol"],
@@ -642,6 +1023,7 @@ def build_snapshot_simulation(
             "current_price": price,
             "return_pct": 0,
             "institutional_avg_holding_price": row.get("institutional_avg_holding_price") or 0,
+            "latest_institutional_buy_price": row.get("latest_institutional_buy_price") or 0,
             "discount_to_institutional_avg_pct": round(row.get("discount_to_institutional_avg_pct", 0), 2),
             "key_institution_bought": bool(row.get("key_institution_bought")),
             "shares": int(shares),
@@ -671,7 +1053,8 @@ def build_snapshot_simulation(
             "mode": "current_snapshot_rebalance",
             "lookback_trading_days": strategy.get("lookback_trading_days", 21),
             "max_positions": max_positions,
-            "weighting_method": "allocation_score_clamped_5_50",
+            "weighting_method": strategy.get("weighting_method", "key_institution_signal_score"),
+            "min_trade_weight_pct": min_trade_weight,
             "last_rebalance_date": data_date,
             "next_rebalance_date": next_rebalance,
         },
@@ -690,7 +1073,7 @@ def build_snapshot_simulation(
             "qqq_return_pct": 0,
             "excess_vs_spy_pct": 0,
             "excess_vs_qqq_pct": 0,
-            "candidates_count": len(candidates),
+            "candidates_count": len(selected),
             "positions_count": len(positions),
         },
         "current_positions": positions,
@@ -745,37 +1128,46 @@ def build_hugo_data(
         "holding": rank_holding(metric_rows),
     }
     key_names = key_institution_names(config)
+    manager_links = manager_links_by_name(config)
     activity_tag_limit = int(config.get("rankings", {}).get("activity_tag_limit", 10))
     badge_by_symbol = {
-        row["symbol"]: build_badges({**row, **(row.get("institution") or {})}, ranks, key_names, activity_tag_limit)
+        row["symbol"]: build_badges({**row, **(row.get("institution") or {})}, ranks, key_names, activity_tag_limit, manager_links)
         for row in rows
     }
 
-    combined_rows = sort_combined_rows([ranking_row(row, badge_by_symbol[row["symbol"]]) for row in rows])
-    ranking_scopes = build_historical_ranking_scopes(
-        config,
-        rows,
-        combined_rows,
-        historical_13f_path,
-        key_names,
-        activity_tag_limit,
-    )
+    ranking_rows = [ranking_row(row, badge_by_symbol[row["symbol"]]) for row in rows]
+    combined_rows = sort_combined_rows(ranking_rows)
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
+    institutions = build_institutions(config, rows)
     simulation = snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
     return {
         "build": build_metadata(config, snapshot),
         "simulation": simulation,
         "rankings": [
             {
-                "type": "institutional_combined",
-                "title": "机构综合榜",
-                "description": "按白名单机构当前持有市值排序，并用标签标记买入、卖出、新建仓、清仓等异动",
+                "type": "institutional_buying",
+                "title": "最近买入最多",
+                "description": "按本期白名单机构新建仓与增持的美元金额排序",
+                "sort_label": "买入金额",
+                "rows": sort_rows_by_value(ranking_rows, "total_bought_value_usd"),
+            },
+            {
+                "type": "institutional_selling",
+                "title": "最近卖出最多",
+                "description": "按本期白名单机构减持与清仓的美元金额排序",
+                "sort_label": "卖出金额",
+                "rows": sort_rows_by_value(ranking_rows, "total_sold_value_usd"),
+            },
+            {
+                "type": "institutional_holding",
+                "title": "持有最多",
+                "description": "按白名单机构当前持有市值排序",
                 "sort_label": "持有市值",
-                "rows": combined_rows,
-                "scopes": ranking_scopes,
-            }
+                "rows": sort_rows_by_value(ranking_rows, "total_tracked_value_usd"),
+            },
         ],
         "stocks": stocks,
+        "institutions": institutions,
     }
 
 
@@ -787,6 +1179,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--historical-13f", type=pathlib.Path, default=ROOT / "raw/generated/historical_13f_holdings.yaml")
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
     parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/stocks")
+    parser.add_argument("--institution-content-dir", type=pathlib.Path, default=ROOT / "content/institutions")
     parser.add_argument("--skip-content", action="store_true")
     return parser.parse_args()
 
@@ -802,6 +1195,7 @@ def main() -> None:
     write_yaml(args.output, data)
     if not args.skip_content:
         ensure_content_pages(args.content_dir, snapshot.get("securities") or [])
+        ensure_institution_pages(args.institution_content_dir, enabled_managers(config))
     print(f"wrote {args.output}")
 
 

@@ -1,13 +1,12 @@
 {{ define "main" }}
 {{ $data := site.Data.stockhunt }}
 {{ $sim := $data.simulation }}
-{{ $scoreTooltip := "评分规则：买入榜 Top 10 +10；持有榜 Top 10 +10；命中买入榜或持有榜且低于机构平均持有价 +20；买入榜 Top 10 且重点机构买入 +10；持有榜 Top 10 且重点机构买入 +10；卖出榜 Top 10 -50。" }}
 {{ $isHistorical := eq $sim.meta.mode "historical_weekly_rebalance" }}
 {{ $dailyReturnPct := default 0 $sim.summary.daily_return_pct }}
 {{ partial "topbar.html" . }}
 
 <main class="page-shell">
-  <section class="dashboard-grid">
+  <section class="dashboard-grid" id="simulation">
     <div class="panel hero-panel">
       <p class="eyebrow">模拟盘净值</p>
       <div class="hero-value" data-money="{{ $sim.summary.current_value }}">--</div>
@@ -43,13 +42,13 @@
           <h2>模拟盘 vs SPY / QQQ</h2>
         </div>
         <div class="segmented-control" aria-label="图表范围">
-          <button class="range-button is-active" type="button" data-range="all">ALL</button>
-          <button class="range-button" type="button" data-range="ytd">YTD</button>
+          <button class="range-button is-active" type="button" data-range="ytd">YTD</button>
+          <button class="range-button" type="button" data-range="all">ALL</button>
           <button class="range-button" type="button" data-range="3m">3M</button>
           <button class="range-button" type="button" data-range="1m">1M</button>
         </div>
       </div>
-      <svg class="equity-chart" data-points='{{ $sim.equity_curve | jsonify }}' role="img" aria-label="模拟盘净值曲线"></svg>
+      <svg class="equity-chart" data-range="ytd" data-points='{{ $sim.equity_curve | jsonify }}' role="img" aria-label="模拟盘净值曲线"></svg>
       <div class="legend" aria-label="图表序列开关">
         <button class="legend-toggle is-active" type="button" data-series="value" aria-pressed="true"><i class="legend-dot portfolio"></i>StockHunt</button>
         <button class="legend-toggle is-active" type="button" data-series="spy_value" aria-pressed="true"><i class="legend-dot spy"></i>SPY</button>
@@ -96,7 +95,6 @@
         <p class="eyebrow">Portfolio</p>
         <h2>当前模拟盘持仓</h2>
       </div>
-      <span class="subtle-badge">{{ if $isHistorical }}2024 至今 / 周一再平衡{{ else }}当前快照 / 周一{{ end }}</span>
     </div>
     <div class="table-wrap">
       <table class="data-table">
@@ -106,13 +104,13 @@
             <th title="当前持仓市值占模拟盘净值的比例">占比</th>
             <th>价格</th>
             <th>买入均价</th>
-            <th>机构均价</th>
-            <th title="{{ $scoreTooltip }}">评分</th>
+            <th>模拟盈利</th>
             <th>信号</th>
           </tr>
         </thead>
         <tbody>
           {{ range $sim.current_positions }}
+            {{ $institutionalAvg := float (.institutional_avg_holding_price | default 0) }}
             <tr>
               <td>
                 <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
@@ -126,11 +124,16 @@
                 </div>
               </td>
               <td>${{ printf "%.2f" .current_price }}</td>
-              <td>{{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .entry_price) }}</td>
-              <td>{{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .institutional_avg_holding_price) }}</td>
-              <td><span class="score-pill tip-trigger" data-tooltip="{{ $scoreTooltip }}" aria-label="{{ $scoreTooltip }}">{{ .allocation_score }}</span></td>
               <td>
-                {{ partial "badges.html" .badges }}
+                {{ if gt $institutionalAvg 0.0 }}
+                  {{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .entry_price "caption" (printf "机构均价 $%.2f" $institutionalAvg)) }}
+                {{ else }}
+                  {{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .entry_price "caption" "机构均价 --") }}
+                {{ end }}
+              </td>
+              <td>{{ partial "profit-basis-cell.html" (dict "current" .current_price "basis" .entry_price "shares" .shares) }}</td>
+              <td>
+                {{ partial "badges.html" (where .badges "tone" "key") }}
               </td>
             </tr>
           {{ end }}

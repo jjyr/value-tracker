@@ -1,0 +1,20 @@
+{{ $current := float (.current | default 0) }}
+{{ $basis := float (.basis | default 0) }}
+{{ $shares := float (.shares | default 0) }}
+{{ if and (gt $current 0.0) (gt $basis 0.0) (gt $shares 0.0) }}
+  {{ $profit := mul (sub $current $basis) $shares }}
+  {{ $absProfit := $profit }}
+  {{ if lt $absProfit 0.0 }}
+    {{ $absProfit = mul $absProfit -1 }}
+  {{ end }}
+  {{ $pct := mul (div (sub $current $basis) $basis) 100 }}
+  <div class="profit-basis {{ if lt $profit 0.0 }}negative{{ else }}positive{{ end }}">
+    <strong>{{ if lt $profit 0.0 }}-{{ else }}+{{ end }}${{ printf "%.2f" $absProfit }}</strong>
+    <span>{{ printf "%+.1f%%" $pct }}</span>
+  </div>
+{{ else }}
+  <div class="profit-basis">
+    <strong>--</strong>
+    <span class="muted">--</span>
+  </div>
+{{ end }}

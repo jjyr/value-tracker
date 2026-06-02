@@ -1,6 +1,6 @@
 baseURL = "http://localhost:1313/"
 languageCode = "zh-CN"
-title = "StockHunt"
+title = "价值追踪"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap", "robotsTXT"]
 
 [params]

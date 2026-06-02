@@ -94,7 +94,12 @@
           <tbody>
             {{ range $stock.managers }}
               <tr>
-                <td><strong>{{ .display_name }}</strong><span class="muted block">{{ .name }}</span></td>
+                <td>
+                  <a class="stock-link" href="{{ .href | relURL }}">
+                    <strong>{{ .display_name }}</strong>
+                    <span>{{ .name }}</span>
+                  </a>
+                </td>
                 <td><span class="status-chip">{{ .status }}</span></td>
                 <td><span data-money="{{ .change_value_usd }}">--</span></td>
                 <td><span data-money="{{ .current_value_usd }}">--</span></td>
@@ -104,25 +109,6 @@
             {{ end }}
           </tbody>
         </table>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-heading">
-        <div>
-          <p class="eyebrow">Ranking History</p>
-          <h2>榜单历史</h2>
-        </div>
-      </div>
-      <div class="timeline compact-timeline">
-        {{ range $stock.ranking_history }}
-          <article class="timeline-item">
-            <time>{{ .date }}</time>
-            <div class="timeline-body">
-              <div class="timeline-row signal"><strong>{{ .ranking }}</strong><span>Rank #{{ .rank }}</span></div>
-            </div>
-          </article>
-        {{ end }}
       </div>
     </section>
 

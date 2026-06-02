@@ -17,7 +17,12 @@
       {{ else if eq $tone "key" }}
         {{ $tip = printf "%s：重点机构当前持有该股票。" $label }}
       {{ end }}
-      <span class="activity-badge badge-{{ $tone }} tip-trigger" data-tooltip="{{ $tip }}">{{ $label }}</span>
+      {{ with .tip }}{{ $tip = . }}{{ end }}
+      {{ with .href }}
+        <a class="activity-badge badge-{{ $tone }} tip-trigger" href="{{ . | relURL }}" data-tooltip="{{ $tip }}">{{ $label }}</a>
+      {{ else }}
+        <span class="activity-badge badge-{{ $tone }} tip-trigger" data-tooltip="{{ $tip }}">{{ $label }}</span>
+      {{ end }}
     {{ end }}
   </div>
 {{ end }}

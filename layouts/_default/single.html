@@ -1,0 +1,14 @@
+{{ define "main" }}
+{{ partial "topbar.html" . }}
+<main class="page-shell">
+  <article class="panel prose-panel">
+    <header class="prose-header">
+      <p class="eyebrow">About</p>
+      <h1>{{ .Title }}</h1>
+    </header>
+    <div class="prose-content">
+      {{ .Content }}
+    </div>
+  </article>
+</main>
+{{ end }}

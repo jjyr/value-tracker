@@ -1,12 +1,17 @@
 {{ $build := site.Data.stockhunt.build }}
 <header class="topbar">
-  <a class="brand" href="{{ "/" | relURL }}" aria-label="StockHunt 首页">
-    <span class="brand-mark">S</span>
-    <span>
-      <strong>StockHunt</strong>
-      <small>13F Signal Lab</small>
-    </span>
-  </a>
+  <div class="topbar-primary">
+    <a class="brand" href="{{ "/" | relURL }}" aria-label="价值追踪 首页">
+      <span class="brand-mark">价</span>
+      <span>
+        <strong>价值追踪</strong>
+      </span>
+    </a>
+    <nav class="topbar-nav" aria-label="主导航">
+      <a class="topbar-nav-button" href="{{ "/#simulation" | relURL }}">模拟盘</a>
+      <a class="topbar-nav-button" href="{{ "/intro/" | relURL }}">介绍</a>
+    </nav>
+  </div>
   <div class="topbar-meta" aria-label="数据状态">
     <span class="status-pill status-{{ lower ($build.status | default "unknown") }}">{{ $build.status | default "--" }}</span>
     <span>数据 {{ $build.data_date | default "--" }}</span>

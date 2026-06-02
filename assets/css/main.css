@@ -71,6 +71,13 @@ button {
   backdrop-filter: blur(18px);
 }
 
+.topbar-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -106,6 +113,39 @@ button {
   color: var(--muted);
 }
 
+.topbar-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.topbar-nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.topbar-nav-button:hover,
+.topbar-nav-button:focus-visible {
+  border-color: rgba(103, 212, 255, 0.42);
+  background: rgba(103, 212, 255, 0.09);
+  color: var(--text);
+}
+
 .topbar-meta {
   display: flex;
   flex-wrap: wrap;
@@ -119,7 +159,6 @@ button {
 .tag,
 .subtle-badge,
 .status-pill,
-.score-pill,
 .status-chip,
 .signal-chips span {
   display: inline-flex;
@@ -154,6 +193,7 @@ button {
   grid-template-columns: minmax(280px, 0.92fr) minmax(420px, 1.7fr) minmax(280px, 0.9fr);
   gap: var(--grid-gap);
   align-items: stretch;
+  scroll-margin-top: 96px;
 }
 
 .dashboard-grid > .panel {
@@ -639,13 +679,36 @@ h3 {
   white-space: nowrap;
 }
 
-.price-basis strong {
+.price-basis strong,
+.profit-basis strong {
   color: var(--text);
 }
 
-.price-basis span {
+.profit-basis {
+  display: grid;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.profit-basis.positive strong,
+.profit-basis.positive span {
+  color: var(--green);
+}
+
+.profit-basis.negative strong,
+.profit-basis.negative span {
+  color: var(--red);
+}
+
+.profit-basis span {
   font-size: 12px;
   font-weight: 700;
+}
+
+.basis-caption {
+  color: var(--muted-2);
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .weight-bar {
@@ -672,14 +735,6 @@ h3 {
   display: grid;
   height: 100%;
   place-items: center;
-  font-weight: 700;
-}
-
-.score-pill {
-  position: relative;
-  border-color: rgba(243, 201, 105, 0.3);
-  color: var(--amber);
-  background: rgba(243, 201, 105, 0.09);
   font-weight: 700;
 }
 
@@ -740,7 +795,13 @@ h3 {
 }
 
 .tip-trigger {
-  cursor: help;
+  cursor: default;
+}
+
+a.tip-trigger,
+button.tip-trigger,
+[role="button"].tip-trigger {
+  cursor: pointer;
 }
 
 .floating-tooltip {
@@ -951,11 +1012,143 @@ h3 {
 
 .rankings-stack {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+  align-items: start;
 }
 
 .rankings-stack .panel {
   margin: 0;
+}
+
+.compact-ranking-panel {
+  padding: 16px;
+}
+
+.compact-ranking-list {
+  display: grid;
+  gap: 9px;
+}
+
+.compact-ranking-item {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.026);
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.compact-ranking-item:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.048);
+}
+
+.compact-rank {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.compact-ranking-body {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.compact-ranking-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.compact-ranking-meta strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.compact-ranking-meta span {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.compact-ranking-flow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.compact-flow-chip {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.compact-flow-chip em {
+  color: var(--muted);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 650;
+}
+
+.compact-flow-chip strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact-flow-chip.is-buy {
+  border-color: rgba(84, 214, 144, 0.16);
+}
+
+.compact-flow-chip.is-buy strong {
+  color: var(--green);
+}
+
+.compact-flow-chip.is-sell {
+  border-color: rgba(255, 107, 122, 0.16);
+}
+
+.compact-flow-chip.is-sell strong {
+  color: var(--red);
+}
+
+.compact-flow-chip.is-muted {
+  grid-column: 1 / -1;
+  place-items: center;
+  min-height: 38px;
+}
+
+.compact-flow-chip.is-action {
+  grid-column: 1 / -1;
+}
+
+.compact-flow-chip.is-muted strong {
+  color: var(--muted);
+}
+
+.compact-ranking-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .ghost-button {
@@ -1010,6 +1203,61 @@ h3 {
 
 .is-hidden {
   display: none;
+}
+
+.prose-panel {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.prose-header {
+  margin-bottom: 24px;
+}
+
+.prose-header h1 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.05;
+}
+
+.prose-content {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.prose-content h2 {
+  margin: 28px 0 12px;
+  color: var(--text);
+  font-size: 22px;
+}
+
+.prose-content h2:first-child {
+  margin-top: 0;
+}
+
+.prose-content p {
+  margin: 0 0 14px;
+}
+
+.prose-content ul {
+  display: grid;
+  gap: 9px;
+  margin: 10px 0 18px;
+  padding-left: 20px;
+}
+
+.prose-content li::marker {
+  color: var(--cyan);
+}
+
+.prose-content code {
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 0.92em;
 }
 
 .risk-note {
@@ -1190,6 +1438,10 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .rankings-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .rebalance-panel {
     min-height: auto;
   }
@@ -1200,6 +1452,12 @@ h3 {
     position: static;
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .topbar-primary {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .topbar-meta {
@@ -1216,6 +1474,10 @@ h3 {
   .rebalance-panel,
   .panel {
     padding: 15px;
+  }
+
+  .rankings-stack {
+    grid-template-columns: 1fr;
   }
 
   .panel-heading,

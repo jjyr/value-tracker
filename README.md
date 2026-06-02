@@ -109,6 +109,7 @@ raw/generated/historical_13f_holdings.yaml
 raw/generated/historical_simulation.yaml
 raw/generated/cache/
 data/stockhunt.yaml
+content/institutions/*.md
 ```
 
 增量语义：
@@ -117,6 +118,7 @@ data/stockhunt.yaml
 - SEC submissions index 会刷新，用于发现新 13F；已有 filing index / information table XML 继续复用 cache。
 - Longbridge 日 K 线按 symbol 追加缺失日期，不再按每个 `start/end` 重新抓整段。
 - `data/stockhunt.yaml` 会重新导出，供后续 `build` 使用。
+- `content/institutions/*.md` 会按白名单机构自动补齐，用于机构详情页。
 
 13F 没有 ticker，只有 CUSIP。数据抓取只会导出能通过 `config/cusip-symbols.yaml` 明确映射到 symbol 的持仓。未映射持仓会进入 warnings，不会进入榜单。
 
@@ -137,7 +139,9 @@ uv run fetch-all
 
 - 只使用 `filing_date <= rebalance_date` 的 13F，避免提前使用尚未披露的报告期数据。
 - 每周一再平衡；如果周一休市，则顺延到下一个交易日。
-- 每期按配置里的 `allocation_score` 规则选股和定权重，单只股票权重仍受配置里的最小/最大仓位约束。
+- 每期候选池由“当前模拟盘持仓 + 本期重点机构新建仓或增持股票”组成，普通白名单机构只用于榜单、标签和辅助信息。
+- 目标权重按重点机构信号分线性分配；当前价低于重点机构最近买入价会提高权重，重点机构减持或清仓会降低权重。
+- 单只股票交易百分比 `< 1%` 时跳过该股票本次交易，保留原股数，避免频繁小额调仓。
 - 价格使用 Longbridge 日 K 线，默认 `period=day`、`adjust=forward`。
 - daily schedule 会把 `rebalance_until` 固定在上次调仓日，只追加 Longbridge 价格、更新模拟盘净值和收益，不改 13F、SQLite 和目标仓位。
 - weekly schedule 不冻结 `rebalance_until`，因此会在新的周度调仓日产生调仓记录和新仓位。
@@ -293,7 +297,7 @@ key_institutions:
 
 - `key_institution_bought`
 - 重点机构姓名标签
-- 模拟盘 `allocation_score`
+- 模拟盘候选池和目标权重
 - 历史周度回测每一期的目标持仓和权重
 
 如果只改重点机构配置，推荐重新增量计算并 build：
@@ -316,16 +320,24 @@ uv run build
 
 ```yaml
 strategy:
-  allocation_score:
-    buying_top10_score: 10
-    holding_top10_score: 10
-    below_institution_avg_score: 20
-    buying_top10_key_institution_bonus: 10
-    holding_top10_key_institution_bonus: 10
-    selling_top10_penalty: -50
+  max_positions: 10
+  max_position_weight_pct: 50
+  min_trade_weight_pct: 1
+  weighting_method: "key_institution_signal_score"
+  score_weight_exponent: 1.0
+  allocation_signal:
+    key_new_position_score: 30
+    key_added_score: 20
+    key_holding_score: 8
+    key_buy_intensity_score_per_pct: 8
+    key_buy_intensity_max_score: 40
+    below_key_latest_buy_price_bonus: 15
+    multiple_key_institution_bonus: 8
+    key_reduced_penalty: -15
+    key_exit_penalty: -50
 ```
 
-当前模拟盘默认由历史周度回测生成：每个再平衡日用当时已经披露的 13F、当时价格和当前配置里的 `allocation_score` 规则重新选股，并输出净值曲线、当前持仓和调仓记录。
+当前模拟盘默认由历史周度回测生成：每个再平衡日只使用当时已经披露的 13F 和当时价格。候选池只由当前模拟盘持仓和本期重点机构新建仓或增持股票组成。目标权重按重点机构信号分计算，分数使用 `score_weight_exponent` 做幂次归一化，默认 `1.0` 即按分数线性分配。重点机构买入金额占该机构 13F 组合比例越高，`key_buy_intensity_score_per_pct` 贡献的力度分越高，并由 `key_buy_intensity_max_score` 封顶；如果单只股票本次交易金额占组合净值低于 `min_trade_weight_pct`，该股票本次不交易。
 
 修改策略参数后，推荐重新抓取并 build：
 

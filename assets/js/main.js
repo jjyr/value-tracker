@@ -11,6 +11,10 @@ const percentFormatter = new Intl.NumberFormat("en-US", {
   signDisplay: "always"
 });
 
+const shareFormatter = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 0
+});
+
 const chartSeries = [
   { key: "value", label: "StockHunt", className: "line-portfolio", pointClass: "point-portfolio" },
   { key: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy" },
@@ -25,6 +29,17 @@ function formatMoneyElements() {
       return;
     }
     element.textContent = moneyFormatter.format(value);
+  });
+}
+
+function formatShareElements() {
+  document.querySelectorAll("[data-shares]").forEach((element) => {
+    const value = Number(element.dataset.shares);
+    if (!Number.isFinite(value)) {
+      element.textContent = "--";
+      return;
+    }
+    element.textContent = shareFormatter.format(value);
   });
 }
 
@@ -62,14 +77,17 @@ function drawEquityChart(svg) {
   }
   if (!points.length) return;
 
-  const range = svg.dataset.range || "all";
+  const range = svg.dataset.range || "ytd";
   const activeSeries = activeChartSeries(svg);
-  const now = new Date(points[points.length - 1].date);
-  const ranges = { "1m": 31, "3m": 93, ytd: 180, all: Infinity };
+  const now = new Date(`${points[points.length - 1].date}T00:00:00`);
+  const ranges = { "1m": 31, "3m": 93, all: Infinity };
   const days = ranges[range] || Infinity;
   const visible = points.filter((point) => {
+    const date = new Date(`${point.date}T00:00:00`);
+    if (range === "ytd") {
+      return date >= new Date(now.getFullYear(), 0, 1);
+    }
     if (!Number.isFinite(days)) return true;
-    const date = new Date(point.date);
     return (now - date) / 86400000 <= days;
   });
   const chartPoints = visible.length > 1 ? visible : points.slice(-2);
@@ -218,13 +236,22 @@ function drawEquityChart(svg) {
 function setupChartControls() {
   const chart = document.querySelector(".equity-chart");
   if (!chart) return;
-  chart.dataset.range = chart.dataset.range || "all";
+  chart.dataset.range = chart.dataset.range || "ytd";
   setActiveChartSeries(chart, chartSeries.map((item) => item.key));
+  document.querySelectorAll(".chart-panel .range-button").forEach((button) => {
+    const active = button.dataset.range === chart.dataset.range;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
   drawEquityChart(chart);
   document.querySelectorAll(".chart-panel .range-button").forEach((button) => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".chart-panel .range-button").forEach((item) => item.classList.remove("is-active"));
+      document.querySelectorAll(".chart-panel .range-button").forEach((item) => {
+        item.classList.remove("is-active");
+        item.setAttribute("aria-pressed", "false");
+      });
       button.classList.add("is-active");
+      button.setAttribute("aria-pressed", "true");
       chart.dataset.range = button.dataset.range;
       drawEquityChart(chart);
     });
@@ -279,6 +306,7 @@ function setupRankingFilters() {
         });
         renderRankingExpansion(panel, false);
         formatMoneyElements();
+        formatShareElements();
       });
     });
     renderRankingExpansion(panel, false);
@@ -397,6 +425,7 @@ function setupTooltips() {
 
 document.addEventListener("DOMContentLoaded", () => {
   formatMoneyElements();
+  formatShareElements();
   setupChartControls();
   setupRankingFilters();
   setupRankingToggles();

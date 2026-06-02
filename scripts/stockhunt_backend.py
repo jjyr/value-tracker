@@ -593,6 +593,9 @@ def metric_seed(symbol: str, manager_count: int) -> Dict[str, Any]:
         "total_tracked_value_usd": 0.0,
         "total_tracked_shares": 0.0,
         "institutional_avg_holding_price": 0.0,
+        "latest_institutional_buy_price": 0.0,
+        "_latest_buy_value_usd": 0.0,
+        "_latest_buy_shares": 0.0,
         "key_institution_bought": False,
         "key_institution_bought_value_usd": 0.0,
         "key_institution_holders": [],
@@ -694,10 +697,15 @@ def compute_metrics(
                     metric["new_positions_count"] += 1
                     metric["new_position_value_usd"] += current_value
                     bought_value = current_value
+                    bought_shares = current_shares
                 else:
                     metric["added_count"] += 1
                     bought_value = max(change_value, 0)
+                    bought_shares = max(change_shares, 0)
                 metric["total_bought_value_usd"] += bought_value
+                if bought_value > 0 and bought_shares > 0:
+                    metric["_latest_buy_value_usd"] += bought_value
+                    metric["_latest_buy_shares"] += bought_shares
                 if cik in key_set:
                     metric["key_institution_bought"] = True
                     metric["key_institution_bought_value_usd"] += bought_value
@@ -731,6 +739,10 @@ def compute_metrics(
         if metric["total_tracked_shares"] > 0:
             metric["institutional_avg_holding_price"] = (
                 metric["total_tracked_value_usd"] / metric["total_tracked_shares"]
+            )
+        if metric["_latest_buy_shares"] > 0:
+            metric["latest_institutional_buy_price"] = (
+                metric["_latest_buy_value_usd"] / metric["_latest_buy_shares"]
             )
         conn.execute(
             """
@@ -864,6 +876,9 @@ def snapshot_security(
             "total_tracked_shares": round(metric["total_tracked_shares"], 4),
             "institutional_avg_holding_price": round(metric["institutional_avg_holding_price"], 4)
             if metric["institutional_avg_holding_price"]
+            else 0,
+            "latest_institutional_buy_price": round(metric["latest_institutional_buy_price"], 4)
+            if metric["latest_institutional_buy_price"]
             else 0,
             "key_institution_bought": bool(metric["key_institution_bought"]),
             "key_institution_bought_value_usd": round(metric["key_institution_bought_value_usd"], 2),
