@@ -1,0 +1,134 @@
+name: Update Data and Deploy Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Data job to run
+        required: true
+        default: weekly
+        type: choice
+        options:
+          - daily
+          - weekly
+          - fetch-all
+  schedule:
+    # 09:30 Asia/Shanghai, Tue/Wed. Covers weekly rebalance and Monday US market holidays.
+    - cron: "30 1 * * 2,3"
+    # 09:30 Asia/Shanghai, Thu/Fri/Sat. Daily price/P&L refresh.
+    - cron: "30 1 * * 4-6"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  HUGO_VERSION: 0.156.0
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pick data job
+        id: job
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            mode="${{ inputs.mode }}"
+          else
+            dow="$(date -u +%u)"
+            if [[ "$dow" == "2" || "$dow" == "3" ]]; then
+              mode="weekly"
+            else
+              mode="daily"
+            fi
+          fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "Selected data job: $mode"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Install Hugo
+        run: |
+          python scripts/ci_install_hugo.py --install-dir "$RUNNER_TEMP/hugo-bin"
+          echo "$RUNNER_TEMP/hugo-bin" >> "$GITHUB_PATH"
+
+      - name: Install Longbridge CLI
+        run: |
+          curl -fsSL https://open.longbridge.com/longbridge/longbridge-terminal/install | sh
+          export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/bin" >> "$GITHUB_PATH"
+          longbridge --version
+
+      - name: Restore Longbridge token
+        env:
+          LONGBRIDGE_CLIENT_ID: ${{ secrets.LONGBRIDGE_CLIENT_ID }}
+          LONGBRIDGE_TOKEN_FILE_B64: ${{ secrets.LONGBRIDGE_TOKEN_FILE_B64 }}
+        run: python scripts/ci_restore_longbridge_token.py
+
+      - name: Check Longbridge auth
+        run: longbridge check --format json
+
+      - name: Restore generated data cache
+        id: generated-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            raw/generated/cache
+            raw/generated/snapshot.yaml
+            raw/generated/historical_simulation.yaml
+          key: value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-
+            value-tracker-generated-${{ runner.os }}-
+
+      - name: Check scripts
+        run: uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py scripts/ci_install_hugo.py scripts/ci_restore_longbridge_token.py scripts/ci_run_data_job.py
+
+      - name: Run data job
+        run: uv run python scripts/ci_run_data_job.py "${{ steps.job.outputs.mode }}"
+
+      - name: Save generated data cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            raw/generated/cache
+            raw/generated/snapshot.yaml
+            raw/generated/historical_simulation.yaml
+          key: value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

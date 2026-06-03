@@ -93,6 +93,73 @@ uv run hugo server
 http://localhost:1313/
 ```
 
+## GitHub Pages 部署
+
+仓库已支持 GitHub Actions 部署到 GitHub Pages。
+
+GitHub Pages 设置：
+
+```text
+Settings -> Pages -> Build and deployment -> Source: GitHub Actions
+```
+
+### Workflow
+
+```text
+.github/workflows/deploy.yml
+.github/workflows/schedule.yml
+```
+
+`deploy.yml`：
+
+- `main` 分支 push 或手动触发。
+- 使用仓库当前 `data/stockhunt.yaml` 构建 Hugo。
+- 发布 `public/` 到 GitHub Pages。
+
+`schedule.yml`：
+
+- 手动触发时可选择 `daily`、`weekly`、`fetch-all`。
+- 定时触发：
+  - 周二/周三 09:30 Asia/Shanghai 跑 `weekly`。
+  - 周四/周五/周六 09:30 Asia/Shanghai 跑 `daily`。
+- 恢复 `raw/generated/cache/`、`snapshot.yaml`、`historical_simulation.yaml` 的 Actions cache。
+- 跑完数据任务后发布 GitHub Pages。
+
+### Longbridge Secrets
+
+定时数据任务需要 GitHub Secrets：
+
+```text
+LONGBRIDGE_CLIENT_ID
+LONGBRIDGE_TOKEN_FILE_B64
+```
+
+本地登录 Longbridge 后，token 文件在：
+
+```text
+~/.longbridge/openapi/tokens/<client_id>
+```
+
+生成 secrets：
+
+```bash
+CLIENT_ID="$(ls "$HOME/.longbridge/openapi/tokens" | head -n 1)"
+printf "%s" "$CLIENT_ID"
+base64 -i "$HOME/.longbridge/openapi/tokens/$CLIENT_ID" | tr -d '\n'
+```
+
+把第一行输出填入 `LONGBRIDGE_CLIENT_ID`，第二行输出填入 `LONGBRIDGE_TOKEN_FILE_B64`。
+
+### 首次部署
+
+第一次建议手动运行：
+
+```text
+Actions -> Update Data and Deploy Pages -> Run workflow -> mode: fetch-all
+```
+
+之后定时任务会复用 Actions cache。若 cache 丢失，`daily` 会自动 fallback 到 `fetch-all`。
+
 ## 生成流程
 
 ### 1. 增量抓取数据
