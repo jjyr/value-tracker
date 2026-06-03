@@ -1,8 +1,8 @@
-# StockHunt Metrics Spec v0.1
+# Value Tracker Metrics Spec v0.1
 
 ## 1. 目标
 
-本文件定义 StockHunt MVP 的原始指标和榜单排序口径。
+本文件定义 Value Tracker MVP 的原始指标和榜单排序口径。
 
 v0.1 不做综合评分，不做评级，不把多个维度压缩成一个总分。所有页面展示的核心信息都应尽量使用原始数量、比例和可解释字段，例如：
 

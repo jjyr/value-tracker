@@ -1,8 +1,8 @@
-# StockHunt Static Data Contract v0.2
+# Value Tracker Static Data Contract v0.2
 
 ## 1. 目标
 
-本文件定义静态网页消费的 JSON 数据雏形。SQLite 是主数据源，静态站点只读取导出的 JSON。
+本文件定义静态网页消费的 JSON 数据雏形。静态站点只读取导出的 JSON / YAML，后台中间步骤不维护数据库。
 
 v0.2 不再导出综合评分、评级或隐藏模型字段。所有榜单和详情页都直接展示原始指标，例如：
 
@@ -357,19 +357,6 @@ dist/data/stocks/{symbol}.json
         "filing_url": "https://www.sec.gov/Archives/..."
       }
     ]
-  },
-  "ranking_history": {
-    "institutional_buying": [
-      {
-        "date": "2026-05-29",
-        "rank": 1,
-        "buyers_count": 11,
-        "sellers_count": 22,
-        "holders_count": 38,
-        "price": 190.12
-      }
-    ],
-    "institutional_selling": []
   },
   "price_history": [
     {

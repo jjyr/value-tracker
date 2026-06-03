@@ -2,9 +2,11 @@
 title: "介绍"
 ---
 
-## StockHunt 介绍
+## Value Tracker 介绍
 
-StockHunt 是一个基于公开 13F 披露的美股机构持仓观察工具，用于追踪白名单机构和重点机构的买入、卖出、增持、减持、清仓和持有变化。
+Value Tracker tracks the trades of value investors, helping you see what they buy, sell, and hold over time.
+
+价值追踪是一个基于公开 13F 披露的美股机构持仓观察工具，用于追踪白名单机构和重点机构的买入、卖出、增持、减持、清仓和持有变化。
 
 页面内容包括机构综合榜、模拟盘持仓、调仓记录和收益曲线。13F 数据存在披露延迟，内容仅用于研究观察，不构成投资建议。
 

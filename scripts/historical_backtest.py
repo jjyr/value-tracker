@@ -1113,23 +1113,6 @@ def run_simulation(
     }
 
 
-def write_historical_raw(path: pathlib.Path, args: argparse.Namespace, filings: List[Dict[str, Any]], warnings: List[str]) -> None:
-    hugo_data.write_yaml(
-        path,
-        {
-            "start_date": args.start_date,
-            "end_date": args.end_date,
-            "build": {
-                "build_id": f"historical-13f-{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
-                "built_at": now_iso(),
-                "status": "OK" if filings else "partial",
-                "warnings": warnings,
-            },
-            "filings": filings,
-        },
-    )
-
-
 def fetch_prices(
     symbols: List[str],
     args: argparse.Namespace,
@@ -1153,11 +1136,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--start-date", default=DEFAULT_START_DATE)
     parser.add_argument("--end-date", default=today())
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "raw/generated/historical_simulation.yaml")
-    parser.add_argument("--raw-output", type=pathlib.Path, default=ROOT / "raw/generated/historical_13f_holdings.yaml")
     parser.add_argument("--cache-dir", type=pathlib.Path, default=ROOT / "raw/generated/cache")
     parser.add_argument("--manager-limit", type=int, default=None)
     parser.add_argument("--symbol-limit", type=int, default=None, help="Limit price symbols for smoke tests.")
-    parser.add_argument("--sec-user-agent", default="StockHunt/0.1 contact@example.com")
+    parser.add_argument("--sec-user-agent", default="ValueTracker/0.1 contact@example.com")
     parser.add_argument("--sec-sleep", type=float, default=0.1)
     parser.add_argument("--longbridge-sleep", type=float, default=0.0)
     parser.add_argument("--refresh-sec", action="store_true")
@@ -1189,7 +1171,6 @@ def main() -> None:
     price_history = fetch_prices(symbols, args, warnings)
     normalize_filing_value_units(filings, build_price_index(price_history), warnings)
     warnings = list(dict.fromkeys(warnings))
-    write_historical_raw(args.raw_output, args, filings, warnings)
     simulation = run_simulation(
         config,
         filings,
@@ -1210,7 +1191,6 @@ def main() -> None:
     }
     hugo_data.write_yaml(args.output, payload)
     print(f"wrote {args.output}")
-    print(f"wrote {args.raw_output}")
 
 
 if __name__ == "__main__":

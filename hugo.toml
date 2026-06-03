@@ -4,7 +4,7 @@ title = "价值追踪"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap", "robotsTXT"]
 
 [params]
-  description = "机构 13F 信号研究仪表盘"
+  description = "Value Tracker tracks the trades of value investors, helping you see what they buy, sell, and hold over time."
   buildStatus = "MVP"
 
 [markup.goldmark.renderer]

@@ -1,8 +1,8 @@
-# StockHunt Config Spec v0.1
+# Value Tracker Config Spec v0.1
 
 ## 1. 目标
 
-StockHunt 使用一个主配置文件：
+Value Tracker 使用一个主配置文件：
 
 ```text
 config/stockhunt.yaml
@@ -26,7 +26,6 @@ data:
   market: "US"
   symbol_format: "longbridge"
   output_dir: "dist"
-  sqlite_path: "raw/generated/stockhunt.sqlite"
 
 institutions:
   whitelist_version: "2026-06-01-whitelist-v1"
@@ -173,13 +172,8 @@ build:
 需要重跑：
 
 ```text
-ingest_13f   # 仅当新增机构缺历史 13F 时需要
-parse_13f
-compute_metric_snapshots
-recompute_rank_history
-recompute_simulation
-export_static_json
-build_static_site
+fetch-all
+build
 ```
 
 ### 3.2 修改重点机构
@@ -189,13 +183,11 @@ build_static_site
 需要重跑：
 
 ```text
-compute_metric_snapshots
-recompute_simulation
-export_static_json
-build_static_site
+fetch
+build
 ```
 
-不需要重新抓取 13F，除非新增的重点机构还没有历史 13F 原始数据。
+不需要刷新全部 cache，除非新增的重点机构还没有历史 13F 原始数据；这种情况用 `fetch-all`。
 
 ### 3.3 修改策略参数
 
@@ -204,25 +196,23 @@ build_static_site
 需要重跑：
 
 ```text
-recompute_simulation
-export_static_json
-build_static_site
+fetch
+build
 ```
 
-如果修改影响榜单排序，则额外重跑：
+如果修改会影响 SEC 解析、CUSIP 映射或历史价格口径，则使用：
 
 ```text
-recompute_rank_history
+fetch-all
+build
 ```
 
 ## 4. 配置 hash
 
 构建时需要计算整个 `stockhunt.yaml` 的 hash，并写入：
 
-- `config_versions.config_hash`
-- `metric_snapshots.config_hash`
-- `rank_history.config_hash`
-- `sim_portfolio_snapshots.config_hash`
-- 静态 JSON metadata
+- `raw/generated/snapshot.yaml`
+- `raw/generated/historical_simulation.yaml`
+- `data/stockhunt.yaml` metadata
 
 这样同一份历史 13F 数据可以用不同配置重复回测。

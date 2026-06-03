@@ -1,8 +1,10 @@
-# StockHunt Product Requirements v0.2
+# Value Tracker Product Requirements v0.2
 
 ## 1. 产品概述
 
-StockHunt 是一个全静态生成的美股机构持仓分析网页。产品以 SEC 13F 等公开披露为核心数据源，追踪知名机构对美股的买入、卖出、持有变化，再结合价格、估值、市值和指数标签展示多维原始信号。
+价值追踪是一个全静态生成的美股机构持仓分析网页。Value Tracker tracks the trades of value investors, helping you see what they buy, sell, and hold over time.
+
+产品以 SEC 13F 等公开披露为核心数据源，追踪知名机构对美股的买入、卖出、持有变化，再结合价格、估值、市值和指数标签展示多维原始信号。
 
 v0.2 的核心变化：摒弃综合评分和评级系统，不再把多个维度压缩成一个分数。产品改为展示原始信息和原始比例，例如：
 
@@ -447,27 +449,11 @@ allocation_score =
 ## 10. 数据存储设计
 
 静态 JSON 字段雏形见 [data-contract.md](data-contract.md)。
-数据库 schema 见 [database-schema.md](database-schema.md)。
+存储设计说明见 [database-schema.md](database-schema.md)。
 单文件配置规范见 [config-spec.md](config-spec.md)。
 首页布局见 [frontend-layout.md](frontend-layout.md)。
 
-主数据源建议使用 SQLite。静态网页消费 JSON 导出文件。
-
-建议表：
-
-- `securities`
-- `index_memberships`
-- `institution_managers`
-- `institution_whitelist_versions`
-- `sec_13f_filings`
-- `institution_holdings`
-- `holding_changes`
-- `market_snapshots`
-- `metric_snapshots`
-- `rank_history`
-- `sim_portfolio_snapshots`
-- `sim_portfolio_positions`
-- `disclosure_events`
+当前产品采用轻量文件流水线：SEC 和 Longbridge 原始抓取使用 cache 增量复用，派生指标每次从配置和 raw input 重算，静态网页只消费导出的站点数据。
 
 ## 11. 数据处理流水线
 
@@ -475,8 +461,6 @@ allocation_score =
 SEC 13F / Longbridge / Index sources
         ↓
 raw data ingestion
-        ↓
-SQLite raw tables
         ↓
 13F parsing and normalization
         ↓
@@ -486,8 +470,6 @@ market snapshot refresh
         ↓
 metric snapshot calculation
         ↓
-rank history calculation
-        ↓
 simulation backtest
         ↓
 static JSON export
@@ -495,39 +477,31 @@ static JSON export
 static site generation
 ```
 
-建议任务：
+当前任务：
 
-- `ingest_13f`
-- `parse_13f`
-- `refresh_market_data`
-- `compute_metric_snapshots`
-- `recompute_rank_history`
-- `recompute_simulation`
-- `export_static_json`
-- `build_static_site`
+- `fetch`：增量抓取数据并导出 Hugo 数据，不运行 Hugo build。
+- `fetch-all`：刷新 SEC 和 Longbridge cache 后全量重算，不运行 Hugo build。
+- `schedule daily`：更新价格、净值和收益，不产生新调仓，然后 build。
+- `schedule weekly`：增量更新 13F 并允许调仓，然后 build。
+- `build`：只运行 Hugo build。
 
 白名单修改后至少需要重跑：
 
 ```text
-compute_metric_snapshots
-recompute_rank_history
-recompute_simulation
-export_static_json
-build_static_site
+fetch-all
+build
 ```
 
-如果机构被新增到白名单但历史 13F 数据未抓取，则需要补跑该机构的历史 `ingest_13f`。
+如果机构被新增到白名单但历史 13F 数据未抓取，则使用 `fetch-all` 补齐历史 SEC cache。
 
 重点机构列表修改后至少需要重跑：
 
 ```text
-compute_metric_snapshots
-recompute_simulation
-export_static_json
-build_static_site
+fetch
+build
 ```
 
-如果重点机构不在已抓取 13F 原始数据中，则需要先补跑该机构的历史 `ingest_13f`。
+如果重点机构不在已抓取 13F 原始数据中，则使用 `fetch-all` 补齐历史 SEC cache。
 
 ## 12. 数据更新时间
 
@@ -548,7 +522,7 @@ MVP 完成时应支持：
 - 13F 原始数据抓取和结构化解析。
 - 机构买卖变化计算。
 - 长桥市场数据拉取。
-- SQLite 主数据存储。
+- SEC / Longbridge cache 增量复用。
 - 多维原始指标展示，不计算综合评分。
 - 首页多维榜单。
 - 股票详情页。

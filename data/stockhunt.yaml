@@ -8417,7 +8417,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 16331423261.0
     institutional_avg_holding_price: 287.56
-    latest_institutional_buy_price: 287.56000000211293
+    latest_institutional_buy_price: 287.56
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -8593,7 +8593,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 1268219376.0
     institutional_avg_holding_price: 83.73
-    latest_institutional_buy_price: 83.73000002970977
+    latest_institutional_buy_price: 83.73
     key_institution_bought: true
     managers:
     - cik: 0001067983
@@ -8646,7 +8646,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 2488726121.0
     institutional_avg_holding_price: 102.18
-    latest_institutional_buy_price: 102.18000000328458
+    latest_institutional_buy_price: 102.18
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -8670,7 +8670,7 @@ rankings:
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
       current_value_usd: 2017880681.0
-      portfolio_weight_pct: 10.087387826889753
+      portfolio_weight_pct: 10.087387826889751
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
     total_bought_shares: 8211600.0
@@ -8714,7 +8714,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 2794737853.0
     institutional_avg_holding_price: 286.86
-    latest_institutional_buy_price: 286.8600000102643
+    latest_institutional_buy_price: 286.86
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -8750,7 +8750,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 1028454775.0
-      portfolio_weight_pct: 0.39090519573093924
+      portfolio_weight_pct: 0.3909051957309392
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     total_bought_shares: 1850600.0
@@ -8787,7 +8787,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 877052911.0
     institutional_avg_holding_price: 86.84
-    latest_institutional_buy_price: 86.83999997227625
+    latest_institutional_buy_price: 86.84
     key_institution_bought: true
     managers:
     - cik: 0001067983
@@ -8983,7 +8983,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 73646461.0
     institutional_avg_holding_price: 83.02
-    latest_institutional_buy_price: 83.02000015781886
+    latest_institutional_buy_price: 83.02
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -9031,7 +9031,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 19995576.0
     institutional_avg_holding_price: 84.12
-    latest_institutional_buy_price: 84.11999848550502
+    latest_institutional_buy_price: 84.12
     key_institution_bought: true
     managers:
     - cik: 0001067983
@@ -10014,7 +10014,7 @@ rankings:
       change_shares: -2911100.0
       change_value_usd: -189221500.0
       current_value_usd: 666997500.0
-      portfolio_weight_pct: 3.334321263599974
+      portfolio_weight_pct: 3.3343212635999735
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
     - cik: 0001067983
@@ -10313,7 +10313,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 2794737853.0
     institutional_avg_holding_price: 286.86
-    latest_institutional_buy_price: 286.8600000102643
+    latest_institutional_buy_price: 286.86
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -10349,7 +10349,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 1028454775.0
-      portfolio_weight_pct: 0.39090519573093924
+      portfolio_weight_pct: 0.3909051957309392
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     total_bought_shares: 1850600.0
@@ -10824,7 +10824,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 30420000000.0
-      portfolio_weight_pct: 11.562332484804854
+      portfolio_weight_pct: 11.562332484804855
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     total_bought_shares: 0.0
@@ -10958,7 +10958,7 @@ rankings:
       change_shares: -2911100.0
       change_value_usd: -189221500.0
       current_value_usd: 666997500.0
-      portfolio_weight_pct: 3.334321263599974
+      portfolio_weight_pct: 3.3343212635999735
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
     - cik: 0001067983
@@ -11059,7 +11059,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 16331423261.0
     institutional_avg_holding_price: 287.56
-    latest_institutional_buy_price: 287.56000000211293
+    latest_institutional_buy_price: 287.56
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -11185,7 +11185,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 51383270.0
-      portfolio_weight_pct: 1.6051117941588864
+      portfolio_weight_pct: 1.6051117941588862
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     - cik: 0001067983
@@ -11503,7 +11503,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 2794737853.0
     institutional_avg_holding_price: 286.86
-    latest_institutional_buy_price: 286.8600000102643
+    latest_institutional_buy_price: 286.86
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -11539,7 +11539,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 1028454775.0
-      portfolio_weight_pct: 0.39090519573093924
+      portfolio_weight_pct: 0.3909051957309392
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     total_bought_shares: 1850600.0
@@ -11629,7 +11629,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 2488726121.0
     institutional_avg_holding_price: 102.18
-    latest_institutional_buy_price: 102.18000000328458
+    latest_institutional_buy_price: 102.18
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -11653,7 +11653,7 @@ rankings:
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
       current_value_usd: 2017880681.0
-      portfolio_weight_pct: 10.087387826889753
+      portfolio_weight_pct: 10.087387826889751
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
     total_bought_shares: 8211600.0
@@ -11839,7 +11839,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 1268219376.0
     institutional_avg_holding_price: 83.73
-    latest_institutional_buy_price: 83.73000002970977
+    latest_institutional_buy_price: 83.73
     key_institution_bought: true
     managers:
     - cik: 0001067983
@@ -12035,7 +12035,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 877052911.0
     institutional_avg_holding_price: 86.84
-    latest_institutional_buy_price: 86.83999997227625
+    latest_institutional_buy_price: 86.84
     key_institution_bought: true
     managers:
     - cik: 0001067983
@@ -12492,7 +12492,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 73646461.0
     institutional_avg_holding_price: 83.02
-    latest_institutional_buy_price: 83.02000015781886
+    latest_institutional_buy_price: 83.02
     key_institution_bought: true
     managers:
     - cik: 0001709323
@@ -12746,7 +12746,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 51663072.0
-      portfolio_weight_pct: 1.613852255601477
+      portfolio_weight_pct: 1.6138522556014772
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     total_bought_shares: 0.0
@@ -12794,7 +12794,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 51637996.0
-      portfolio_weight_pct: 1.6130689309249755
+      portfolio_weight_pct: 1.6130689309249757
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
     total_bought_shares: 0.0
@@ -12878,7 +12878,7 @@ rankings:
     exits_count: 0
     total_tracked_value_usd: 19995576.0
     institutional_avg_holding_price: 84.12
-    latest_institutional_buy_price: 84.11999848550502
+    latest_institutional_buy_price: 84.12
     key_institution_bought: true
     managers:
     - cik: 0001067983
@@ -13185,7 +13185,7 @@ rankings:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 3904100.0
-      portfolio_weight_pct: 0.019516600354904868
+      portfolio_weight_pct: 0.019516600354904864
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
     total_bought_shares: 0.0
@@ -13416,13 +13416,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 1
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 8
   AXP.US:
     symbol: AXP.US
     slug: axp-us
@@ -13472,10 +13465,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 2
   KO.US:
     symbol: KO.US
     slug: ko-us
@@ -13521,14 +13510,10 @@ stocks:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 30420000000.0
-      portfolio_weight_pct: 11.562332484804854
+      portfolio_weight_pct: 11.562332484804855
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 3
   BAC.US:
     symbol: BAC.US
     slug: bac-us
@@ -13592,13 +13577,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 4
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 11
   OXY.US:
     symbol: OXY.US
     slug: oxy-us
@@ -13659,7 +13637,7 @@ stocks:
       change_shares: -2911100.0
       change_value_usd: -189221500.0
       current_value_usd: 666997500.0
-      portfolio_weight_pct: 3.334321263599974
+      portfolio_weight_pct: 3.3343212635999735
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
@@ -13676,13 +13654,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 5
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 18
   CVX.US:
     symbol: CVX.US
     slug: cvx-us
@@ -13732,13 +13703,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 6
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 1
   GOOGL.US:
     symbol: GOOGL.US
     slug: googl-us
@@ -13768,7 +13732,7 @@ stocks:
       total_sold_value_usd: 0.0
       total_tracked_value_usd: 16331423261.0
       institutional_avg_holding_price: 287.56
-      latest_institutional_buy_price: 287.56000000211293
+      latest_institutional_buy_price: 287.56
       key_institution_bought: true
       key_institution_bought_value_usd: 10494690839.44
       key_institution_holders:
@@ -13801,13 +13765,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 1
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 7
   CB.US:
     symbol: CB.US
     slug: cb-us
@@ -13857,10 +13814,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 8
   MCO.US:
     symbol: MCO.US
     slug: mco-us
@@ -13907,7 +13860,7 @@ stocks:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 51383270.0
-      portfolio_weight_pct: 1.6051117941588864
+      portfolio_weight_pct: 1.6051117941588862
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
@@ -13924,10 +13877,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 9
   KHC.US:
     symbol: KHC.US
     slug: khc-us
@@ -13978,10 +13927,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 10
   BRK.B.US:
     symbol: BRK.B.US
     slug: brk-b-us
@@ -14045,13 +13990,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 3
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 11
   DVA.US:
     symbol: DVA.US
     slug: dva-us
@@ -14101,13 +14039,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 12
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 17
   KR.US:
     symbol: KR.US
     slug: kr-us
@@ -14157,10 +14088,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 13
   SIRI.US:
     symbol: SIRI.US
     slug: siri-us
@@ -14210,10 +14137,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 14
   GOOG.US:
     symbol: GOOG.US
     slug: goog-us
@@ -14243,7 +14166,7 @@ stocks:
       total_sold_value_usd: 26391120.0
       total_tracked_value_usd: 2794737853.0
       institutional_avg_holding_price: 286.86
-      latest_institutional_buy_price: 286.8600000102643
+      latest_institutional_buy_price: 286.86
       key_institution_bought: true
       key_institution_bought_value_usd: 530863116.02
       key_institution_holders:
@@ -14286,20 +14209,10 @@ stocks:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 1028454775.0
-      portfolio_weight_pct: 0.39090519573093924
+      portfolio_weight_pct: 0.3909051957309392
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 6
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 15
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 24
   DAL.US:
     symbol: DAL.US
     slug: dal-us
@@ -14349,10 +14262,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 16
   PDD.US:
     symbol: PDD.US
     slug: pdd-us
@@ -14383,7 +14292,7 @@ stocks:
       total_sold_value_usd: 0.0
       total_tracked_value_usd: 2488726121.0
       institutional_avg_holding_price: 102.18
-      latest_institutional_buy_price: 102.18000000328458
+      latest_institutional_buy_price: 102.18
       key_institution_bought: true
       key_institution_bought_value_usd: 839061288.03
       key_institution_holders:
@@ -14412,17 +14321,10 @@ stocks:
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
       current_value_usd: 2017880681.0
-      portfolio_weight_pct: 10.087387826889753
+      portfolio_weight_pct: 10.087387826889751
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 5
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 17
   NVDA.US:
     symbol: NVDA.US
     slug: nvda-us
@@ -14474,13 +14376,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 2
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 18
   VRSN.US:
     symbol: VRSN.US
     slug: vrsn-us
@@ -14531,10 +14426,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 19
   COF.US:
     symbol: COF.US
     slug: cof-us
@@ -14584,10 +14475,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 20
   NYT.US:
     symbol: NYT.US
     slug: nyt-us
@@ -14617,7 +14504,7 @@ stocks:
       total_sold_value_usd: 0.0
       total_tracked_value_usd: 1268219376.0
       institutional_avg_holding_price: 83.73
-      latest_institutional_buy_price: 83.73000002970977
+      latest_institutional_buy_price: 83.73
       key_institution_bought: true
       key_institution_bought_value_usd: 844064630.73
       key_institution_holders:
@@ -14636,13 +14523,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 4
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 21
   TSLA.US:
     symbol: TSLA.US
     slug: tsla-us
@@ -14694,10 +14574,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 22
   ALLY.US:
     symbol: ALLY.US
     slug: ally-us
@@ -14746,10 +14622,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 23
   LLYVK.US:
     symbol: LLYVK.US
     slug: llyvk-us
@@ -14798,13 +14670,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 24
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 23
   LEN.US:
     symbol: LEN.US
     slug: len-us
@@ -14835,7 +14700,7 @@ stocks:
       total_sold_value_usd: 0.0
       total_tracked_value_usd: 877052911.0
       institutional_avg_holding_price: 86.84
-      latest_institutional_buy_price: 86.83999997227625
+      latest_institutional_buy_price: 86.84
       key_institution_bought: true
       key_institution_bought_value_usd: 264748413.2
       key_institution_holders:
@@ -14854,13 +14719,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 7
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 25
   NUE.US:
     symbol: NUE.US
     slug: nue-us
@@ -14910,13 +14768,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 26
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 13
   LLYVA.US:
     symbol: LLYVA.US
     slug: llyva-us
@@ -14965,10 +14816,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 27
   LPX.US:
     symbol: LPX.US
     slug: lpx-us
@@ -15017,10 +14864,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 28
   MSFT.US:
     symbol: MSFT.US
     slug: msft-us
@@ -15072,13 +14915,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 9
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 29
   EWBC.US:
     symbol: EWBC.US
     slug: ewbc-us
@@ -15129,10 +14965,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 30
   UNH.US:
     symbol: UNH.US
     slug: unh-us
@@ -15195,16 +15027,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 3
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 31
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 5
   DIS.US:
     symbol: DIS.US
     slug: dis-us
@@ -15254,13 +15076,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 8
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 32
   STZ.US:
     symbol: STZ.US
     slug: stz-us
@@ -15310,13 +15125,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 33
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 4
   CROX.US:
     symbol: CROX.US
     slug: crox-us
@@ -15346,7 +15154,7 @@ stocks:
       total_sold_value_usd: 0.0
       total_tracked_value_usd: 73646461.0
       institutional_avg_holding_price: 83.02
-      latest_institutional_buy_price: 83.02000015781886
+      latest_institutional_buy_price: 83.02
       key_institution_bought: true
       key_institution_bought_value_usd: 21496700.72
       key_institution_holders:
@@ -15365,13 +15173,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 11
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 34
   NVR.US:
     symbol: NVR.US
     slug: nvr-us
@@ -15421,10 +15222,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 35
   CRDO.US:
     symbol: CRDO.US
     slug: crdo-us
@@ -15473,13 +15270,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 10
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 36
   TME.US:
     symbol: TME.US
     slug: tme-us
@@ -15528,10 +15318,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 37
   M.US:
     symbol: M.US
     slug: m-us
@@ -15580,10 +15366,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 38
   SPGI.US:
     symbol: SPGI.US
     slug: spgi-us
@@ -15629,14 +15411,10 @@ stocks:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 51663072.0
-      portfolio_weight_pct: 1.613852255601477
+      portfolio_weight_pct: 1.6138522556014772
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 39
   HRB.US:
     symbol: HRB.US
     slug: hrb-us
@@ -15681,14 +15459,10 @@ stocks:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 51637996.0
-      portfolio_weight_pct: 1.6130689309249755
+      portfolio_weight_pct: 1.6130689309249757
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 40
   TSM.US:
     symbol: TSM.US
     slug: tsm-us
@@ -15737,13 +15511,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 41
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 14
   LEN.B.US:
     symbol: LEN.B.US
     slug: len-b-us
@@ -15773,7 +15540,7 @@ stocks:
       total_sold_value_usd: 0.0
       total_tracked_value_usd: 19995576.0
       institutional_avg_holding_price: 84.12
-      latest_institutional_buy_price: 84.11999848550502
+      latest_institutional_buy_price: 84.12
       key_institution_bought: true
       key_institution_bought_value_usd: 4771538.67
       key_institution_holders:
@@ -15792,13 +15559,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_buying
-      rank: 12
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 42
   CRCL.US:
     symbol: CRCL.US
     slug: crcl-us
@@ -15847,10 +15607,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 43
   JEF.US:
     symbol: JEF.US
     slug: jef-us
@@ -15899,10 +15655,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 44
   MSCI.US:
     symbol: MSCI.US
     slug: msci-us
@@ -15952,10 +15704,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001709323/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 45
   PLTR.US:
     symbol: PLTR.US
     slug: pltr-us
@@ -16006,10 +15754,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 46
   SNPS.US:
     symbol: SNPS.US
     slug: snps-us
@@ -16060,10 +15804,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 47
   CRWD.US:
     symbol: CRWD.US
     slug: crwd-us
@@ -16110,14 +15850,10 @@ stocks:
       change_shares: 0.0
       change_value_usd: 0.0
       current_value_usd: 3904100.0
-      portfolio_weight_pct: 0.019516600354904868
+      portfolio_weight_pct: 0.019516600354904864
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 48
   SNOW.US:
     symbol: SNOW.US
     slug: snow-us
@@ -16166,10 +15902,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 49
   TEM.US:
     symbol: TEM.US
     slug: tem-us
@@ -16218,13 +15950,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 50
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 30
   INOD.US:
     symbol: INOD.US
     slug: inod-us
@@ -16273,10 +15998,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 51
   ALLE.US:
     symbol: ALLE.US
     slug: alle-us
@@ -16325,16 +16046,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 13
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 52
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 21
   AMZN.US:
     symbol: AMZN.US
     slug: amzn-us
@@ -16385,16 +16096,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 6
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 53
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 9
   AON.US:
     symbol: AON.US
     slug: aon-us
@@ -16443,16 +16144,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 4
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 54
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 6
   ASML.US:
     symbol: ASML.US
     slug: asml-us
@@ -16501,16 +16192,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 17
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 55
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 27
   BABA.US:
     symbol: BABA.US
     slug: baba-us
@@ -16558,16 +16239,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 9
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 56
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 15
   BATRA.US:
     symbol: BATRA.US
     slug: batra-us
@@ -16615,16 +16286,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 19
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 57
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 29
   CHTR.US:
     symbol: CHTR.US
     slug: chtr-us
@@ -16674,16 +16335,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 12
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 58
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 20
   CRWV.US:
     symbol: CRWV.US
     slug: crwv-us
@@ -16731,16 +16382,6 @@ stocks:
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       href: /institutions/0001759760/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 14
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 59
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 22
   DEO.US:
     symbol: DEO.US
     slug: deo-us
@@ -16788,16 +16429,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 16
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 60
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 26
   DPZ.US:
     symbol: DPZ.US
     slug: dpz-us
@@ -16846,16 +16477,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 5
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 61
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 7
   FWONK.US:
     symbol: FWONK.US
     slug: fwonk-us
@@ -16903,16 +16524,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 10
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 62
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 16
   HEI.US:
     symbol: HEI.US
     slug: hei-us
@@ -16960,16 +16571,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 8
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 63
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 12
   LAMR.US:
     symbol: LAMR.US
     slug: lamr-us
@@ -17017,16 +16618,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 11
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 64
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 19
   LILA.US:
     symbol: LILA.US
     slug: lila-us
@@ -17074,16 +16665,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 15
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 65
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 25
   LILAK.US:
     symbol: LILAK.US
     slug: lilak-us
@@ -17131,16 +16712,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 18
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 66
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 28
   MA.US:
     symbol: MA.US
     slug: ma-us
@@ -17189,16 +16760,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 2
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 67
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 3
   POOL.US:
     symbol: POOL.US
     slug: pool-us
@@ -17247,16 +16808,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 7
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 68
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 10
   V.US:
     symbol: V.US
     slug: v-us
@@ -17305,16 +16856,6 @@ stocks:
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       href: /institutions/0001067983/
-    ranking_history:
-    - date: '2026-06-02'
-      ranking: exits
-      rank: 1
-    - date: '2026-06-02'
-      ranking: institutional_combined
-      rank: 69
-    - date: '2026-06-02'
-      ranking: institutional_selling
-      rank: 2
 institutions:
   0001709323:
     cik: 0001709323
@@ -17521,7 +17062,7 @@ institutions:
       change_shares: 0
       change_value_usd: 0
       current_value_usd: 51663072.0
-      portfolio_weight_pct: 1.613852255601477
+      portfolio_weight_pct: 1.6138522556014772
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       price: 428.37
@@ -17541,7 +17082,7 @@ institutions:
       change_shares: 0
       change_value_usd: 0
       current_value_usd: 51637996.0
-      portfolio_weight_pct: 1.6130689309249755
+      portfolio_weight_pct: 1.6130689309249757
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       price: 39.8
@@ -17561,7 +17102,7 @@ institutions:
       change_shares: 0
       change_value_usd: 0
       current_value_usd: 51383270.0
-      portfolio_weight_pct: 1.6051117941588864
+      portfolio_weight_pct: 1.6051117941588862
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       price: 462.31
@@ -17776,7 +17317,7 @@ institutions:
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
       current_value_usd: 2017880681.0
-      portfolio_weight_pct: 10.087387826889753
+      portfolio_weight_pct: 10.087387826889751
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       price: 87.62
@@ -17836,7 +17377,7 @@ institutions:
       change_shares: -2911100.0
       change_value_usd: -189221500.0
       current_value_usd: 666997500.0
-      portfolio_weight_pct: 3.334321263599974
+      portfolio_weight_pct: 3.3343212635999735
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       price: 58.715
@@ -18016,7 +17557,7 @@ institutions:
       change_shares: 0
       change_value_usd: 0
       current_value_usd: 3904100.0
-      portfolio_weight_pct: 0.019516600354904868
+      portfolio_weight_pct: 0.019516600354904864
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       price: 774.1
@@ -18157,7 +17698,7 @@ institutions:
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
       current_value_usd: 2017880681.0
-      portfolio_weight_pct: 10.087387826889753
+      portfolio_weight_pct: 10.087387826889751
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       price: 87.62
@@ -18237,7 +17778,7 @@ institutions:
       change_shares: -2911100.0
       change_value_usd: -189221500.0
       current_value_usd: 666997500.0
-      portfolio_weight_pct: 3.334321263599974
+      portfolio_weight_pct: 3.3343212635999735
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
       price: 58.715
@@ -18431,7 +17972,7 @@ institutions:
       change_shares: 0
       change_value_usd: 0
       current_value_usd: 30420000000.0
-      portfolio_weight_pct: 11.562332484804854
+      portfolio_weight_pct: 11.562332484804855
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       price: 78.82
@@ -18751,7 +18292,7 @@ institutions:
       change_shares: 0
       change_value_usd: 0
       current_value_usd: 1028454775.0
-      portfolio_weight_pct: 0.39090519573093924
+      portfolio_weight_pct: 0.3909051957309392
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
       price: 373.16

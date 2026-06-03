@@ -16,7 +16,7 @@ const shareFormatter = new Intl.NumberFormat("en-US", {
 });
 
 const chartSeries = [
-  { key: "value", label: "StockHunt", className: "line-portfolio", pointClass: "point-portfolio" },
+  { key: "value", label: "Value Tracker", className: "line-portfolio", pointClass: "point-portfolio" },
   { key: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy" },
   { key: "qqq_value", label: "QQQ", className: "line-qqq", pointClass: "point-qqq" }
 ];

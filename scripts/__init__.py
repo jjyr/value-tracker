@@ -1,1 +1,1 @@
-"""StockHunt command modules."""
+"""Value Tracker command modules."""

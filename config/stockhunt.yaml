@@ -6,7 +6,6 @@ data:
   market: "US"
   symbol_format: "longbridge"
   output_dir: "public"
-  sqlite_path: "raw/generated/stockhunt.sqlite"
 
 institutions:
   whitelist_version: "2026-06-01-whitelist-v1"

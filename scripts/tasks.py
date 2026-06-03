@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convenience tasks for the StockHunt data/build pipeline."""
+"""Convenience tasks for the Value Tracker data/build pipeline."""
 
 from __future__ import annotations
 
@@ -7,13 +7,12 @@ import argparse
 import pathlib
 import subprocess
 import sys
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import yaml
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-LIVE_INPUT = ROOT / "raw/generated/live_13f_holdings.yaml"
 SNAPSHOT = ROOT / "raw/generated/snapshot.yaml"
 SIMULATION = ROOT / "raw/generated/historical_simulation.yaml"
 DEFAULT_BACKTEST_START = "2024-01-01"
@@ -29,6 +28,8 @@ def add_fetch_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--manager-limit", type=int, default=None, help="Limit managers for smoke tests.")
     parser.add_argument("--backtest-start", default=DEFAULT_BACKTEST_START, help="Historical backtest start date.")
     parser.add_argument("--end-date", default=None, help="Historical backtest end date. Defaults to today.")
+    parser.add_argument("--live-batch-size", type=int, default=30, help="Symbols per Longbridge live market-data command.")
+    parser.add_argument("--live-sleep", type=float, default=0.0, help="Seconds to sleep after each Longbridge live command.")
 
 
 def last_rebalance_date(path: pathlib.Path = SIMULATION) -> Optional[str]:
@@ -43,18 +44,35 @@ def last_rebalance_date(path: pathlib.Path = SIMULATION) -> Optional[str]:
     )
 
 
-def run_live_input(args: argparse.Namespace) -> None:
-    live_command = [sys.executable, "scripts/build_live_input.py", "--top", str(args.top), "--output", str(LIVE_INPUT)]
-    if args.manager_limit:
-        live_command.extend(["--manager-limit", str(args.manager_limit)])
-    run(live_command)
+def run_live_input(args: argparse.Namespace) -> Dict[str, Any]:
+    from scripts import build_live_input
+
+    live_args = argparse.Namespace(
+        config=ROOT / "config/stockhunt.yaml",
+        cusip_map=ROOT / "config/cusip-symbols.yaml",
+        top=args.top,
+        manager_limit=args.manager_limit,
+        batch_size=args.live_batch_size,
+        sleep=args.live_sleep,
+        data_date=None,
+        market_data_date=None,
+    )
+    raw = build_live_input.build_live_raw(live_args)
+    if not raw.get("latest_13f_report_period"):
+        raise SystemExit("no latest 13F report period found; see warnings in live raw input")
+    return raw
 
 
-def run_backend(reset_db: bool) -> None:
-    backend_command = [sys.executable, "scripts/stockhunt_backend.py", "--raw", str(LIVE_INPUT)]
-    if reset_db:
-        backend_command.append("--reset-db")
-    run(backend_command)
+def run_backend(raw: Dict[str, Any]) -> None:
+    from scripts import stockhunt_backend
+
+    config_path = ROOT / "config/stockhunt.yaml"
+    config = stockhunt_backend.load_yaml(config_path)
+    cfg_hash = stockhunt_backend.config_hash(config)
+    metrics = stockhunt_backend.compute_metrics(config, raw)
+    snapshot = stockhunt_backend.build_snapshot(config, raw, cfg_hash, metrics)
+    stockhunt_backend.write_yaml(SNAPSHOT, snapshot)
+    print(f"wrote {SNAPSHOT}")
 
 
 def run_backtest(
@@ -100,8 +118,8 @@ def run_export() -> None:
 
 
 def fetch_pipeline(args: argparse.Namespace, full: bool, allow_rebalance: bool) -> None:
-    run_live_input(args)
-    run_backend(reset_db=full)
+    raw = run_live_input(args)
+    run_backend(raw)
     run_backtest(args, full=full, allow_rebalance=allow_rebalance)
     run_export()
 
@@ -112,7 +130,7 @@ def build() -> None:
 
 
 def fetch() -> None:
-    parser = argparse.ArgumentParser(description="Incrementally fetch StockHunt data without running Hugo.")
+    parser = argparse.ArgumentParser(description="Incrementally fetch Value Tracker data without running Hugo.")
     add_fetch_args(parser)
     parser.add_argument("--hold-positions", action="store_true", help="Update prices and P/L without creating a new rebalance.")
     args = parser.parse_args()
@@ -120,14 +138,14 @@ def fetch() -> None:
 
 
 def fetch_all() -> None:
-    parser = argparse.ArgumentParser(description="Fully refresh StockHunt data without running Hugo.")
+    parser = argparse.ArgumentParser(description="Fully refresh Value Tracker data without running Hugo.")
     add_fetch_args(parser)
     args = parser.parse_args()
     fetch_pipeline(args, full=True, allow_rebalance=True)
 
 
 def schedule() -> None:
-    parser = argparse.ArgumentParser(description="Run scheduled StockHunt jobs and then build Hugo.")
+    parser = argparse.ArgumentParser(description="Run scheduled Value Tracker jobs and then build Hugo.")
     parser.add_argument("mode", choices=["daily", "weekly"], help="daily updates prices/P&L; weekly allows rebalance.")
     add_fetch_args(parser)
     args = parser.parse_args()

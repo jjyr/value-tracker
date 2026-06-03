@@ -1,4 +1,4 @@
-# StockHunt Frontend Layout v0.1
+# Value Tracker Frontend Layout v0.1
 
 ## 1. 首页定位
 
@@ -12,7 +12,7 @@ MVP 不做单个榜单独立视图。多个榜单在首页展开显示，每个�
 
 高度保持紧凑，展示：
 
-- 产品名：`StockHunt`
+- 产品名：`价值追踪`
 - 数据日期
 - 最新 13F 报告期
 - 最后构建时间
