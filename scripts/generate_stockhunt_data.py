@@ -374,6 +374,8 @@ def status_tone(status: str) -> str:
 
 def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str, Any]:
     status = manager.get("status") or ""
+    current_shares = float(manager.get("current_shares") or 0)
+    current_value = float(manager.get("current_value_usd") or 0)
     row = {
         "symbol": raw["symbol"],
         "slug": raw.get("slug") or slugify_symbol(raw["symbol"]),
@@ -382,10 +384,11 @@ def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str,
         "status_label": status_label(status),
         "status_tone": status_tone(status),
         "previous_shares": manager.get("previous_shares") or 0,
-        "current_shares": manager.get("current_shares") or 0,
+        "current_shares": current_shares,
         "change_shares": manager.get("change_shares") or 0,
         "change_value_usd": manager.get("change_value_usd") or 0,
-        "current_value_usd": manager.get("current_value_usd") or 0,
+        "current_value_usd": current_value,
+        "avg_holding_price": round(current_value / current_shares, 4) if current_shares > 0 else 0,
         "portfolio_weight_pct": manager.get("portfolio_weight_pct") or 0,
         "filing_date": manager.get("filing_date"),
         "report_period": manager.get("report_period"),
@@ -924,6 +927,14 @@ def build_hugo_data(
     combined_rows = sort_combined_rows(ranking_rows)
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
     institutions = build_institutions(config, rows)
+    tracked_institution_order = [
+        {
+            "cik": normalize_cik(manager.get("cik")),
+            "display_name": manager.get("display_name") or manager.get("name") or normalize_cik(manager.get("cik")),
+        }
+        for manager in enabled_managers(config)
+        if normalize_cik(manager.get("cik")) in institutions
+    ]
     simulation = snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
     payload = {
         "build": build_metadata(config, snapshot),
@@ -953,6 +964,7 @@ def build_hugo_data(
         ],
         "stocks": stocks,
         "institutions": institutions,
+        "tracked_institution_order": tracked_institution_order,
     }
     return normalize_internal_hrefs(payload)
 

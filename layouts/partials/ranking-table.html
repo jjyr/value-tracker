@@ -9,13 +9,10 @@
   <div class="compact-ranking-list">
     {{ range $idx, $row := first 10 $ranking.rows }}
       {{ $statusSet := slice }}
-      {{ $countLabel := printf "持有 %v / %v" ($row.holders_count | default 0) ($row.manager_count | default "--") }}
       {{ if eq $ranking.type "institutional_buying" }}
         {{ $statusSet = slice "new_position" "unknown_previous" "added" }}
-        {{ $countLabel = printf "买入 %v / %v" ($row.buyers_count | default 0) ($row.manager_count | default "--") }}
       {{ else if eq $ranking.type "institutional_selling" }}
         {{ $statusSet = slice "reduced" "exited" }}
-        {{ $countLabel = printf "卖出 %v / %v" ($row.sellers_count | default 0) ($row.manager_count | default "--") }}
       {{ end }}
       {{ $buyValue := float ($row.total_bought_value_usd | default 0) }}
       {{ $sellValue := float ($row.total_sold_value_usd | default 0) }}
@@ -25,50 +22,51 @@
       {{ $sellPct := float ($row.total_sold_shares_pct | default 0) }}
       {{ $hasBuy := gt $buyValue 0.0 }}
       {{ $hasSell := gt $sellValue 0.0 }}
-      <article class="compact-ranking-item">
+      {{ $primaryTone := "holding" }}
+      {{ if eq $ranking.type "institutional_buying" }}{{ $primaryTone = "buying" }}{{ else if eq $ranking.type "institutional_selling" }}{{ $primaryTone = "selling" }}{{ end }}
+      {{ $actionLabel := "买入" }}
+      {{ $actionPct := $buyPct }}
+      {{ $actionShares := $buyShares }}
+      {{ $actionSign := "+" }}
+      {{ $actionClass := "is-buy" }}
+      {{ if eq $ranking.type "institutional_selling" }}
+        {{ $actionLabel = "卖出" }}
+        {{ $actionPct = $sellPct }}
+        {{ $actionShares = $sellShares }}
+        {{ $actionSign = "-" }}
+        {{ $actionClass = "is-sell" }}
+      {{ end }}
+      <article class="compact-ranking-item ranking-{{ $primaryTone }}">
         <div class="compact-rank">#{{ add $idx 1 }}</div>
         <div class="compact-ranking-body">
           <a class="stock-link" href="{{ printf "stocks/%s/" $row.slug | relURL }}">
             <strong>{{ $row.symbol }}</strong>
             <span>{{ $row.company_name }}</span>
           </a>
-          <div class="compact-ranking-meta">
-            <strong>{{ partial "ranking-primary-value.html" (dict "type" $ranking.type "row" $row) }}</strong>
-            <span>{{ $countLabel }}</span>
-          </div>
+        </div>
+        <div class="compact-ranking-primary">
+          <strong>{{ partial "ranking-primary-value.html" (dict "type" $ranking.type "row" $row) }}</strong>
+          <span>{{ $ranking.sort_label }}</span>
+        </div>
+        <div class="compact-ranking-details">
           {{ if eq $ranking.type "institutional_holding" }}
-            <div class="compact-ranking-flow">
-              {{ if or $hasBuy $hasSell }}
-                {{ if $hasBuy }}
-                  <span class="compact-flow-chip is-buy{{ if not $hasSell }} is-action{{ end }}"><em>买入</em><strong><span data-money="{{ $buyValue }}">--</span> · +{{ printf "%.1f%%" $buyPct }} · <span data-shares="{{ $buyShares }}">--</span> 股</strong></span>
-                {{ end }}
-                {{ if $hasSell }}
-                  <span class="compact-flow-chip is-sell{{ if not $hasBuy }} is-action{{ end }}"><em>卖出</em><strong><span data-money="{{ $sellValue }}">--</span> · -{{ printf "%.1f%%" $sellPct }} · <span data-shares="{{ $sellShares }}">--</span> 股</strong></span>
-                {{ end }}
-              {{ else }}
-                <span class="compact-flow-chip is-muted"><em>变动</em><strong>--</strong></span>
+            {{ if or $hasBuy $hasSell }}
+              {{ if $hasBuy }}
+                <span class="compact-flow-text is-buy">买入 <strong data-money="{{ $buyValue }}">--</strong> · +{{ printf "%.1f%%" $buyPct }} · <span data-shares="{{ $buyShares }}">--</span> 股</span>
               {{ end }}
-            </div>
-          {{ else }}
-            {{ $actionLabel := "买入" }}
-            {{ $actionPct := $buyPct }}
-            {{ $actionShares := $buyShares }}
-            {{ $actionSign := "+" }}
-            {{ $actionClass := "is-buy" }}
-            {{ if eq $ranking.type "institutional_selling" }}
-              {{ $actionLabel = "卖出" }}
-              {{ $actionPct = $sellPct }}
-              {{ $actionShares = $sellShares }}
-              {{ $actionSign = "-" }}
-              {{ $actionClass = "is-sell" }}
+              {{ if $hasSell }}
+                <span class="compact-flow-text is-sell">卖出 <strong data-money="{{ $sellValue }}">--</strong> · -{{ printf "%.1f%%" $sellPct }} · <span data-shares="{{ $sellShares }}">--</span> 股</span>
+              {{ end }}
+            {{ else }}
+              <span class="compact-flow-text is-muted">变动 --</span>
             {{ end }}
-            <div class="compact-ranking-flow">
-              <span class="compact-flow-chip is-buy"><em>买入金额</em><strong>{{ if $hasBuy }}<span data-money="{{ $buyValue }}">--</span>{{ else }}--{{ end }}</strong></span>
-              <span class="compact-flow-chip is-sell"><em>卖出金额</em><strong>{{ if $hasSell }}<span data-money="{{ $sellValue }}">--</span>{{ else }}--{{ end }}</strong></span>
-              <span class="compact-flow-chip {{ $actionClass }} is-action"><em>{{ $actionLabel }}</em><strong>{{ $actionSign }}{{ printf "%.1f%%" $actionPct }} · <span data-shares="{{ $actionShares }}">--</span> 股</strong></span>
-            </div>
+          {{ else }}
+            <span class="compact-flow-text is-buy">买入 <strong>{{ if $hasBuy }}<span data-money="{{ $buyValue }}">--</span>{{ else }}--{{ end }}</strong></span>
+            <span class="compact-flow-text is-sell">卖出 <strong>{{ if $hasSell }}<span data-money="{{ $sellValue }}">--</span>{{ else }}--{{ end }}</strong></span>
+            <span class="compact-flow-text {{ $actionClass }}">{{ $actionLabel }} {{ $actionSign }}{{ printf "%.1f%%" $actionPct }} · <span data-shares="{{ $actionShares }}">--</span> 股</span>
           {{ end }}
-          <div class="compact-ranking-tags">
+        </div>
+        <div class="compact-ranking-tags">
             {{ $shown := false }}
             {{ range $row.managers }}
               {{ $status := .status | default "" }}
@@ -94,7 +92,6 @@
               {{ end }}
             {{ end }}
             {{ if not $shown }}<span class="muted">--</span>{{ end }}
-          </div>
         </div>
       </article>
     {{ end }}
