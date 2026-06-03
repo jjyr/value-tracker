@@ -19,7 +19,7 @@
       {{ end }}
       {{ with .tip }}{{ $tip = . }}{{ end }}
       {{ with .href }}
-        <a class="activity-badge badge-{{ $tone }} tip-trigger" href="{{ . | relURL }}" data-tooltip="{{ $tip }}">{{ $label }}</a>
+        <a class="activity-badge badge-{{ $tone }} tip-trigger" href="{{ . | replaceRE "^/" "" | relURL }}" data-tooltip="{{ $tip }}">{{ $label }}</a>
       {{ else }}
         <span class="activity-badge badge-{{ $tone }} tip-trigger" data-tooltip="{{ $tip }}">{{ $label }}</span>
       {{ end }}

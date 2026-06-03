@@ -28,7 +28,7 @@
       <article class="compact-ranking-item">
         <div class="compact-rank">#{{ add $idx 1 }}</div>
         <div class="compact-ranking-body">
-          <a class="stock-link" href="{{ printf "/stocks/%s/" $row.slug | relURL }}">
+          <a class="stock-link" href="{{ printf "stocks/%s/" $row.slug | relURL }}">
             <strong>{{ $row.symbol }}</strong>
             <span>{{ $row.company_name }}</span>
           </a>
@@ -90,7 +90,7 @@
               {{ end }}
               {{ if $showManager }}
                 {{ $shown = true }}
-                <a class="activity-badge badge-key tip-trigger" href="{{ printf "/institutions/%s/" .cik | relURL }}" data-tooltip="{{ $tip }}">{{ .display_name | default .name }}</a>
+                <a class="activity-badge badge-key tip-trigger" href="{{ printf "institutions/%s/" .cik | relURL }}" data-tooltip="{{ $tip }}">{{ .display_name | default .name }}</a>
               {{ end }}
             {{ end }}
             {{ if not $shown }}<span class="muted">--</span>{{ end }}

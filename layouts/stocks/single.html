@@ -10,7 +10,7 @@
   </main>
 {{ else }}
   <main class="page-shell detail-shell">
-    <a class="back-link" href="{{ "/" | relURL }}">← 返回首页</a>
+    <a class="back-link" href="{{ site.Home.RelPermalink }}">← 返回首页</a>
     <section class="detail-hero">
       <div>
         <p class="eyebrow">{{ $stock.exchange }} · {{ $stock.sector }}</p>
@@ -95,7 +95,7 @@
             {{ range $stock.managers }}
               <tr>
                 <td>
-                  <a class="stock-link" href="{{ .href | relURL }}">
+                  <a class="stock-link" href="{{ .href | replaceRE "^/" "" | relURL }}">
                     <strong>{{ .display_name }}</strong>
                     <span>{{ .name }}</span>
                   </a>

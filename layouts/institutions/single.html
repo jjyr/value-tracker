@@ -10,7 +10,7 @@
   </main>
 {{ else }}
   <main class="page-shell detail-shell">
-    <a class="back-link" href="{{ "/" | relURL }}">← 返回首页</a>
+    <a class="back-link" href="{{ site.Home.RelPermalink }}">← 返回首页</a>
     <section class="detail-hero">
       <div>
         <p class="eyebrow">Institution · {{ $institution.cik }}</p>
@@ -47,7 +47,7 @@
           {{ range first 5 $institution.recent_changes }}
             {{ $badgeTone := "holding" }}
             {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
-            <a class="action-card {{ if eq .status_tone "sell" }}sell{{ else }}buy{{ end }}" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+            <a class="action-card {{ if eq .status_tone "sell" }}sell{{ else }}buy{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
               <strong>{{ .status_label }} {{ .symbol }}</strong>
               <span>{{ .company_name }}</span>
               <span><b data-money="{{ .change_value_usd }}">--</b> · <em class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</em></span>
@@ -85,7 +85,7 @@
               {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
               <tr>
                 <td>
-                  <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+                  <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relURL }}">
                     <strong>{{ .symbol }}</strong>
                     <span>{{ .company_name }}</span>
                   </a>
@@ -136,7 +136,7 @@
               {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
               <tr>
                 <td>
-                  <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+                  <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relURL }}">
                     <strong>{{ .symbol }}</strong>
                     <span>{{ .company_name }}</span>
                   </a>

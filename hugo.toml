@@ -1,4 +1,4 @@
-baseURL = "http://localhost:1313/"
+baseURL = "https://jjylab.com/value-tracker/"
 languageCode = "zh-CN"
 title = "价值追踪"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap", "robotsTXT"]

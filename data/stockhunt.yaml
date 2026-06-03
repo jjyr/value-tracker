@@ -65,10 +65,10 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     entry_date: '2026-02-17'
     entry_price: 98.5868
     current_price: 87.66
@@ -102,10 +102,10 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     entry_date: '2025-11-17'
     entry_price: 485.9929
     current_price: 469.102
@@ -139,13 +139,13 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
     entry_date: '2026-05-18'
     entry_price: 389.483
     current_price: 373.38
@@ -178,7 +178,7 @@ simulation:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     entry_date: '2026-05-26'
     entry_price: 433.59
     current_price: 420.445
@@ -211,10 +211,10 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
     entry_date: '2026-05-18'
     entry_price: 443.41
     current_price: 462.265
@@ -247,7 +247,7 @@ simulation:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     entry_date: '2026-02-17'
     entry_price: 186.2358
     current_price: 224.439
@@ -280,7 +280,7 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     entry_date: '2026-05-18'
     entry_price: 9.06
     current_price: 9.525
@@ -313,7 +313,7 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     entry_date: '2026-05-18'
     entry_price: 416.45
     current_price: 428.22
@@ -346,10 +346,10 @@ simulation:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
     entry_date: '2026-06-01'
     entry_price: 377.39
     current_price: 377.39
@@ -383,7 +383,7 @@ simulation:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
     entry_date: '2026-05-11'
     entry_price: 77.2038
     current_price: 75.82
@@ -8391,11 +8391,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期增持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 377.19
     price_change_pct: -0.8282
@@ -8458,7 +8458,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 224.445
     price_change_pct: 6.3015
@@ -8507,11 +8507,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 469.22
     price_change_pct: -1.1086
@@ -8571,7 +8571,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 75.84
     price_change_pct: 0.8377
@@ -8620,11 +8620,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 87.62
     price_change_pct: 3.766
@@ -8684,15 +8684,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期减持该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 373.16
     price_change_pct: -0.8687
@@ -8765,7 +8765,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 90.42
     price_change_pct: 0.7129
@@ -8814,7 +8814,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 102.54
     price_change_pct: 0.6972
@@ -8865,7 +8865,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 461.04
     price_change_pct: 2.3987
@@ -8913,7 +8913,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 234.18
     price_change_pct: -0.7838
@@ -8961,7 +8961,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期增持该股票。
     price: 117.805
     price_change_pct: -0.7289
@@ -9009,7 +9009,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 88.3
     price_change_pct: 0.2498
@@ -9063,7 +9063,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 186.41
     price_change_pct: 2.1649
@@ -9112,7 +9112,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 321.29
     price_change_pct: -1.5535
@@ -9161,7 +9161,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 495.75
     price_change_pct: 0.3583
@@ -9210,7 +9210,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 136.01
     price_change_pct: -2.0242
@@ -9259,11 +9259,11 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 378.0
     price_change_pct: -0.6074
@@ -9324,7 +9324,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 319.27
     price_change_pct: 1.0156
@@ -9373,7 +9373,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 312.355
     price_change_pct: 0.5715
@@ -9424,15 +9424,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 307.987
     price_change_pct: -1.3052
@@ -9507,7 +9507,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 262.63
     price_change_pct: -2.9597
@@ -9556,7 +9556,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 184.12
     price_change_pct: 1.4994
@@ -9605,11 +9605,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期减持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 51.645
     price_change_pct: 0.0872
@@ -9669,7 +9669,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 336.02
     price_change_pct: -3.4924
@@ -9718,7 +9718,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 251.835
     price_change_pct: 0.734
@@ -9766,7 +9766,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     price: 442.121
     price_change_pct: 5.6568
@@ -9814,7 +9814,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期清仓该股票。
     price: 125.685
     price_change_pct: 1.1794
@@ -9862,7 +9862,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 90.64
     price_change_pct: -0.1652
@@ -9911,7 +9911,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 191.745
     price_change_pct: -1.3454
@@ -9960,15 +9960,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 58.715
     price_change_pct: 3.6818
@@ -10040,7 +10040,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 152.045
     price_change_pct: -0.2722
@@ -10090,7 +10090,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 142.86
     price_change_pct: -0.8261
@@ -10139,7 +10139,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 129.89
     price_change_pct: -0.1384
@@ -10187,7 +10187,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期清仓该股票。
     price: 126.75
     price_change_pct: 15.7217
@@ -10235,7 +10235,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 100.84
     price_change_pct: 1.7558
@@ -10283,15 +10283,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期减持该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 373.16
     price_change_pct: -0.8687
@@ -10363,7 +10363,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 8.06
     price_change_pct: -0.1239
@@ -10411,7 +10411,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 80.3
     price_change_pct: -2.6195
@@ -10460,7 +10460,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期清仓该股票。
     price: 1635.785
     price_change_pct: 1.4277
@@ -10508,7 +10508,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 8.145
     price_change_pct: -0.6707
@@ -10556,7 +10556,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 53.525
     price_change_pct: -0.1399
@@ -10604,7 +10604,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     price: 54.23
     price_change_pct: 7.45
@@ -10660,15 +10660,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 307.987
     price_change_pct: -1.3052
@@ -10741,7 +10741,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 313.385
     price_change_pct: -0.9748
@@ -10790,7 +10790,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 78.82
     price_change_pct: -0.2405
@@ -10839,11 +10839,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期减持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 51.645
     price_change_pct: 0.0872
@@ -10904,15 +10904,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 58.715
     price_change_pct: 3.6818
@@ -10985,7 +10985,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 186.41
     price_change_pct: 2.1649
@@ -11033,11 +11033,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期增持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 377.19
     price_change_pct: -0.8282
@@ -11098,7 +11098,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 310.13
     price_change_pct: -0.5133
@@ -11147,11 +11147,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 462.31
     price_change_pct: 1.9989
@@ -11213,7 +11213,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 23.635
     price_change_pct: -1.5618
@@ -11262,11 +11262,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 469.22
     price_change_pct: -1.1086
@@ -11327,7 +11327,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 191.745
     price_change_pct: -1.3454
@@ -11376,7 +11376,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 61.88
     price_change_pct: -0.4344
@@ -11425,7 +11425,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 28.96
     price_change_pct: -1.897
@@ -11473,15 +11473,15 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期减持该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 373.16
     price_change_pct: -0.8687
@@ -11554,7 +11554,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 81.31
     price_change_pct: -1.4185
@@ -11603,11 +11603,11 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 87.62
     price_change_pct: 3.766
@@ -11670,7 +11670,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 224.445
     price_change_pct: 6.3015
@@ -11720,7 +11720,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 297.99
     price_change_pct: 4.4187
@@ -11769,7 +11769,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 184.895
     price_change_pct: -1.615
@@ -11817,7 +11817,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 75.84
     price_change_pct: 0.8377
@@ -11868,7 +11868,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 419.99
     price_change_pct: -3.6256
@@ -11916,7 +11916,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 42.11
     price_change_pct: -1.6351
@@ -11964,7 +11964,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 100.84
     price_change_pct: 1.7558
@@ -12013,7 +12013,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 90.42
     price_change_pct: 0.7129
@@ -12062,7 +12062,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 251.835
     price_change_pct: 0.734
@@ -12110,7 +12110,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 97.885
     price_change_pct: 1.6248
@@ -12158,7 +12158,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 73.39
     price_change_pct: -3.9146
@@ -12209,7 +12209,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 461.04
     price_change_pct: 2.3987
@@ -12259,7 +12259,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     price: 120.71
     price_change_pct: -1.4934
@@ -12308,11 +12308,11 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期清仓该股票。
     price: 378.0
     price_change_pct: -0.6074
@@ -12373,7 +12373,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 102.54
     price_change_pct: 0.6972
@@ -12422,7 +12422,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期减持该股票。
     price: 136.01
     price_change_pct: -2.0242
@@ -12470,7 +12470,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构本期增持该股票。
     price: 117.805
     price_change_pct: -0.7289
@@ -12519,7 +12519,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 6155.11
     price_change_pct: 0.8241
@@ -12567,7 +12567,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期增持该股票。
     price: 234.18
     price_change_pct: -0.7838
@@ -12615,7 +12615,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     price: 9.535
     price_change_pct: 3.4165
@@ -12663,7 +12663,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 22.005
     price_change_pct: 1.1259
@@ -12712,7 +12712,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     price: 428.37
     price_change_pct: 1.0307
@@ -12760,7 +12760,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     price: 39.8
     price_change_pct: 3.4035
@@ -12808,7 +12808,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     price: 442.121
     price_change_pct: 5.6568
@@ -12856,7 +12856,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构本期增持该股票。
     price: 88.3
     price_change_pct: 0.2498
@@ -12904,7 +12904,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 106.855
     price_change_pct: -5.4381
@@ -12952,7 +12952,7 @@ rankings:
     badges:
     - label: 伯克希尔
       tone: key
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
       tip: 伯克希尔：重点机构当前持有该股票。
     price: 53.085
     price_change_pct: 0.6923
@@ -13001,7 +13001,7 @@ rankings:
     badges:
     - label: 李录
       tone: key
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
       tip: 李录：重点机构当前持有该股票。
     price: 637.965
     price_change_pct: 1.043
@@ -13051,7 +13051,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 162.535
     price_change_pct: 3.8297
@@ -13101,7 +13101,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 491.125
     price_change_pct: 3.26
@@ -13151,7 +13151,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 774.1
     price_change_pct: 5.896
@@ -13199,7 +13199,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 281.195
     price_change_pct: 10.0352
@@ -13247,7 +13247,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构本期减持该股票。
     price: 54.23
     price_change_pct: 7.45
@@ -13295,7 +13295,7 @@ rankings:
     badges:
     - label: 段永平
       tone: key
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
       tip: 段永平：重点机构当前持有该股票。
     price: 115.38
     price_change_pct: 9.9066
@@ -13389,7 +13389,7 @@ stocks:
       portfolio_weight_pct: 0.8768255161592082
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001759760
       name: H&H International Investment, LLC
       display_name: 段永平
@@ -13402,7 +13402,7 @@ stocks:
       portfolio_weight_pct: 36.723190281920346
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -13415,7 +13415,7 @@ stocks:
       portfolio_weight_pct: 21.985634774005366
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   AXP.US:
     symbol: AXP.US
     slug: axp-us
@@ -13464,7 +13464,7 @@ stocks:
       portfolio_weight_pct: 17.430617039247302
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   KO.US:
     symbol: KO.US
     slug: ko-us
@@ -13513,7 +13513,7 @@ stocks:
       portfolio_weight_pct: 11.562332484804855
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   BAC.US:
     symbol: BAC.US
     slug: bac-us
@@ -13563,7 +13563,7 @@ stocks:
       portfolio_weight_pct: 4.565495420103257
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -13576,7 +13576,7 @@ stocks:
       portfolio_weight_pct: 9.51713680772366
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   OXY.US:
     symbol: OXY.US
     slug: oxy-us
@@ -13627,7 +13627,7 @@ stocks:
       portfolio_weight_pct: 2.9776864920957817
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001759760
       name: H&H International Investment, LLC
       display_name: 段永平
@@ -13640,7 +13640,7 @@ stocks:
       portfolio_weight_pct: 3.3343212635999735
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -13653,7 +13653,7 @@ stocks:
       portfolio_weight_pct: 6.545600244064069
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CVX.US:
     symbol: CVX.US
     slug: cvx-us
@@ -13702,7 +13702,7 @@ stocks:
       portfolio_weight_pct: 6.635366662821706
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   GOOGL.US:
     symbol: GOOGL.US
     slug: googl-us
@@ -13751,7 +13751,7 @@ stocks:
       portfolio_weight_pct: 22.845970572694185
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -13764,7 +13764,7 @@ stocks:
       portfolio_weight_pct: 5.929428607658505
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CB.US:
     symbol: CB.US
     slug: cb-us
@@ -13813,7 +13813,7 @@ stocks:
       portfolio_weight_pct: 4.242880466510539
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   MCO.US:
     symbol: MCO.US
     slug: mco-us
@@ -13863,7 +13863,7 @@ stocks:
       portfolio_weight_pct: 1.6051117941588862
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -13876,7 +13876,7 @@ stocks:
       portfolio_weight_pct: 4.090599164853553
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   KHC.US:
     symbol: KHC.US
     slug: khc-us
@@ -13926,7 +13926,7 @@ stocks:
       portfolio_weight_pct: 2.783598119477265
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   BRK.B.US:
     symbol: BRK.B.US
     slug: brk-b-us
@@ -13976,7 +13976,7 @@ stocks:
       portfolio_weight_pct: 13.438638961666568
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001759760
       name: H&H International Investment, LLC
       display_name: 段永平
@@ -13989,7 +13989,7 @@ stocks:
       portfolio_weight_pct: 21.913740593238707
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   DVA.US:
     symbol: DVA.US
     slug: dva-us
@@ -14038,7 +14038,7 @@ stocks:
       portfolio_weight_pct: 1.758355931406972
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   KR.US:
     symbol: KR.US
     slug: kr-us
@@ -14087,7 +14087,7 @@ stocks:
       portfolio_weight_pct: 1.3751649878377374
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   SIRI.US:
     symbol: SIRI.US
     slug: siri-us
@@ -14136,7 +14136,7 @@ stocks:
       portfolio_weight_pct: 1.0948670848338626
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   GOOG.US:
     symbol: GOOG.US
     slug: goog-us
@@ -14186,7 +14186,7 @@ stocks:
       portfolio_weight_pct: 21.965950781207162
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001759760
       name: H&H International Investment, LLC
       display_name: 段永平
@@ -14199,7 +14199,7 @@ stocks:
       portfolio_weight_pct: 5.314453909929686
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -14212,7 +14212,7 @@ stocks:
       portfolio_weight_pct: 0.3909051957309392
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   DAL.US:
     symbol: DAL.US
     slug: dal-us
@@ -14261,7 +14261,7 @@ stocks:
       portfolio_weight_pct: 1.0059201268164593
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   PDD.US:
     symbol: PDD.US
     slug: pdd-us
@@ -14311,7 +14311,7 @@ stocks:
       portfolio_weight_pct: 14.70828090485347
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
     - cik: 0001759760
       name: H&H International Investment, LLC
       display_name: 段永平
@@ -14324,7 +14324,7 @@ stocks:
       portfolio_weight_pct: 10.087387826889751
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   NVDA.US:
     symbol: NVDA.US
     slug: nvda-us
@@ -14375,7 +14375,7 @@ stocks:
       portfolio_weight_pct: 12.069360200620402
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   VRSN.US:
     symbol: VRSN.US
     slug: vrsn-us
@@ -14425,7 +14425,7 @@ stocks:
       portfolio_weight_pct: 0.8486366621361242
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   COF.US:
     symbol: COF.US
     slug: cof-us
@@ -14474,7 +14474,7 @@ stocks:
       portfolio_weight_pct: 0.4957794757955652
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   NYT.US:
     symbol: NYT.US
     slug: nyt-us
@@ -14522,7 +14522,7 @@ stocks:
       portfolio_weight_pct: 0.48203728103168125
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   TSLA.US:
     symbol: TSLA.US
     slug: tsla-us
@@ -14573,7 +14573,7 @@ stocks:
       portfolio_weight_pct: 6.3350270624731015
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   ALLY.US:
     symbol: ALLY.US
     slug: ally-us
@@ -14621,7 +14621,7 @@ stocks:
       portfolio_weight_pct: 0.4324167915183413
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LLYVK.US:
     symbol: LLYVK.US
     slug: llyvk-us
@@ -14669,7 +14669,7 @@ stocks:
       portfolio_weight_pct: 0.3787047885922267
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LEN.US:
     symbol: LEN.US
     slug: len-us
@@ -14718,7 +14718,7 @@ stocks:
       portfolio_weight_pct: 0.3333588876971717
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   NUE.US:
     symbol: NUE.US
     slug: nue-us
@@ -14767,7 +14767,7 @@ stocks:
       portfolio_weight_pct: 0.25112017187472463
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LLYVA.US:
     symbol: LLYVA.US
     slug: llyva-us
@@ -14815,7 +14815,7 @@ stocks:
       portfolio_weight_pct: 0.17368999903809415
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LPX.US:
     symbol: LPX.US
     slug: lpx-us
@@ -14863,7 +14863,7 @@ stocks:
       portfolio_weight_pct: 0.15664022080480378
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   MSFT.US:
     symbol: MSFT.US
     slug: msft-us
@@ -14914,7 +14914,7 @@ stocks:
       portfolio_weight_pct: 1.8800879364332717
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   EWBC.US:
     symbol: EWBC.US
     slug: ewbc-us
@@ -14964,7 +14964,7 @@ stocks:
       portfolio_weight_pct: 9.259051148654502
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
   UNH.US:
     symbol: UNH.US
     slug: unh-us
@@ -15013,7 +15013,7 @@ stocks:
       portfolio_weight_pct: 0.8135015828657749
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
     - cik: 0001067983
       name: Berkshire Hathaway Inc
       display_name: 伯克希尔
@@ -15026,7 +15026,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   DIS.US:
     symbol: DIS.US
     slug: dis-us
@@ -15075,7 +15075,7 @@ stocks:
       portfolio_weight_pct: 0.7283908789802065
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   STZ.US:
     symbol: STZ.US
     slug: stz-us
@@ -15124,7 +15124,7 @@ stocks:
       portfolio_weight_pct: 0.03608325742755496
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CROX.US:
     symbol: CROX.US
     slug: crox-us
@@ -15172,7 +15172,7 @@ stocks:
       portfolio_weight_pct: 2.300569877105183
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
   NVR.US:
     symbol: NVR.US
     slug: nvr-us
@@ -15221,7 +15221,7 @@ stocks:
       portfolio_weight_pct: 0.0278325301425978
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CRDO.US:
     symbol: CRDO.US
     slug: crdo-us
@@ -15269,7 +15269,7 @@ stocks:
       portfolio_weight_pct: 0.3525052853196813
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   TME.US:
     symbol: TME.US
     slug: tme-us
@@ -15317,7 +15317,7 @@ stocks:
       portfolio_weight_pct: 1.9106099174195141
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
   M.US:
     symbol: M.US
     slug: m-us
@@ -15365,7 +15365,7 @@ stocks:
       portfolio_weight_pct: 0.020891197102113134
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   SPGI.US:
     symbol: SPGI.US
     slug: spgi-us
@@ -15414,7 +15414,7 @@ stocks:
       portfolio_weight_pct: 1.6138522556014772
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
   HRB.US:
     symbol: HRB.US
     slug: hrb-us
@@ -15462,7 +15462,7 @@ stocks:
       portfolio_weight_pct: 1.6130689309249757
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
   TSM.US:
     symbol: TSM.US
     slug: tsm-us
@@ -15510,7 +15510,7 @@ stocks:
       portfolio_weight_pct: 0.2554391602671405
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   LEN.B.US:
     symbol: LEN.B.US
     slug: len-b-us
@@ -15558,7 +15558,7 @@ stocks:
       portfolio_weight_pct: 0.007600114988073121
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CRCL.US:
     symbol: CRCL.US
     slug: crcl-us
@@ -15606,7 +15606,7 @@ stocks:
       portfolio_weight_pct: 0.09539093977415912
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   JEF.US:
     symbol: JEF.US
     slug: jef-us
@@ -15654,7 +15654,7 @@ stocks:
       portfolio_weight_pct: 0.006800924058130563
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   MSCI.US:
     symbol: MSCI.US
     slug: msci-us
@@ -15703,7 +15703,7 @@ stocks:
       portfolio_weight_pct: 0.318887427355832
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001709323/
+      href: institutions/0001709323/
   PLTR.US:
     symbol: PLTR.US
     slug: pltr-us
@@ -15753,7 +15753,7 @@ stocks:
       portfolio_weight_pct: 0.043875233215063404
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   SNPS.US:
     symbol: SNPS.US
     slug: snps-us
@@ -15803,7 +15803,7 @@ stocks:
       portfolio_weight_pct: 0.019820039724168646
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   CRWD.US:
     symbol: CRWD.US
     slug: crwd-us
@@ -15853,7 +15853,7 @@ stocks:
       portfolio_weight_pct: 0.019516600354904864
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   SNOW.US:
     symbol: SNOW.US
     slug: snow-us
@@ -15901,7 +15901,7 @@ stocks:
       portfolio_weight_pct: 0.007539493520982434
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   TEM.US:
     symbol: TEM.US
     slug: tem-us
@@ -15949,7 +15949,7 @@ stocks:
       portfolio_weight_pct: 0.004521096631996097
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   INOD.US:
     symbol: INOD.US
     slug: inod-us
@@ -15997,7 +15997,7 @@ stocks:
       portfolio_weight_pct: 0.0019306142406865243
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   ALLE.US:
     symbol: ALLE.US
     slug: alle-us
@@ -16045,7 +16045,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   AMZN.US:
     symbol: AMZN.US
     slug: amzn-us
@@ -16095,7 +16095,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   AON.US:
     symbol: AON.US
     slug: aon-us
@@ -16143,7 +16143,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   ASML.US:
     symbol: ASML.US
     slug: asml-us
@@ -16191,7 +16191,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   BABA.US:
     symbol: BABA.US
     slug: baba-us
@@ -16238,7 +16238,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   BATRA.US:
     symbol: BATRA.US
     slug: batra-us
@@ -16285,7 +16285,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CHTR.US:
     symbol: CHTR.US
     slug: chtr-us
@@ -16334,7 +16334,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   CRWV.US:
     symbol: CRWV.US
     slug: crwv-us
@@ -16381,7 +16381,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-19'
       report_period: '2026-03-31'
-      href: /institutions/0001759760/
+      href: institutions/0001759760/
   DEO.US:
     symbol: DEO.US
     slug: deo-us
@@ -16428,7 +16428,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   DPZ.US:
     symbol: DPZ.US
     slug: dpz-us
@@ -16476,7 +16476,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   FWONK.US:
     symbol: FWONK.US
     slug: fwonk-us
@@ -16523,7 +16523,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   HEI.US:
     symbol: HEI.US
     slug: hei-us
@@ -16570,7 +16570,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LAMR.US:
     symbol: LAMR.US
     slug: lamr-us
@@ -16617,7 +16617,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LILA.US:
     symbol: LILA.US
     slug: lila-us
@@ -16664,7 +16664,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   LILAK.US:
     symbol: LILAK.US
     slug: lilak-us
@@ -16711,7 +16711,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   MA.US:
     symbol: MA.US
     slug: ma-us
@@ -16759,7 +16759,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   POOL.US:
     symbol: POOL.US
     slug: pool-us
@@ -16807,7 +16807,7 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
   V.US:
     symbol: V.US
     slug: v-us
@@ -16855,12 +16855,12 @@ stocks:
       portfolio_weight_pct: 0.0
       filing_date: '2026-05-15'
       report_period: '2026-03-31'
-      href: /institutions/0001067983/
+      href: institutions/0001067983/
 institutions:
   0001709323:
     cik: 0001709323
     slug: 0001709323
-    href: /institutions/0001709323/
+    href: institutions/0001709323/
     name: Himalaya Capital Management LLC
     display_name: 李录
     style: value
@@ -17235,7 +17235,7 @@ institutions:
   0001759760:
     cik: 0001759760
     slug: 0001759760
-    href: /institutions/0001759760/
+    href: institutions/0001759760/
     name: H&H International Investment, LLC
     display_name: 段永平
     style: value
@@ -17910,7 +17910,7 @@ institutions:
   0001067983:
     cik: 0001067983
     slug: 0001067983
-    href: /institutions/0001067983/
+    href: institutions/0001067983/
     name: Berkshire Hathaway Inc
     display_name: 伯克希尔
     style: value

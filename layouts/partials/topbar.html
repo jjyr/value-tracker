@@ -1,15 +1,15 @@
 {{ $build := site.Data.stockhunt.build }}
 <header class="topbar">
   <div class="topbar-primary">
-    <a class="brand" href="{{ "/" | relURL }}" aria-label="价值追踪 首页">
+    <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="价值追踪 首页">
       <span class="brand-mark">价</span>
       <span>
         <strong>价值追踪</strong>
       </span>
     </a>
     <nav class="topbar-nav" aria-label="主导航">
-      <a class="topbar-nav-button" href="{{ "/#simulation" | relURL }}">模拟盘</a>
-      <a class="topbar-nav-button" href="{{ "/intro/" | relURL }}">介绍</a>
+      <a class="topbar-nav-button" href="{{ printf "%s#simulation" site.Home.RelPermalink }}">模拟盘</a>
+      <a class="topbar-nav-button" href="{{ "intro/" | relURL }}">介绍</a>
     </nav>
   </div>
   <div class="topbar-meta" aria-label="数据状态">

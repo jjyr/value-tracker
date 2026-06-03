@@ -141,7 +141,20 @@ def manager_slug(cik: Any) -> str:
 
 
 def manager_href(cik: Any) -> str:
-    return f"/institutions/{manager_slug(cik)}/"
+    return f"institutions/{manager_slug(cik)}/"
+
+
+def normalize_internal_hrefs(value: Any) -> Any:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key == "href" and isinstance(item, str):
+                value[key] = item.lstrip("/")
+            else:
+                normalize_internal_hrefs(item)
+    elif isinstance(value, list):
+        for item in value:
+            normalize_internal_hrefs(item)
+    return value
 
 
 def manager_links_by_name(config: Dict[str, Any]) -> Dict[str, str]:
@@ -912,7 +925,7 @@ def build_hugo_data(
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
     institutions = build_institutions(config, rows)
     simulation = snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
-    return {
+    payload = {
         "build": build_metadata(config, snapshot),
         "simulation": simulation,
         "rankings": [
@@ -941,6 +954,7 @@ def build_hugo_data(
         "stocks": stocks,
         "institutions": institutions,
     }
+    return normalize_internal_hrefs(payload)
 
 
 def parse_args() -> argparse.Namespace:

@@ -69,7 +69,7 @@
           <h3>买入</h3>
           {{ range .buys }}
             {{ $isInitial := eq .action "initial-buy" }}
-            <a class="action-card buy {{ if $isInitial }}initial-buy{{ end }}" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+            <a class="action-card buy {{ if $isInitial }}initial-buy{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
               <strong>{{ if $isInitial }}首次买入{{ else }}买入{{ end }} {{ .symbol }}</strong>
               <span>{{ .reason }}</span>
               <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · <em class="trade-pct buy">买入 {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
@@ -78,7 +78,7 @@
           <h3>卖出</h3>
           {{ range .sells }}
             {{ $isExit := eq .action "exit" }}
-            <a class="action-card sell {{ if $isExit }}exit{{ end }}" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+            <a class="action-card sell {{ if $isExit }}exit{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
               <strong>{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ .symbol }}</strong>
               <span>{{ .reason }}</span>
               <span><b data-money="{{ .sell_value_usd }}">--</b> · ${{ printf "%.2f" .sell_price }} · <em class="trade-pct sell">{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
@@ -113,7 +113,7 @@
             {{ $institutionalAvg := float (.institutional_avg_holding_price | default 0) }}
             <tr>
               <td>
-                <a class="stock-link" href="{{ printf "/stocks/%s/" .slug | relURL }}">
+                <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relURL }}">
                   <strong>{{ .symbol }}</strong>
                   <span>{{ .company_name }}</span>
                 </a>
