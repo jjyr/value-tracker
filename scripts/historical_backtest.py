@@ -22,6 +22,12 @@ from scripts.build_live_input import extract_json, load_cusip_map, normalize_cik
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DEFAULT_START_DATE = "2024-01-01"
 BENCHMARKS = {"spy": "SPY.US", "qqq": "QQQ.US"}
+CHART_COLORS = {
+    "portfolio": "#54d690",
+    "spy": "#67d4ff",
+    "qqq": "#b69cff",
+    "institutions": ["#f3c969", "#ff8a65", "#7dd3fc", "#c4b5fd", "#f472b6", "#a3e635"],
+}
 
 
 def parse_date(value: Any) -> dt.date:
@@ -741,6 +747,210 @@ def build_benchmark_value(
     return initial_value * price / start_price
 
 
+def base_chart_series() -> List[Dict[str, Any]]:
+    return [
+        {
+            "key": "value",
+            "label": "Value Tracker",
+            "className": "line-portfolio",
+            "pointClass": "point-portfolio",
+            "color": CHART_COLORS["portfolio"],
+        },
+        {
+            "key": "spy_value",
+            "label": "SPY",
+            "className": "line-spy",
+            "pointClass": "point-spy",
+            "color": CHART_COLORS["spy"],
+        },
+        {
+            "key": "qqq_value",
+            "label": "QQQ",
+            "className": "line-qqq",
+            "pointClass": "point-qqq",
+            "color": CHART_COLORS["qqq"],
+        },
+    ]
+
+
+def report_price_for_holding(holding: Dict[str, Any]) -> Optional[float]:
+    shares = float(holding.get("shares") or 0)
+    value = float(holding.get("value_usd") or 0)
+    if shares <= 0 or value <= 0:
+        return None
+    return value / shares
+
+
+def unique_report_filings(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    latest_by_period: Dict[str, Dict[str, Any]] = {}
+    for row in rows:
+        period = row.get("report_period")
+        if not period:
+            continue
+        current = latest_by_period.get(period)
+        if current is None or filing_sort_key(row) > filing_sort_key(current):
+            latest_by_period[period] = row
+    return sorted(latest_by_period.values(), key=lambda row: (row["filing_date"], row["report_period"], row["accession_number"]))
+
+
+def benchmark_curve_from(
+    price_index: Dict[str, Dict[str, Any]],
+    trading_days: List[dt.date],
+    first_date: dt.date,
+    final_date: dt.date,
+    initial_value: float,
+) -> List[Dict[str, Any]]:
+    spy_start = price_at(price_index, BENCHMARKS["spy"], first_date)
+    qqq_start = price_at(price_index, BENCHMARKS["qqq"], first_date)
+    points = []
+    for date in trading_days:
+        if date < first_date or date > final_date:
+            continue
+        points.append(
+            {
+                "date": date.isoformat(),
+                "spy_value": round(build_benchmark_value(price_index, BENCHMARKS["spy"], date, spy_start, initial_value), 2),
+                "qqq_value": round(build_benchmark_value(price_index, BENCHMARKS["qqq"], date, qqq_start, initial_value), 2),
+            }
+        )
+    if not points:
+        points.append({"date": first_date.isoformat(), "spy_value": initial_value, "qqq_value": initial_value})
+    return points
+
+
+def build_key_institution_curves(
+    config: Dict[str, Any],
+    filings_by_cik: Dict[str, List[Dict[str, Any]]],
+    price_index: Dict[str, Dict[str, Any]],
+    cusip_map: Dict[str, Dict[str, Any]],
+    trading_days: List[dt.date],
+    start_trade_date: dt.date,
+    final_date: dt.date,
+    initial_value: float,
+) -> Dict[str, Dict[str, Any]]:
+    key_set = key_ciks(config)
+    metadata = market_metadata(cusip_map)
+    managers = [manager for manager in enabled_managers(config) if manager["cik"] in key_set]
+    curves: Dict[str, Dict[str, Any]] = {}
+
+    for manager_index, manager in enumerate(managers):
+        cik = manager["cik"]
+        slug = hugo_data.manager_slug(cik)
+        rows = unique_report_filings(filings_by_cik.get(cik) or [])
+        avg_cost_by_symbol: Dict[str, float] = {}
+        previous_holdings: Dict[str, Dict[str, Any]] = {}
+        raw_points = []
+
+        for filing in rows:
+            holdings = filing.get("aggregated_holdings") or {}
+            if not holdings:
+                previous_holdings = {}
+                avg_cost_by_symbol = {}
+                continue
+
+            current_symbols = set(holdings)
+            for symbol in list(avg_cost_by_symbol):
+                if symbol not in current_symbols:
+                    avg_cost_by_symbol.pop(symbol, None)
+
+            new_positions = []
+            total_value = 0.0
+            cost_value = 0.0
+            market_value = 0.0
+            holdings_count = 0
+
+            for symbol, holding in sorted(holdings.items()):
+                shares = float(holding.get("shares") or 0)
+                value = float(holding.get("value_usd") or 0)
+                price = report_price_for_holding(holding)
+                if shares <= 0 or value <= 0 or price is None:
+                    continue
+                previous = previous_holdings.get(symbol)
+                previous_shares = float(previous.get("shares") or 0) if previous else 0.0
+                existing_cost = avg_cost_by_symbol.get(symbol, price)
+                if previous is None or previous_shares <= 0:
+                    avg_cost_by_symbol[symbol] = price
+                    if previous_holdings:
+                        mapped = metadata.get(symbol, {})
+                        new_positions.append(
+                            {
+                                "symbol": symbol,
+                                "slug": hugo_data.slugify_symbol(symbol),
+                                "company_name": mapped.get("company_name") or holding.get("issuer_name") or symbol,
+                                "value_usd": round(value, 2),
+                                "report_price": round(price, 4),
+                            }
+                        )
+                elif shares > previous_shares:
+                    added_shares = shares - previous_shares
+                    avg_cost_by_symbol[symbol] = ((existing_cost * previous_shares) + (added_shares * price)) / shares
+                else:
+                    avg_cost_by_symbol[symbol] = existing_cost
+
+                total_value += value
+                market_value += value
+                cost_value += avg_cost_by_symbol[symbol] * shares
+                holdings_count += 1
+
+            previous_holdings = holdings
+            if market_value <= 0 or cost_value <= 0:
+                continue
+            filing_date = parse_date(filing["filing_date"])
+            if filing_date < start_trade_date or filing_date > final_date:
+                continue
+            return_pct = (market_value - cost_value) / cost_value * 100
+            raw_points.append(
+                {
+                    "date": filing["filing_date"],
+                    "report_period": filing["report_period"],
+                    "profit_index": max((market_value / cost_value), 0.0001),
+                    "return_pct": round(return_pct, 2),
+                    "total_value_usd": round(total_value, 2),
+                    "holdings_count": holdings_count,
+                    "new_positions": new_positions[:8],
+                }
+            )
+
+        if not raw_points:
+            continue
+        base_index = raw_points[0]["profit_index"] or 1.0
+        points = []
+        for point in raw_points:
+            normalized = initial_value * point["profit_index"] / base_index
+            point = dict(point)
+            point["value"] = round(normalized, 2)
+            point.pop("profit_index", None)
+            points.append(point)
+
+        color = CHART_COLORS["institutions"][manager_index % len(CHART_COLORS["institutions"])]
+        display_name = manager.get("display_name") or manager.get("name") or cik
+        series = {
+            "key": f"institution_{slug}",
+            "label": display_name,
+            "color": color,
+            "points": points,
+        }
+        first_date = parse_date(points[0]["date"])
+        curves[slug] = {
+            "cik": cik,
+            "slug": slug,
+            "display_name": display_name,
+            "series": series,
+            "points": points,
+            "benchmark_curve": benchmark_curve_from(price_index, trading_days, first_date, final_date, initial_value),
+            "chart_series": [series, base_chart_series()[1], base_chart_series()[2]],
+            "summary": {
+                "start_date": points[0]["date"],
+                "end_date": points[-1]["date"],
+                "points_count": len(points),
+                "latest_value": points[-1]["value"],
+                "latest_return_pct": points[-1]["return_pct"],
+                "latest_total_value_usd": points[-1]["total_value_usd"],
+            },
+        }
+    return curves
+
+
 def point_value_on_or_before(curve: List[Dict[str, Any]], date: dt.date) -> Optional[float]:
     candidates = [point for point in curve if parse_date(point["date"]) <= date]
     return candidates[-1]["value"] if candidates else None
@@ -1085,6 +1295,17 @@ def run_simulation(
     spy_return = percent_change(curve[-1]["spy_value"], curve[0]["spy_value"]) if curve else 0
     qqq_return = percent_change(curve[-1]["qqq_value"], curve[0]["qqq_value"]) if curve else 0
     total_return = percent_change(current_value, initial_value)
+    key_institution_curves = build_key_institution_curves(
+        config,
+        filings_by_cik,
+        price_index,
+        cusip_map,
+        trading_days,
+        start_trade_date,
+        final_date,
+        initial_value,
+    )
+    equity_chart_series = base_chart_series() + [curve_data["series"] for curve_data in key_institution_curves.values()]
 
     current_positions = []
     for symbol, position in sorted(
@@ -1154,6 +1375,8 @@ def run_simulation(
         },
         "current_positions": current_positions,
         "equity_curve": curve,
+        "equity_chart_series": equity_chart_series,
+        "key_institution_curves": key_institution_curves,
         "rebalance_history": list(reversed(history)),
         "last_candidate_symbols": sorted(last_candidate_rows),
     }

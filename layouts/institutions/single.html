@@ -1,6 +1,7 @@
 {{ define "main" }}
 {{ partial "topbar.html" . }}
 {{ $institution := index site.Data.stockhunt.institutions .Params.cik }}
+{{ $historicalCurve := index site.Data.stockhunt.simulation.key_institution_curves .Params.cik }}
 {{ if not $institution }}
   <main class="page-shell">
     <section class="panel">
@@ -58,6 +59,17 @@
         </div>
       </div>
     </section>
+
+    {{ with $historicalCurve }}
+      {{ partial "equity-chart.html" (dict
+        "eyebrow" "13F Curve"
+        "title" (printf "%s vs SPY / QQQ" $institution.display_name)
+        "points" .benchmark_curve
+        "series" .chart_series
+        "range" "all"
+        "ariaLabel" (printf "%s 13F 持仓收益曲线" $institution.display_name)
+      ) }}
+    {{ end }}
 
     <section class="panel">
       <div class="panel-heading">

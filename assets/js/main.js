@@ -15,10 +15,10 @@ const shareFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0
 });
 
-const chartSeries = [
-  { key: "value", label: "Value Tracker", className: "line-portfolio", pointClass: "point-portfolio" },
-  { key: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy" },
-  { key: "qqq_value", label: "QQQ", className: "line-qqq", pointClass: "point-qqq" }
+const defaultChartSeries = [
+  { key: "value", label: "Value Tracker", className: "line-portfolio", pointClass: "point-portfolio", color: "#54d690" },
+  { key: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy", color: "#67d4ff" },
+  { key: "qqq_value", label: "QQQ", className: "line-qqq", pointClass: "point-qqq", color: "#b69cff" }
 ];
 
 function formatMoneyElements() {
@@ -57,48 +57,107 @@ function chartTooltipElement() {
   return tooltip;
 }
 
+function parseJsonData(raw, fallback) {
+  try {
+    const parsed = JSON.parse(raw || "");
+    return parsed || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function chartSeriesFor(svg) {
+  const series = parseJsonData(svg.dataset.series, defaultChartSeries);
+  return (Array.isArray(series) && series.length ? series : defaultChartSeries).map((item, index) => ({
+    ...item,
+    key: item.key || `series_${index}`,
+    label: item.label || item.key || `Series ${index + 1}`,
+    pointClass: item.pointClass || `point-series-${index}`,
+    className: item.className || "",
+    color: item.color || ["#54d690", "#67d4ff", "#b69cff", "#f3c969", "#ff8a65", "#7dd3fc"][index % 6]
+  }));
+}
+
 function activeChartSeries(svg) {
-  const activeKeys = (svg.dataset.activeSeries || chartSeries.map((item) => item.key).join(",")).split(",");
-  const active = chartSeries.filter((item) => activeKeys.includes(item.key));
-  return active.length ? active : chartSeries;
+  const series = chartSeriesFor(svg);
+  const activeKeys = (svg.dataset.activeSeries || series.map((item) => item.key).join(",")).split(",");
+  const active = series.filter((item) => activeKeys.includes(item.key));
+  return active.length ? active : series;
 }
 
 function setActiveChartSeries(svg, keys) {
   svg.dataset.activeSeries = keys.join(",");
 }
 
+function dateMs(value) {
+  return new Date(`${value}T00:00:00`).getTime();
+}
+
+function seriesPointList(series, basePoints) {
+  const rawPoints = Array.isArray(series.points)
+    ? series.points
+    : basePoints.map((point) => ({ ...point, value: point[series.key] }));
+  return rawPoints
+    .map((point) => ({
+      ...point,
+      dateMs: dateMs(point.date),
+      value: Number(point.value)
+    }))
+    .filter((point) => point.date && Number.isFinite(point.dateMs) && Number.isFinite(point.value))
+    .sort((a, b) => a.dateMs - b.dateMs);
+}
+
+function filterChartRange(points, range, latestMs) {
+  const ranges = { "1m": 31, "3m": 93, all: Infinity };
+  const days = ranges[range] || Infinity;
+  return points.filter((point) => {
+    if (range === "ytd") {
+      const latest = new Date(latestMs);
+      return point.dateMs >= new Date(latest.getFullYear(), 0, 1).getTime();
+    }
+    if (!Number.isFinite(days)) return true;
+    return (latestMs - point.dateMs) / 86400000 <= days;
+  });
+}
+
+function pointOnOrBefore(points, targetMs) {
+  if (!points.length) return null;
+  return points.reduce((latest, point) => (point.dateMs <= targetMs ? point : latest), null);
+}
+
+function hasNewPositionEvents(point) {
+  return Array.isArray(point.new_positions) && point.new_positions.length > 0;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;");
+}
+
 function drawEquityChart(svg) {
-  const raw = svg.dataset.points || "[]";
-  let points = [];
-  try {
-    points = JSON.parse(raw);
-  } catch {
-    points = [];
-  }
-  if (!points.length) return;
+  const points = parseJsonData(svg.dataset.points, []);
+  if (!Array.isArray(points)) return;
 
   const range = svg.dataset.range || "ytd";
   const activeSeries = activeChartSeries(svg);
-  const now = new Date(`${points[points.length - 1].date}T00:00:00`);
-  const ranges = { "1m": 31, "3m": 93, all: Infinity };
-  const days = ranges[range] || Infinity;
-  const visible = points.filter((point) => {
-    const date = new Date(`${point.date}T00:00:00`);
-    if (range === "ytd") {
-      return date >= new Date(now.getFullYear(), 0, 1);
-    }
-    if (!Number.isFinite(days)) return true;
-    return (now - date) / 86400000 <= days;
-  });
-  const chartPoints = visible.length > 1 ? visible : points.slice(-2);
-  const values = chartPoints.flatMap((point) => activeSeries.map((item) => Number(point[item.key]))).filter(Number.isFinite);
+  const allSeriesPoints = activeSeries.map((item) => ({ item, points: seriesPointList(item, points) }));
+  const latestMs = Math.max(...allSeriesPoints.flatMap((entry) => entry.points.map((point) => point.dateMs)));
+  if (!Number.isFinite(latestMs)) return;
+  const visibleSeries = allSeriesPoints
+    .map((entry) => ({ ...entry, points: filterChartRange(entry.points, range, latestMs) }))
+    .filter((entry) => entry.points.length);
+  const drawableSeries = visibleSeries.length ? visibleSeries : allSeriesPoints.filter((entry) => entry.points.length);
+  const values = drawableSeries.flatMap((entry) => entry.points.map((point) => point.value)).filter(Number.isFinite);
   if (!values.length) return;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const pad = Math.max((max - min) * 0.14, 1);
   const low = min - pad;
   const high = max + pad;
-  const baseline = Number(points[0].value) || 100000;
+  const baseline = Number(svg.dataset.baseline) || 100000;
   const width = 760;
   const height = 260;
   const left = 58;
@@ -107,12 +166,17 @@ function drawEquityChart(svg) {
   const bottom = 34;
   const innerWidth = width - left - right;
   const innerHeight = height - top - bottom;
+  const minDateMs = Math.min(...drawableSeries.flatMap((entry) => entry.points.map((point) => point.dateMs)));
+  const maxDateMs = Math.max(...drawableSeries.flatMap((entry) => entry.points.map((point) => point.dateMs)));
 
-  const x = (index) => left + (innerWidth * index) / Math.max(chartPoints.length - 1, 1);
+  const x = (dateValue) => {
+    if (maxDateMs === minDateMs) return left + innerWidth / 2;
+    return left + (innerWidth * (dateValue - minDateMs)) / (maxDateMs - minDateMs);
+  };
   const y = (value) => top + innerHeight - ((value - low) / (high - low)) * innerHeight;
-  const pathFor = (key) =>
-    chartPoints
-      .map((point, index) => `${index === 0 ? "M" : "L"}${x(index).toFixed(1)},${y(Number(point[key])).toFixed(1)}`)
+  const pathFor = (seriesPoints) =>
+    seriesPoints
+      .map((point, index) => `${index === 0 ? "M" : "L"}${x(point.dateMs).toFixed(1)},${y(point.value).toFixed(1)}`)
       .join(" ");
 
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
@@ -139,18 +203,31 @@ function drawEquityChart(svg) {
     svg.appendChild(label);
   });
 
-  activeSeries.forEach((item) => {
+  drawableSeries.forEach(({ item, points: seriesPoints }) => {
     const path = document.createElementNS(namespace, "path");
-    path.setAttribute("d", pathFor(item.key));
+    path.setAttribute("d", pathFor(seriesPoints));
     path.setAttribute("class", `chart-line ${item.className}`);
+    path.style.stroke = item.color;
     svg.appendChild(path);
+  });
+
+  drawableSeries.forEach(({ item, points: seriesPoints }) => {
+    seriesPoints.filter(hasNewPositionEvents).forEach((point) => {
+      const circle = document.createElementNS(namespace, "circle");
+      circle.setAttribute("r", "3.4");
+      circle.setAttribute("cx", x(point.dateMs));
+      circle.setAttribute("cy", y(point.value));
+      circle.setAttribute("class", "chart-event-dot");
+      circle.style.fill = item.color;
+      svg.appendChild(circle);
+    });
   });
 
   const firstLabel = document.createElementNS(namespace, "text");
   firstLabel.setAttribute("x", left);
   firstLabel.setAttribute("y", height - 8);
   firstLabel.setAttribute("class", "chart-label");
-  firstLabel.textContent = chartPoints[0].date.slice(5);
+  firstLabel.textContent = new Date(minDateMs).toISOString().slice(5, 10);
   svg.appendChild(firstLabel);
 
   const lastLabel = document.createElementNS(namespace, "text");
@@ -158,7 +235,7 @@ function drawEquityChart(svg) {
   lastLabel.setAttribute("y", height - 8);
   lastLabel.setAttribute("text-anchor", "end");
   lastLabel.setAttribute("class", "chart-label");
-  lastLabel.textContent = chartPoints[chartPoints.length - 1].date.slice(5);
+  lastLabel.textContent = new Date(maxDateMs).toISOString().slice(5, 10);
   svg.appendChild(lastLabel);
 
   const hoverGroup = document.createElementNS(namespace, "g");
@@ -169,10 +246,11 @@ function drawEquityChart(svg) {
   hoverLine.setAttribute("y1", top);
   hoverLine.setAttribute("y2", height - bottom);
   hoverGroup.appendChild(hoverLine);
-  const hoverDots = activeSeries.map((item) => {
+  const hoverDots = drawableSeries.map(({ item }) => {
     const circle = document.createElementNS(namespace, "circle");
     circle.setAttribute("r", "4.2");
     circle.setAttribute("class", `chart-point ${item.pointClass}`);
+    circle.style.fill = item.color;
     hoverGroup.appendChild(circle);
     return { item, circle };
   });
@@ -187,31 +265,40 @@ function drawEquityChart(svg) {
   svg.appendChild(overlay);
 
   const tooltip = chartTooltipElement();
+  const hoverDates = Array.from(new Set(drawableSeries.flatMap((entry) => entry.points.map((point) => point.dateMs)))).sort((a, b) => a - b);
   const renderHover = (event) => {
     const rect = svg.getBoundingClientRect();
     const scaledX = ((event.clientX - rect.left) * width) / rect.width;
     const ratio = Math.max(0, Math.min(1, (scaledX - left) / innerWidth));
-    const index = Math.max(0, Math.min(chartPoints.length - 1, Math.round(ratio * (chartPoints.length - 1))));
-    const point = chartPoints[index];
-    const xx = x(index);
+    const targetMs = minDateMs + ratio * (maxDateMs - minDateMs);
+    const hoverDateMs = hoverDates.reduce((best, date) => (Math.abs(date - targetMs) < Math.abs(best - targetMs) ? date : best), hoverDates[0]);
+    const xx = x(hoverDateMs);
 
     hoverLine.setAttribute("x1", xx);
     hoverLine.setAttribute("x2", xx);
-    hoverDots.forEach(({ item, circle }) => {
-      const value = Number(point[item.key]);
-      circle.setAttribute("cx", xx);
-      circle.setAttribute("cy", y(value));
+    const rows = drawableSeries.map((entry, index) => {
+      const point = pointOnOrBefore(entry.points, hoverDateMs);
+      const { item } = entry;
+      const circle = hoverDots[index].circle;
+      if (!point) {
+        circle.setAttribute("visibility", "hidden");
+        return "";
+      }
+      circle.setAttribute("visibility", "visible");
+      circle.setAttribute("cx", x(point.dateMs));
+      circle.setAttribute("cy", y(point.value));
+      const pct = (point.value / baseline - 1) * 100;
+      const extra = Number.isFinite(Number(point.return_pct)) ? ` · 持仓 ${formatPercent(Number(point.return_pct))}` : "";
+      const disclosure = point.dateMs === hoverDateMs ? "" : ` · 披露 ${point.date.slice(5)}`;
+      const newPositions = point.dateMs === hoverDateMs && hasNewPositionEvents(point) ? point.new_positions : [];
+      const newPositionText = newPositions.length
+        ? `<div class="chart-tooltip-event">新建 ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}</div>`
+        : "";
+      return `<div><span class="chart-tooltip-name" style="color:${item.color}">${escapeHtml(item.label)}</span><strong>${formatPercent(pct)}</strong><span>${moneyFormatter.format(point.value)}${extra}${disclosure}</span></div>${newPositionText}`;
     });
     hoverGroup.setAttribute("visibility", "visible");
 
-    const rows = activeSeries
-      .map((item) => {
-        const value = Number(point[item.key]);
-        const pct = (value / baseline - 1) * 100;
-        return `<div><span class="chart-tooltip-name ${item.pointClass}">${item.label}</span><strong>${formatPercent(pct)}</strong><span>${moneyFormatter.format(value)}</span></div>`;
-      })
-      .join("");
-    tooltip.innerHTML = `<time>${point.date}</time>${rows}`;
+    tooltip.innerHTML = `<time>${new Date(hoverDateMs).toISOString().slice(0, 10)}</time>${rows.join("")}`;
     tooltip.classList.add("is-visible");
 
     const tooltipRect = tooltip.getBoundingClientRect();
@@ -234,44 +321,46 @@ function drawEquityChart(svg) {
 }
 
 function setupChartControls() {
-  const chart = document.querySelector(".equity-chart");
-  if (!chart) return;
-  chart.dataset.range = chart.dataset.range || "ytd";
-  setActiveChartSeries(chart, chartSeries.map((item) => item.key));
-  document.querySelectorAll(".chart-panel .range-button").forEach((button) => {
-    const active = button.dataset.range === chart.dataset.range;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-  drawEquityChart(chart);
-  document.querySelectorAll(".chart-panel .range-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll(".chart-panel .range-button").forEach((item) => {
-        item.classList.remove("is-active");
-        item.setAttribute("aria-pressed", "false");
-      });
-      button.classList.add("is-active");
-      button.setAttribute("aria-pressed", "true");
-      chart.dataset.range = button.dataset.range;
-      drawEquityChart(chart);
+  document.querySelectorAll(".equity-chart").forEach((chart) => {
+    const panel = chart.closest(".chart-panel") || document;
+    const series = chartSeriesFor(chart);
+    chart.dataset.range = chart.dataset.range || "ytd";
+    setActiveChartSeries(chart, series.map((item) => item.key));
+    panel.querySelectorAll(".range-button").forEach((button) => {
+      const active = button.dataset.range === chart.dataset.range;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
     });
-  });
-  document.querySelectorAll(".legend-toggle").forEach((button) => {
-    button.addEventListener("click", () => {
-      const current = new Set((chart.dataset.activeSeries || "").split(",").filter(Boolean));
-      const key = button.dataset.series;
-      if (current.has(key) && current.size > 1) {
-        current.delete(key);
-      } else {
-        current.add(key);
-      }
-      setActiveChartSeries(chart, Array.from(current));
-      document.querySelectorAll(".legend-toggle").forEach((item) => {
-        const active = current.has(item.dataset.series);
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-pressed", String(active));
+    drawEquityChart(chart);
+    panel.querySelectorAll(".range-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        panel.querySelectorAll(".range-button").forEach((item) => {
+          item.classList.remove("is-active");
+          item.setAttribute("aria-pressed", "false");
+        });
+        button.classList.add("is-active");
+        button.setAttribute("aria-pressed", "true");
+        chart.dataset.range = button.dataset.range;
+        drawEquityChart(chart);
       });
-      drawEquityChart(chart);
+    });
+    panel.querySelectorAll(".legend-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const current = new Set((chart.dataset.activeSeries || "").split(",").filter(Boolean));
+        const key = button.dataset.series;
+        if (current.has(key) && current.size > 1) {
+          current.delete(key);
+        } else {
+          current.add(key);
+        }
+        setActiveChartSeries(chart, Array.from(current));
+        panel.querySelectorAll(".legend-toggle").forEach((item) => {
+          const active = current.has(item.dataset.series);
+          item.classList.toggle("is-active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        drawEquityChart(chart);
+      });
     });
   });
 }
