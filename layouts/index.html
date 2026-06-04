@@ -6,6 +6,21 @@
 {{ partial "topbar.html" . }}
 
 <main class="page-shell">
+  <section class="panel simulation-rule-panel">
+    <div class="simulation-rule-heading">
+      <span>
+        <span class="eyebrow">Simulation Rules</span>
+        <strong>模拟盘规则</strong>
+      </span>
+    </div>
+    <div class="rule-copy">
+      <p>每周一次调仓，候选来自当前持仓和重点机构本期新建仓、增持股票。</p>
+      <p>目标仓位按重点机构信号分配，最多保留 {{ $sim.meta.max_positions }} 个持仓。</p>
+      <p>买卖每周最多 {{ $sim.meta.rebalance_step.rebalance_step_weight_pct }}% 组合权重；买入缺口低于 {{ $sim.meta.rebalance_step.min_buy_gap_weight_pct }}% 跳过，卖出可清尾仓。</p>
+      <p>历史回测只使用当时已披露 13F 和当日价格，结果仅用于研究观察。</p>
+    </div>
+  </section>
+
   <section class="dashboard-grid" id="simulation">
     <div class="panel hero-panel">
       <p class="eyebrow">模拟盘净值</p>
@@ -142,7 +157,7 @@
         <button class="ghost-button" type="button" data-rebalance-next>下一页</button>
       </div>
     </div>
-    <div class="timeline" data-rebalance-list data-page-size="1">
+    <div class="timeline" data-rebalance-list data-page-size="10">
       {{ range $sim.rebalance_history }}
         <article class="timeline-item" data-rebalance-item>
           <time>{{ .date }}</time>
@@ -184,12 +199,6 @@
         </article>
       {{ end }}
     </div>
-  </section>
-
-  <section class="rankings-stack" aria-label="机构榜单">
-    {{ range $data.rankings }}
-      {{ partial "ranking-table.html" (dict "ranking" .) }}
-    {{ end }}
   </section>
 
   <footer class="risk-note">

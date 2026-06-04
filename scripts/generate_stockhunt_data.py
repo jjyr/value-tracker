@@ -229,6 +229,46 @@ def sort_rows_by_value(rows: List[Dict[str, Any]], key: str) -> List[Dict[str, A
     )
 
 
+def maybe_limit_rows(rows: List[Dict[str, Any]], row_limit: Optional[int]) -> List[Dict[str, Any]]:
+    if row_limit is None:
+        return rows
+    return rows[:row_limit]
+
+
+def holding_rankings_for_rows(
+    ranking_rows: List[Dict[str, Any]],
+    period_label: Optional[str],
+    row_limit: Optional[int] = None,
+    holding_rows: Optional[List[Dict[str, Any]]] = None,
+) -> List[Dict[str, Any]]:
+    holding_source = holding_rows or ranking_rows
+    return [
+        {
+            "type": "institutional_buying",
+            "title": "最近买入最多",
+            "description": "按本期白名单机构新建仓与增持的股数排序",
+            "sort_label": "买入股数",
+            "period_label": period_label,
+            "rows": maybe_limit_rows(sort_rows_by_value(ranking_rows, "total_bought_shares"), row_limit),
+        },
+        {
+            "type": "institutional_selling",
+            "title": "最近卖出最多",
+            "description": "按本期白名单机构减持与清仓的股数排序",
+            "sort_label": "卖出股数",
+            "period_label": period_label,
+            "rows": maybe_limit_rows(sort_rows_by_value(ranking_rows, "total_sold_shares"), row_limit),
+        },
+        {
+            "type": "institutional_holding",
+            "title": "持有最多",
+            "description": "按白名单机构当前持有股数排序",
+            "sort_label": "持有股数",
+            "rows": maybe_limit_rows(sort_rows_by_value(holding_source, "total_tracked_shares"), row_limit),
+        },
+    ]
+
+
 def market_row(raw: Dict[str, Any]) -> Dict[str, Any]:
     market = raw.get("market") or {}
     return {
@@ -301,6 +341,7 @@ def ranking_row(raw: Dict[str, Any], badges: List[Dict[str, str]]) -> Dict[str, 
             "reduced_count": institution.get("reduced_count", 0),
             "exits_count": institution.get("exits_count", 0),
             "total_tracked_value_usd": institution.get("total_tracked_value_usd", 0),
+            "total_tracked_shares": institution.get("total_tracked_shares", 0),
             "institutional_avg_holding_price": institution.get("institutional_avg_holding_price", 0),
             "latest_institutional_buy_price": latest_buy_price,
             "key_institution_bought": institution.get("key_institution_bought", False),
@@ -309,6 +350,313 @@ def ranking_row(raw: Dict[str, Any], badges: List[Dict[str, str]]) -> Dict[str, 
     )
     row.update(activity_share_metrics(managers))
     return row
+
+
+def market_rows_from_snapshot(snapshot: Dict[str, Any]) -> List[Dict[str, Any]]:
+    rows = []
+    for security in snapshot.get("securities") or []:
+        market = security.get("market") or {}
+        rows.append(
+            {
+                "symbol": security["symbol"],
+                "company_name": security.get("company_name") or security["symbol"],
+                "exchange": security.get("exchange"),
+                "sector": security.get("sector"),
+                "industry": security.get("industry"),
+                "tags": security.get("tags") or [],
+                "detail_tags": security.get("detail_tags") or security.get("tags") or [],
+                "risk_tags": security.get("risk_tags") or [],
+                **market,
+            }
+        )
+    return rows
+
+
+def merge_market_rows_with_filings(market_rows: List[Dict[str, Any]], filings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    by_symbol = {row["symbol"]: dict(row) for row in market_rows if row.get("symbol")}
+    for filing in filings:
+        for holding in filing.get("holdings") or []:
+            symbol = holding.get("symbol")
+            if not symbol or symbol in by_symbol:
+                continue
+            by_symbol[symbol] = {
+                "symbol": symbol,
+                "company_name": holding.get("issuer_name") or symbol,
+            }
+    return sorted(by_symbol.values(), key=lambda row: row["symbol"])
+
+
+def filing_periods(filings: List[Dict[str, Any]]) -> List[str]:
+    return sorted({str(filing.get("report_period") or "")[:10] for filing in filings if filing.get("report_period")})
+
+
+HOLDING_RANGE_PRESETS = [
+    ("quarter", "最近一季度", 1),
+    ("half_year", "最近半年", 2),
+    ("one_year", "最近一年", 4),
+    ("ytd", "YTD", None),
+    ("all", "All", None),
+]
+
+BUY_STATUSES = {"new_position", "unknown_previous", "added"}
+SELL_STATUSES = {"reduced", "exited"}
+
+
+def build_holding_quarter_intervals(
+    config: Dict[str, Any],
+    filings: List[Dict[str, Any]],
+    market_rows: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not filings:
+        return []
+
+    from scripts import stockhunt_backend
+
+    periods = filing_periods(filings)
+    if len(periods) < 2:
+        return []
+    markets = merge_market_rows_with_filings(market_rows, filings)
+    output = []
+
+    for index in range(len(periods) - 1, 0, -1):
+        report_period = periods[index]
+        previous_period = periods[index - 1]
+        raw = {
+            "data_date": report_period,
+            "market_data_date": report_period,
+            "latest_13f_report_period": report_period,
+            "previous_13f_report_period": previous_period,
+            "market": markets,
+            "filings": filings,
+        }
+        metrics = stockhunt_backend.compute_metrics(config, raw)
+        if not metrics:
+            continue
+        snapshot = stockhunt_backend.build_snapshot(config, raw, "historical-holdings", metrics)
+        rows = [ranking_row(row, []) for row in snapshot.get("securities") or []]
+        period_label = activity_period_label(previous_period, report_period)
+        output.append(
+            {
+                "key": report_period,
+                "label": activity_period_label(previous_period, report_period),
+                "report_period": report_period,
+                "previous_report_period": previous_period,
+                "rows": rows,
+            }
+        )
+    return output
+
+
+def action_shares(manager: Dict[str, Any], action: str) -> Tuple[float, float, float]:
+    status = manager.get("status") or ""
+    previous_shares = float(manager.get("previous_shares") or 0)
+    current_shares = float(manager.get("current_shares") or 0)
+    change_shares = float(manager.get("change_shares") or 0)
+    change_value = float(manager.get("change_value_usd") or 0)
+    current_value = float(manager.get("current_value_usd") or 0)
+    if action == "buy":
+        shares = current_shares if status in {"new_position", "unknown_previous"} else max(change_shares, 0.0)
+        reference = current_shares if status in {"new_position", "unknown_previous"} else previous_shares
+        value = current_value if status in {"new_position", "unknown_previous"} else max(change_value, 0.0)
+    else:
+        shares = abs(change_shares) or max(previous_shares - current_shares, 0.0)
+        reference = previous_shares if previous_shares > 0 else shares
+        value = abs(change_value)
+    return shares, reference if reference > 0 else shares, value
+
+
+def aggregate_manager_action(manager: Dict[str, Any], action: str, shares: float, value: float) -> Dict[str, Any]:
+    change_shares = shares if action == "buy" else -shares
+    change_value = value if action == "buy" else -value
+    return {
+        "cik": manager.get("cik"),
+        "name": manager.get("name"),
+        "display_name": manager.get("display_name") or manager.get("name"),
+        "status": "added" if action == "buy" else "reduced",
+        "previous_shares": 0,
+        "current_shares": shares if action == "buy" else 0,
+        "change_shares": change_shares,
+        "change_value_usd": change_value,
+        "current_value_usd": value if action == "buy" else 0,
+        "portfolio_weight_pct": 0,
+        "filing_date": manager.get("filing_date"),
+        "report_period": manager.get("report_period"),
+    }
+
+
+def empty_activity_row(row: Dict[str, Any], manager_count: int) -> Dict[str, Any]:
+    return {
+        "symbol": row["symbol"],
+        "slug": row.get("slug") or slugify_symbol(row["symbol"]),
+        "company_name": row.get("company_name") or row["symbol"],
+        "tags": row.get("tags") or [],
+        "badges": [],
+        "price": row.get("price"),
+        "price_change_pct": row.get("price_change_pct"),
+        "market_cap_usd": row.get("market_cap_usd"),
+        "pe": row.get("pe"),
+        "forward_pe": row.get("forward_pe"),
+        "ps": row.get("ps"),
+        "manager_count": manager_count,
+        "buyers_count": 0,
+        "sellers_count": 0,
+        "holders_count": row.get("holders_count", 0),
+        "total_bought_value_usd": 0.0,
+        "total_sold_value_usd": 0.0,
+        "new_position_value_usd": 0.0,
+        "exit_value_usd": 0.0,
+        "new_positions_count": 0,
+        "added_count": 0,
+        "reduced_count": 0,
+        "exits_count": 0,
+        "total_tracked_value_usd": row.get("total_tracked_value_usd", 0),
+        "total_tracked_shares": row.get("total_tracked_shares", 0),
+        "institutional_avg_holding_price": row.get("institutional_avg_holding_price", 0),
+        "latest_institutional_buy_price": 0.0,
+        "key_institution_bought": False,
+        "managers": [],
+        "_buy_reference_shares": 0.0,
+        "_sell_reference_shares": 0.0,
+    }
+
+
+def aggregate_activity_rows(intervals: List[Dict[str, Any]], manager_count: int) -> List[Dict[str, Any]]:
+    rows_by_symbol: Dict[str, Dict[str, Any]] = {}
+    managers_by_key: Dict[Tuple[str, str, str], Dict[str, Any]] = {}
+
+    for interval in intervals:
+        for row in interval.get("rows") or []:
+            bucket = rows_by_symbol.setdefault(row["symbol"], empty_activity_row(row, manager_count))
+            bucket["total_bought_value_usd"] += float(row.get("total_bought_value_usd") or 0)
+            bucket["total_sold_value_usd"] += float(row.get("total_sold_value_usd") or 0)
+            bucket["new_position_value_usd"] += float(row.get("new_position_value_usd") or 0)
+            bucket["exit_value_usd"] += float(row.get("exit_value_usd") or 0)
+            bucket["new_positions_count"] += int(row.get("new_positions_count") or 0)
+            bucket["added_count"] += int(row.get("added_count") or 0)
+            bucket["reduced_count"] += int(row.get("reduced_count") or 0)
+            bucket["exits_count"] += int(row.get("exits_count") or 0)
+            bucket["key_institution_bought"] = bucket["key_institution_bought"] or bool(row.get("key_institution_bought"))
+
+            for manager in row.get("managers") or []:
+                status = manager.get("status") or ""
+                if status in BUY_STATUSES:
+                    shares, reference, value = action_shares(manager, "buy")
+                    if shares <= 0:
+                        continue
+                    bucket["total_bought_shares"] = bucket.get("total_bought_shares", 0.0) + shares
+                    bucket["_buy_reference_shares"] += reference
+                    key = (row["symbol"], normalize_cik(manager.get("cik")), "buy")
+                    manager_bucket = managers_by_key.setdefault(key, aggregate_manager_action(manager, "buy", 0.0, 0.0))
+                    manager_bucket["current_shares"] += shares
+                    manager_bucket["change_shares"] += shares
+                    manager_bucket["change_value_usd"] += value
+                    manager_bucket["current_value_usd"] += value
+                elif status in SELL_STATUSES:
+                    shares, reference, value = action_shares(manager, "sell")
+                    if shares <= 0:
+                        continue
+                    bucket["total_sold_shares"] = bucket.get("total_sold_shares", 0.0) + shares
+                    bucket["_sell_reference_shares"] += reference
+                    key = (row["symbol"], normalize_cik(manager.get("cik")), "sell")
+                    manager_bucket = managers_by_key.setdefault(key, aggregate_manager_action(manager, "sell", 0.0, 0.0))
+                    manager_bucket["change_shares"] -= shares
+                    manager_bucket["change_value_usd"] -= value
+
+    for (symbol, _, _), manager in managers_by_key.items():
+        rows_by_symbol[symbol]["managers"].append(manager)
+
+    output = []
+    for row in rows_by_symbol.values():
+        buy_ciks = {
+            normalize_cik(manager.get("cik"))
+            for manager in row["managers"]
+            if manager.get("status") in BUY_STATUSES
+        }
+        sell_ciks = {
+            normalize_cik(manager.get("cik"))
+            for manager in row["managers"]
+            if manager.get("status") in SELL_STATUSES
+        }
+        row["buyers_count"] = len(buy_ciks)
+        row["sellers_count"] = len(sell_ciks)
+        row["total_bought_shares"] = round(float(row.get("total_bought_shares") or 0), 4)
+        row["total_sold_shares"] = round(float(row.get("total_sold_shares") or 0), 4)
+        buy_reference = float(row.pop("_buy_reference_shares") or 0)
+        sell_reference = float(row.pop("_sell_reference_shares") or 0)
+        row["total_bought_shares_pct"] = round(row["total_bought_shares"] / buy_reference * 100, 4) if buy_reference > 0 else 0.0
+        row["total_sold_shares_pct"] = round(row["total_sold_shares"] / sell_reference * 100, 4) if sell_reference > 0 else 0.0
+        row["latest_institutional_buy_price"] = (
+            round(row["total_bought_value_usd"] / row["total_bought_shares"], 4)
+            if row["total_bought_shares"] > 0
+            else 0.0
+        )
+        row["managers"].sort(key=lambda manager: ((manager.get("display_name") or manager.get("name") or ""), manager.get("status") or ""))
+        output.append(row)
+    return output
+
+
+def intervals_for_preset(intervals: List[Dict[str, Any]], key: str, count: Optional[int]) -> List[Dict[str, Any]]:
+    if key == "all":
+        return intervals
+    if key == "ytd":
+        latest_year = str(intervals[0]["report_period"])[:4]
+        selected = [interval for interval in intervals if str(interval.get("report_period") or "").startswith(latest_year)]
+        return selected or intervals[:1]
+    return intervals[:count]
+
+
+def build_holding_periods_from_intervals(
+    config: Dict[str, Any],
+    intervals: List[Dict[str, Any]],
+    current_interval: Optional[Dict[str, Any]] = None,
+    row_limit: int = 10,
+) -> List[Dict[str, Any]]:
+    if current_interval:
+        current_report_period = current_interval.get("report_period")
+        intervals = [current_interval] + [
+            interval for interval in intervals if interval.get("report_period") != current_report_period
+        ]
+    if not intervals:
+        return []
+    manager_count = enabled_manager_count(config)
+    holding_rows = intervals[0].get("rows") or []
+    output = []
+    for key, label, count in HOLDING_RANGE_PRESETS:
+        selected = intervals_for_preset(intervals, key, count)
+        if not selected:
+            continue
+        period_label = activity_period_label(selected[-1].get("previous_report_period"), selected[0].get("report_period"))
+        activity_rows = aggregate_activity_rows(selected, manager_count)
+        output.append(
+            {
+                "key": key,
+                "label": label,
+                "report_period": selected[0].get("report_period"),
+                "previous_report_period": selected[-1].get("previous_report_period"),
+                "period_label": period_label,
+                "rankings": holding_rankings_for_rows(activity_rows, period_label, row_limit=row_limit, holding_rows=holding_rows),
+            }
+        )
+    return output
+
+
+def build_holding_periods_from_filings(
+    config: Dict[str, Any],
+    filings: List[Dict[str, Any]],
+    market_rows: List[Dict[str, Any]],
+    row_limit: int = 10,
+) -> List[Dict[str, Any]]:
+    return build_holding_periods_from_intervals(
+        config,
+        build_holding_quarter_intervals(config, filings, market_rows),
+        row_limit=row_limit,
+    )
+
+
+def merge_holding_periods(current_period: Dict[str, Any], historical_periods: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    if historical_periods:
+        return historical_periods
+    return [current_period]
 
 
 def stock_entry(raw: Dict[str, Any], key_names: set) -> Dict[str, Any]:
@@ -504,6 +852,34 @@ def next_monday(value: Optional[str]) -> Optional[str]:
     if days == 0:
         days = 7
     return (current + dt.timedelta(days=days)).isoformat()
+
+
+def previous_quarter_end(value: Optional[str]) -> Optional[str]:
+    if not value:
+        return None
+    try:
+        current = dt.date.fromisoformat(str(value)[:10])
+    except ValueError:
+        return None
+    quarter_start_month = ((current.month - 1) // 3) * 3 + 1
+    quarter_start = dt.date(current.year, quarter_start_month, 1)
+    return (quarter_start - dt.timedelta(days=1)).isoformat()
+
+
+def recent_activity_period_label(latest_report_period: Optional[str]) -> Optional[str]:
+    latest = str(latest_report_period or "")[:10]
+    previous = previous_quarter_end(latest)
+    if not latest or not previous:
+        return None
+    return f"{previous} → {latest}"
+
+
+def activity_period_label(previous_report_period: Optional[str], latest_report_period: Optional[str]) -> Optional[str]:
+    latest = str(latest_report_period or "")[:10]
+    previous = str(previous_report_period or "")[:10] or previous_quarter_end(latest)
+    if not latest or not previous:
+        return None
+    return f"{previous} → {latest}"
 
 
 def date_offset(value: Optional[str], days: int) -> Optional[str]:
@@ -1019,6 +1395,10 @@ def build_hugo_data(
     combined_rows = sort_combined_rows(ranking_rows)
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
     institutions = build_institutions(config, rows)
+    period_label = activity_period_label(
+        snapshot.get("previous_13f_report_period"),
+        snapshot.get("latest_13f_report_period"),
+    )
     tracked_institution_order = [
         {
             "cik": normalize_cik(manager.get("cik")),
@@ -1028,32 +1408,30 @@ def build_hugo_data(
         if normalize_cik(manager.get("cik")) in institutions
     ]
     simulation = snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
+    current_rankings = holding_rankings_for_rows(ranking_rows, period_label)
+    current_period = {
+        "key": "quarter",
+        "label": "最近一季度",
+        "report_period": snapshot.get("latest_13f_report_period"),
+        "previous_report_period": snapshot.get("previous_13f_report_period"),
+        "period_label": period_label,
+        "rankings": holding_rankings_for_rows(ranking_rows, period_label, row_limit=10),
+    }
+    current_interval = {
+        "key": snapshot.get("latest_13f_report_period"),
+        "report_period": snapshot.get("latest_13f_report_period"),
+        "previous_report_period": snapshot.get("previous_13f_report_period"),
+        "rows": ranking_rows,
+    }
+    holding_periods = (
+        build_holding_periods_from_intervals(config, snapshot.get("_holding_intervals") or [], current_interval)
+        or merge_holding_periods(current_period, snapshot.get("_holding_periods") or [])
+    )
     payload = {
         "build": build_metadata(config, snapshot),
         "simulation": simulation,
-        "rankings": [
-            {
-                "type": "institutional_buying",
-                "title": "最近买入最多",
-                "description": "按本期白名单机构新建仓与增持的美元金额排序",
-                "sort_label": "买入金额",
-                "rows": sort_rows_by_value(ranking_rows, "total_bought_value_usd"),
-            },
-            {
-                "type": "institutional_selling",
-                "title": "最近卖出最多",
-                "description": "按本期白名单机构减持与清仓的美元金额排序",
-                "sort_label": "卖出金额",
-                "rows": sort_rows_by_value(ranking_rows, "total_sold_value_usd"),
-            },
-            {
-                "type": "institutional_holding",
-                "title": "持有最多",
-                "description": "按白名单机构当前持有市值排序",
-                "sort_label": "持有市值",
-                "rows": sort_rows_by_value(ranking_rows, "total_tracked_value_usd"),
-            },
-        ],
+        "rankings": current_rankings,
+        "holding_periods": holding_periods,
         "stocks": stocks,
         "institutions": institutions,
         "tracked_institution_order": tracked_institution_order,
@@ -1066,6 +1444,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", type=pathlib.Path, default=ROOT / "config/stockhunt.yaml")
     parser.add_argument("--snapshot", type=pathlib.Path, default=ROOT / "raw/sample/snapshot.yaml")
     parser.add_argument("--simulation", type=pathlib.Path, default=None)
+    parser.add_argument("--historical-holdings", type=pathlib.Path, default=ROOT / "raw/generated/historical_13f_holdings.yaml")
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
     parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/stocks")
     parser.add_argument("--institution-content-dir", type=pathlib.Path, default=ROOT / "content/institutions")
@@ -1080,6 +1459,15 @@ def main() -> None:
     if args.simulation and args.simulation.exists():
         simulation_payload = load_yaml(args.simulation)
         snapshot["simulation"] = simulation_payload.get("simulation") or simulation_payload
+        snapshot["_holding_periods"] = simulation_payload.get("holding_periods") or []
+        snapshot["_holding_intervals"] = simulation_payload.get("holding_intervals") or []
+    if not snapshot.get("_holding_intervals") and args.historical_holdings and args.historical_holdings.exists():
+        historical_payload = load_yaml(args.historical_holdings)
+        snapshot["_holding_intervals"] = build_holding_quarter_intervals(
+            config,
+            historical_payload.get("filings") or [],
+            market_rows_from_snapshot(snapshot),
+        )
     data = build_hugo_data(config, snapshot)
     write_yaml(args.output, data)
     if not args.skip_content:

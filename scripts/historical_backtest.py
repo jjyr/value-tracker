@@ -1561,6 +1561,8 @@ def main() -> None:
         parse_date(args.end_date),
         parse_date(args.rebalance_until) if args.rebalance_until else None,
     )
+    metadata = market_metadata(cusip_map)
+    holding_market_rows = [{"symbol": symbol, **row} for symbol, row in metadata.items()]
     payload = {
         "build": {
             "build_id": f"historical-simulation-{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
@@ -1569,6 +1571,7 @@ def main() -> None:
             "warnings": list(dict.fromkeys(warnings)),
         },
         "simulation": simulation,
+        "holding_intervals": hugo_data.build_holding_quarter_intervals(config, filings, holding_market_rows),
     }
     hugo_data.write_yaml(args.output, payload)
     print(f"wrote {args.output}")

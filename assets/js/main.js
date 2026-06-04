@@ -11,6 +11,11 @@ const percentFormatter = new Intl.NumberFormat("en-US", {
   signDisplay: "always"
 });
 
+const ratioFormatter = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 1
+});
+
 const shareFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0
 });
@@ -47,6 +52,10 @@ function formatPercent(value) {
   return `${percentFormatter.format(value)}%`;
 }
 
+function formatRatio(value) {
+  return `${ratioFormatter.format(value)}%`;
+}
+
 function formatChartDate(dateValue) {
   const date = new Date(dateValue);
   const year = date.getFullYear();
@@ -65,6 +74,16 @@ function chartTooltipElement() {
   return tooltip;
 }
 
+function holdingPieTooltipElement() {
+  let tooltip = document.querySelector(".holding-pie-tooltip");
+  if (!tooltip) {
+    tooltip = document.createElement("div");
+    tooltip.className = "holding-pie-tooltip";
+    document.body.appendChild(tooltip);
+  }
+  return tooltip;
+}
+
 function parseJsonData(raw, fallback) {
   try {
     const parsed = JSON.parse(raw || "");
@@ -72,6 +91,118 @@ function parseJsonData(raw, fallback) {
   } catch {
     return fallback;
   }
+}
+
+function polarToCartesian(cx, cy, radius, angle) {
+  const radians = ((angle - 90) * Math.PI) / 180;
+  return {
+    x: cx + radius * Math.cos(radians),
+    y: cy + radius * Math.sin(radians)
+  };
+}
+
+function pieSlicePath(cx, cy, radius, startAngle, endAngle) {
+  const start = polarToCartesian(cx, cy, radius, endAngle);
+  const end = polarToCartesian(cx, cy, radius, startAngle);
+  const largeArc = endAngle - startAngle <= 180 ? "0" : "1";
+  return [
+    `M ${cx} ${cy}`,
+    `L ${start.x.toFixed(3)} ${start.y.toFixed(3)}`,
+    `A ${radius} ${radius} 0 ${largeArc} 0 ${end.x.toFixed(3)} ${end.y.toFixed(3)}`,
+    "Z"
+  ].join(" ");
+}
+
+function setupHoldingPies() {
+  const pies = Array.from(document.querySelectorAll("[data-holding-pie]"));
+  if (!pies.length) return;
+
+  const colors = ["#54d690", "#67d4ff", "#f3c969", "#ff8a65", "#b69cff", "#5eead4", "#f472b6", "#a3e635", "#fb7185", "#38bdf8"];
+  const tooltip = holdingPieTooltipElement();
+  const hideTooltip = () => tooltip.classList.remove("is-visible");
+  const positionTooltip = (event) => {
+    const margin = 12;
+    const tooltipRect = tooltip.getBoundingClientRect();
+    let left = event.clientX + 14;
+    if (left + tooltipRect.width > window.innerWidth - margin) {
+      left = event.clientX - tooltipRect.width - 14;
+    }
+    let top = event.clientY - tooltipRect.height / 2;
+    top = Math.max(margin, Math.min(top, window.innerHeight - tooltipRect.height - margin));
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+  };
+
+  pies.forEach((container) => {
+    const rows = parseJsonData(container.dataset.holdingPie, [])
+      .map((row, index) => ({
+        ...row,
+        value: Number(row.value),
+        color: colors[index % colors.length]
+      }))
+      .filter((row) => Number.isFinite(row.value) && row.value > 0);
+    const total = rows.reduce((sum, row) => sum + row.value, 0);
+    if (!rows.length || total <= 0) {
+      container.innerHTML = '<p class="muted">暂无可统计数据。</p>';
+      return;
+    }
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 180 180");
+    svg.setAttribute("class", "holding-pie-svg");
+    svg.setAttribute("role", "img");
+    const legend = document.createElement("div");
+    legend.className = "holding-pie-legend";
+    let cursor = 0;
+
+    rows.forEach((row, index) => {
+      const share = row.value / total;
+      const startAngle = cursor * 360;
+      const endAngle = (cursor + share) * 360;
+      cursor += share;
+
+      const slice = document.createElementNS("http://www.w3.org/2000/svg", share >= 0.9999 ? "circle" : "path");
+      if (slice.tagName.toLowerCase() === "circle") {
+        slice.setAttribute("cx", "90");
+        slice.setAttribute("cy", "90");
+        slice.setAttribute("r", "72");
+      } else {
+        slice.setAttribute("d", pieSlicePath(90, 90, 72, startAngle, endAngle));
+      }
+      slice.setAttribute("class", "holding-pie-slice");
+      slice.setAttribute("fill", row.color);
+      slice.setAttribute("tabindex", "0");
+      slice.setAttribute("aria-label", `${row.symbol} ${formatRatio(share * 100)}`);
+      svg.appendChild(slice);
+
+      const showTooltip = (event) => {
+        const managers = Array.isArray(row.managers) && row.managers.length ? row.managers.join(" / ") : "--";
+        tooltip.innerHTML = `<strong>${escapeHtml(row.symbol)}</strong><span>${formatRatio(share * 100)} · ${shareFormatter.format(row.value)} 股</span><em>${escapeHtml(managers)}</em>`;
+        tooltip.classList.add("is-visible");
+        positionTooltip(event);
+      };
+      slice.addEventListener("mouseenter", showTooltip);
+      slice.addEventListener("mousemove", positionTooltip);
+      slice.addEventListener("mouseleave", hideTooltip);
+      slice.addEventListener("focus", (event) => showTooltip({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2, ...event }));
+      slice.addEventListener("blur", hideTooltip);
+
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "holding-pie-legend-item";
+      item.innerHTML = `<i style="--pie-color:${row.color}"></i><span>${escapeHtml(row.symbol)}</span><strong>${formatRatio(share * 100)}</strong>`;
+      item.addEventListener("mouseenter", (event) => showTooltip(event));
+      item.addEventListener("mousemove", positionTooltip);
+      item.addEventListener("mouseleave", hideTooltip);
+      item.addEventListener("focus", (event) => showTooltip({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2, ...event }));
+      item.addEventListener("blur", hideTooltip);
+      legend.appendChild(item);
+    });
+
+    container.innerHTML = "";
+    container.appendChild(svg);
+    container.appendChild(legend);
+  });
 }
 
 function chartSeriesFor(svg) {
@@ -446,6 +577,35 @@ function setupRankingToggles() {
   });
 }
 
+function setupHoldingPeriodSelector() {
+  const options = Array.from(document.querySelectorAll("[data-holding-period-option]"));
+  if (!options.length) return;
+  const panels = Array.from(document.querySelectorAll("[data-holding-period-panel]"));
+  const summary = document.querySelector("[data-holding-period-summary]");
+  const render = (selected) => {
+    const key = selected.dataset.holdingPeriodOption;
+    options.forEach((option) => {
+      const active = option === selected;
+      option.classList.toggle("is-active", active);
+      option.setAttribute("aria-pressed", String(active));
+    });
+    panels.forEach((panel) => {
+      panel.hidden = panel.dataset.holdingPeriodPanel !== key;
+    });
+    if (summary && selected) {
+      summary.textContent = selected.dataset.periodLabel || "--";
+    }
+    const tooltip = document.querySelector(".holding-pie-tooltip");
+    if (tooltip) tooltip.classList.remove("is-visible");
+    formatMoneyElements();
+    formatShareElements();
+  };
+  options.forEach((option) => {
+    option.addEventListener("click", () => render(option));
+  });
+  render(options.find((option) => option.classList.contains("is-active")) || options[0]);
+}
+
 function setupRebalancePagination() {
   const list = document.querySelector("[data-rebalance-list]");
   if (!list) return;
@@ -551,6 +711,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupChartControls();
   setupRankingFilters();
   setupRankingToggles();
+  setupHoldingPeriodSelector();
   setupRebalancePagination();
+  setupHoldingPies();
   setupTooltips();
 });

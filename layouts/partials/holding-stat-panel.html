@@ -1,0 +1,53 @@
+{{ $ranking := .ranking }}
+{{ $pieRows := slice }}
+{{ $statusSet := slice }}
+{{ if eq $ranking.type "institutional_buying" }}
+  {{ $statusSet = slice "new_position" "unknown_previous" "added" }}
+{{ else if eq $ranking.type "institutional_selling" }}
+  {{ $statusSet = slice "reduced" "exited" }}
+{{ end }}
+{{ range first 10 $ranking.rows }}
+  {{ $value := 0.0 }}
+  {{ if eq $ranking.type "institutional_buying" }}
+    {{ $value = float (.total_bought_shares | default 0) }}
+  {{ else if eq $ranking.type "institutional_selling" }}
+    {{ $value = float (.total_sold_shares | default 0) }}
+  {{ else }}
+    {{ $value = float (.total_tracked_shares | default 0) }}
+  {{ end }}
+  {{ if gt $value 0.0 }}
+    {{ $managers := slice }}
+    {{ range .managers }}
+      {{ $status := .status | default "" }}
+      {{ $shares := float (.current_shares | default 0) }}
+      {{ $show := false }}
+      {{ if eq $ranking.type "institutional_holding" }}
+        {{ if gt $shares 0.0 }}{{ $show = true }}{{ end }}
+      {{ else if in $statusSet $status }}
+        {{ $show = true }}
+      {{ end }}
+      {{ if $show }}
+        {{ $managers = $managers | append (.display_name | default .name) }}
+      {{ end }}
+    {{ end }}
+    {{ $pieRows = $pieRows | append (dict
+      "symbol" .symbol
+      "company_name" .company_name
+      "slug" .slug
+      "value" $value
+      "managers" $managers
+    ) }}
+  {{ end }}
+{{ end }}
+<section class="holding-stat-section">
+  <div class="holding-stat-chart panel">
+    <div class="panel-heading compact">
+      <div>
+        <p class="eyebrow">{{ $ranking.sort_label }}</p>
+        <h2>{{ $ranking.title }}</h2>
+      </div>
+    </div>
+    <div class="holding-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ $ranking.title }}占比图"></div>
+  </div>
+  {{ partial "ranking-table.html" (dict "ranking" $ranking) }}
+</section>
