@@ -751,6 +751,8 @@ def base_chart_series() -> List[Dict[str, Any]]:
     return [
         {
             "key": "value",
+            "valueKey": "return_pct",
+            "amountKey": "value",
             "label": "Value Tracker",
             "className": "line-portfolio",
             "pointClass": "point-portfolio",
@@ -758,6 +760,8 @@ def base_chart_series() -> List[Dict[str, Any]]:
         },
         {
             "key": "spy_value",
+            "valueKey": "spy_return_pct",
+            "amountKey": "spy_value",
             "label": "SPY",
             "className": "line-spy",
             "pointClass": "point-spy",
@@ -765,6 +769,8 @@ def base_chart_series() -> List[Dict[str, Any]]:
         },
         {
             "key": "qqq_value",
+            "valueKey": "qqq_return_pct",
+            "amountKey": "qqq_value",
             "label": "QQQ",
             "className": "line-qqq",
             "pointClass": "point-qqq",
@@ -844,8 +850,7 @@ def daily_institution_points(
     if not reports:
         return []
     start_context = report_context_for_date(reports, start_trade_date)
-    start_index, _, _ = institution_report_profit_index(start_context, price_index, start_trade_date)
-    start_index = start_index or 1.0
+    _, start_market_value, _ = institution_report_profit_index(start_context, price_index, start_trade_date)
     event_by_date: Dict[dt.date, Dict[str, Any]] = {}
     for report in reports:
         if report["date_value"] < start_trade_date:
@@ -861,16 +866,17 @@ def daily_institution_points(
         if date < start_trade_date or date > final_date:
             continue
         context = report_context_for_date(reports, date)
-        profit_index, market_value, cost_value = institution_report_profit_index(context, price_index, date)
-        value = initial_value * profit_index / start_index
-        return_pct = (market_value - cost_value) / cost_value * 100 if cost_value > 0 else 0.0
+        _, market_value, cost_value = institution_report_profit_index(context, price_index, date)
+        return_pct = percent_change(market_value, start_market_value)
+        book_return_pct = (market_value - cost_value) / cost_value * 100 if cost_value > 0 else 0.0
         event = event_by_date.get(date)
         point = {
             "date": date.isoformat(),
             "report_period": context.get("report_period"),
             "filing_date": context.get("filing_date"),
-            "value": round(value, 2),
+            "value": round(market_value, 2),
             "return_pct": round(return_pct, 2),
+            "book_return_pct": round(book_return_pct, 2),
             "total_value_usd": round(market_value, 2),
             "holdings_count": context.get("holdings_count", 0),
         }
@@ -895,15 +901,27 @@ def benchmark_curve_from(
     for date in trading_days:
         if date < first_date or date > final_date:
             continue
+        spy_value = build_benchmark_value(price_index, BENCHMARKS["spy"], date, spy_start, initial_value)
+        qqq_value = build_benchmark_value(price_index, BENCHMARKS["qqq"], date, qqq_start, initial_value)
         points.append(
             {
                 "date": date.isoformat(),
-                "spy_value": round(build_benchmark_value(price_index, BENCHMARKS["spy"], date, spy_start, initial_value), 2),
-                "qqq_value": round(build_benchmark_value(price_index, BENCHMARKS["qqq"], date, qqq_start, initial_value), 2),
+                "spy_value": round(spy_value, 2),
+                "qqq_value": round(qqq_value, 2),
+                "spy_return_pct": round(percent_change(spy_value, initial_value), 2),
+                "qqq_return_pct": round(percent_change(qqq_value, initial_value), 2),
             }
         )
     if not points:
-        points.append({"date": first_date.isoformat(), "spy_value": initial_value, "qqq_value": initial_value})
+        points.append(
+            {
+                "date": first_date.isoformat(),
+                "spy_value": initial_value,
+                "qqq_value": initial_value,
+                "spy_return_pct": 0,
+                "qqq_return_pct": 0,
+            }
+        )
     return points
 
 
@@ -1013,6 +1031,8 @@ def build_key_institution_curves(
         display_name = manager.get("display_name") or manager.get("name") or cik
         series = {
             "key": f"institution_{slug}",
+            "valueKey": "return_pct",
+            "amountKey": "value",
             "label": display_name,
             "color": color,
             "points": points,
@@ -1365,12 +1385,17 @@ def run_simulation(
                     history.append({"date": date.isoformat(), "buys": buys, "sells": sells})
 
         value = portfolio_value(positions, cash, price_index, date)
+        spy_value = build_benchmark_value(price_index, BENCHMARKS["spy"], date, spy_start, initial_value)
+        qqq_value = build_benchmark_value(price_index, BENCHMARKS["qqq"], date, qqq_start, initial_value)
         curve.append(
             {
                 "date": date.isoformat(),
                 "value": round(value, 2),
-                "spy_value": round(build_benchmark_value(price_index, BENCHMARKS["spy"], date, spy_start, initial_value), 2),
-                "qqq_value": round(build_benchmark_value(price_index, BENCHMARKS["qqq"], date, qqq_start, initial_value), 2),
+                "return_pct": round(percent_change(value, initial_value), 2),
+                "spy_value": round(spy_value, 2),
+                "spy_return_pct": round(percent_change(spy_value, initial_value), 2),
+                "qqq_value": round(qqq_value, 2),
+                "qqq_return_pct": round(percent_change(qqq_value, initial_value), 2),
             }
         )
     current_value = curve[-1]["value"] if curve else initial_value

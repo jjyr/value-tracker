@@ -956,14 +956,20 @@ def build_snapshot_simulation(
             {
                 "date": baseline_date or data_date,
                 "value": initial_value,
+                "return_pct": 0,
                 "spy_value": initial_value,
+                "spy_return_pct": 0,
                 "qqq_value": initial_value,
+                "qqq_return_pct": 0,
             },
             {
                 "date": data_date,
                 "value": initial_value,
+                "return_pct": 0,
                 "spy_value": initial_value,
+                "spy_return_pct": 0,
                 "qqq_value": initial_value,
+                "qqq_return_pct": 0,
             }
         ],
         "rebalance_history": [

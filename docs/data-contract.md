@@ -506,7 +506,9 @@ MVP 口径：
       "date": "2026-05-29",
       "value": 112500,
       "return_pct": 12.5,
+      "spy_value": 107100,
       "spy_return_pct": 7.1,
+      "qqq_value": 109800,
       "qqq_return_pct": 9.8
     }
   ],
@@ -527,6 +529,8 @@ MVP 口径：
   ]
 }
 ```
+
+图表约定：`*_return_pct` 字段用于 Y 轴和 tooltip 主百分比，`*_value` 字段仅作为 tooltip 金额展示。机构曲线的 `return_pct` 从图表起点的机构真实持仓市值开始计算，不归一化为模拟盘初始资金。
 
 ## 9. 前端 MVP 读取顺序
 

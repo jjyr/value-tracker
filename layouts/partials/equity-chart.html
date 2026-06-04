@@ -1,7 +1,6 @@
 {{ $points := .points | default (slice) }}
 {{ $series := .series | default (slice) }}
 {{ $range := .range | default "ytd" }}
-{{ $baseline := .baseline | default 100000 }}
 <div class="panel chart-panel {{ .className }}">
   <div class="panel-heading compact">
     <div>
@@ -18,7 +17,6 @@
   <svg
     class="equity-chart"
     data-range="{{ $range }}"
-    data-baseline="{{ $baseline }}"
     data-points='{{ $points | jsonify }}'
     data-series='{{ $series | jsonify }}'
     role="img"

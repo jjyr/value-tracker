@@ -16,9 +16,9 @@ const shareFormatter = new Intl.NumberFormat("en-US", {
 });
 
 const defaultChartSeries = [
-  { key: "value", label: "Value Tracker", className: "line-portfolio", pointClass: "point-portfolio", color: "#54d690" },
-  { key: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy", color: "#67d4ff" },
-  { key: "qqq_value", label: "QQQ", className: "line-qqq", pointClass: "point-qqq", color: "#b69cff" }
+  { key: "value", valueKey: "return_pct", amountKey: "value", label: "Value Tracker", className: "line-portfolio", pointClass: "point-portfolio", color: "#54d690" },
+  { key: "spy_value", valueKey: "spy_return_pct", amountKey: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy", color: "#67d4ff" },
+  { key: "qqq_value", valueKey: "qqq_return_pct", amountKey: "qqq_value", label: "QQQ", className: "line-qqq", pointClass: "point-qqq", color: "#b69cff" }
 ];
 
 function formatMoneyElements() {
@@ -47,6 +47,14 @@ function formatPercent(value) {
   return `${percentFormatter.format(value)}%`;
 }
 
+function formatChartDate(dateValue) {
+  const date = new Date(dateValue);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function chartTooltipElement() {
   let tooltip = document.querySelector(".chart-hover-tooltip");
   if (!tooltip) {
@@ -71,6 +79,8 @@ function chartSeriesFor(svg) {
   return (Array.isArray(series) && series.length ? series : defaultChartSeries).map((item, index) => ({
     ...item,
     key: item.key || `series_${index}`,
+    valueKey: item.valueKey || "return_pct",
+    amountKey: item.amountKey || "value",
     label: item.label || item.key || `Series ${index + 1}`,
     pointClass: item.pointClass || `point-series-${index}`,
     className: item.className || "",
@@ -93,16 +103,27 @@ function dateMs(value) {
   return new Date(`${value}T00:00:00`).getTime();
 }
 
+function numericField(point, key) {
+  if (!key) return NaN;
+  const value = Number(point[key]);
+  return Number.isFinite(value) ? value : NaN;
+}
+
 function seriesPointList(series, basePoints) {
   const rawPoints = Array.isArray(series.points)
     ? series.points
-    : basePoints.map((point) => ({ ...point, value: point[series.key] }));
+    : basePoints;
   return rawPoints
-    .map((point) => ({
-      ...point,
-      dateMs: dateMs(point.date),
-      value: Number(point.value)
-    }))
+    .map((point) => {
+      const value = numericField(point, series.valueKey);
+      const amount = numericField(point, series.amountKey);
+      return {
+        ...point,
+        dateMs: dateMs(point.date),
+        value,
+        amount
+      };
+    })
     .filter((point) => point.date && Number.isFinite(point.dateMs) && Number.isFinite(point.value))
     .sort((a, b) => a.dateMs - b.dateMs);
 }
@@ -169,7 +190,6 @@ function drawEquityChart(svg) {
   const pad = Math.max((max - min) * 0.14, 1);
   const low = min - pad;
   const high = max + pad;
-  const baseline = Number(svg.dataset.baseline) || 100000;
   const width = 760;
   const height = 260;
   const left = 58;
@@ -211,7 +231,7 @@ function drawEquityChart(svg) {
     label.setAttribute("y", yy + 4);
     label.setAttribute("text-anchor", "end");
     label.setAttribute("class", "chart-axis-label");
-    label.textContent = formatPercent((tickValue / baseline - 1) * 100);
+    label.textContent = formatPercent(tickValue);
     svg.appendChild(label);
   });
 
@@ -239,7 +259,7 @@ function drawEquityChart(svg) {
   firstLabel.setAttribute("x", left);
   firstLabel.setAttribute("y", height - 8);
   firstLabel.setAttribute("class", "chart-label");
-  firstLabel.textContent = new Date(minDateMs).toISOString().slice(5, 10);
+  firstLabel.textContent = formatChartDate(minDateMs).slice(5);
   svg.appendChild(firstLabel);
 
   const lastLabel = document.createElementNS(namespace, "text");
@@ -247,7 +267,7 @@ function drawEquityChart(svg) {
   lastLabel.setAttribute("y", height - 8);
   lastLabel.setAttribute("text-anchor", "end");
   lastLabel.setAttribute("class", "chart-label");
-  lastLabel.textContent = new Date(maxDateMs).toISOString().slice(5, 10);
+  lastLabel.textContent = formatChartDate(maxDateMs).slice(5);
   svg.appendChild(lastLabel);
 
   const hoverGroup = document.createElementNS(namespace, "g");
@@ -298,19 +318,20 @@ function drawEquityChart(svg) {
       circle.setAttribute("visibility", "visible");
       circle.setAttribute("cx", x(point.dateMs));
       circle.setAttribute("cy", y(point.value));
-      const pct = (point.value / baseline - 1) * 100;
-      const extra = Number.isFinite(Number(point.return_pct)) ? ` · 持仓 ${formatPercent(Number(point.return_pct))}` : "";
-      const disclosure = point.dateMs === hoverDateMs ? "" : ` · 披露 ${point.date.slice(5)}`;
+      const pct = point.value;
+      const amount = Number.isFinite(point.amount) ? moneyFormatter.format(point.amount) : "";
+      const disclosure = point.dateMs === hoverDateMs ? "" : `披露 ${point.date.slice(5)}`;
+      const details = [amount, disclosure].filter(Boolean).join(" · ");
       const newPositions = point.dateMs === hoverDateMs && hasNewPositionEvents(point) ? point.new_positions : [];
       const eventPeriod = point.event_report_period ? ` · 报告期 ${escapeHtml(point.event_report_period)}` : "";
       const newPositionText = newPositions.length
         ? `<div class="chart-tooltip-event">新建 ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}${eventPeriod}</div>`
         : "";
-      return `<div><span class="chart-tooltip-name" style="color:${item.color}">${escapeHtml(item.label)}</span><strong>${formatPercent(pct)}</strong><span>${moneyFormatter.format(point.value)}${extra}${disclosure}</span></div>${newPositionText}`;
+      return `<div><span class="chart-tooltip-name" style="color:${item.color}">${escapeHtml(item.label)}</span><strong>${formatPercent(pct)}</strong><span>${details}</span></div>${newPositionText}`;
     });
     hoverGroup.setAttribute("visibility", "visible");
 
-    tooltip.innerHTML = `<time>${new Date(hoverDateMs).toISOString().slice(0, 10)}</time>${rows.join("")}`;
+    tooltip.innerHTML = `<time>${formatChartDate(hoverDateMs)}</time>${rows.join("")}`;
     tooltip.classList.add("is-visible");
 
     const tooltipRect = tooltip.getBoundingClientRect();
