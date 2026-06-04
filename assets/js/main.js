@@ -137,6 +137,18 @@ function escapeHtml(value) {
     .replaceAll("\"", "&quot;");
 }
 
+function svgClientX(svg, event, fallbackWidth) {
+  const matrix = svg.getScreenCTM();
+  if (matrix && typeof svg.createSVGPoint === "function") {
+    const point = svg.createSVGPoint();
+    point.x = event.clientX;
+    point.y = event.clientY;
+    return point.matrixTransform(matrix.inverse()).x;
+  }
+  const rect = svg.getBoundingClientRect();
+  return ((event.clientX - rect.left) * fallbackWidth) / rect.width;
+}
+
 function drawEquityChart(svg) {
   const points = parseJsonData(svg.dataset.points, []);
   if (!Array.isArray(points)) return;
@@ -267,8 +279,7 @@ function drawEquityChart(svg) {
   const tooltip = chartTooltipElement();
   const hoverDates = Array.from(new Set(drawableSeries.flatMap((entry) => entry.points.map((point) => point.dateMs)))).sort((a, b) => a - b);
   const renderHover = (event) => {
-    const rect = svg.getBoundingClientRect();
-    const scaledX = ((event.clientX - rect.left) * width) / rect.width;
+    const scaledX = svgClientX(svg, event, width);
     const ratio = Math.max(0, Math.min(1, (scaledX - left) / innerWidth));
     const targetMs = minDateMs + ratio * (maxDateMs - minDateMs);
     const hoverDateMs = hoverDates.reduce((best, date) => (Math.abs(date - targetMs) < Math.abs(best - targetMs) ? date : best), hoverDates[0]);
