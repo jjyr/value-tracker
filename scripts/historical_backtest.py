@@ -850,7 +850,8 @@ def daily_institution_points(
     if not reports:
         return []
     start_context = report_context_for_date(reports, start_trade_date)
-    _, start_market_value, _ = institution_report_profit_index(start_context, price_index, start_trade_date)
+    start_index, _, _ = institution_report_profit_index(start_context, price_index, start_trade_date)
+    start_index = start_index or 1.0
     event_by_date: Dict[dt.date, Dict[str, Any]] = {}
     for report in reports:
         if report["date_value"] < start_trade_date:
@@ -866,8 +867,8 @@ def daily_institution_points(
         if date < start_trade_date or date > final_date:
             continue
         context = report_context_for_date(reports, date)
-        _, market_value, cost_value = institution_report_profit_index(context, price_index, date)
-        return_pct = percent_change(market_value, start_market_value)
+        profit_index, market_value, cost_value = institution_report_profit_index(context, price_index, date)
+        return_pct = percent_change(profit_index, start_index)
         book_return_pct = (market_value - cost_value) / cost_value * 100 if cost_value > 0 else 0.0
         event = event_by_date.get(date)
         point = {
