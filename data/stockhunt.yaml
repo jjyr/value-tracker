@@ -74444,6 +74444,7 @@ institutions:
       current_shares: 2543300.0
       change_shares: 92000.0
       change_value_usd: 26455520.00019439
+      trade_report_price: 287.56
       current_value_usd: 731351348.0
       avg_holding_price: 287.56
       portfolio_weight_pct: 22.845970572694185
@@ -74465,6 +74466,7 @@ institutions:
       current_shares: 2451300.0
       change_shares: -92000.0
       change_value_usd: -26391120.000944313
+      trade_report_price: 286.86
       current_value_usd: 703179918.0
       avg_holding_price: 286.86
       portfolio_weight_pct: 21.965950781207162
@@ -74486,6 +74488,7 @@ institutions:
       current_shares: 4608000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 102.18
       current_value_usd: 470845440.0
       avg_holding_price: 102.18
       portfolio_weight_pct: 14.70828090485347
@@ -74507,6 +74510,7 @@ institutions:
       current_shares: 897749.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 479.2
       current_value_usd: 430201321.0
       avg_holding_price: 479.2
       portfolio_weight_pct: 13.438638961666568
@@ -74528,6 +74532,7 @@ institutions:
       current_shares: 2776351.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 106.76
       current_value_usd: 296403233.0
       avg_holding_price: 106.76
       portfolio_weight_pct: 9.259051148654502
@@ -74549,6 +74554,7 @@ institutions:
       current_shares: 2997987.0
       change_shares: -7433400.0
       change_value_usd: -362378250.0
+      trade_report_price: 48.75
       current_value_usd: 146151866.0
       avg_holding_price: 48.75
       portfolio_weight_pct: 4.565495420103257
@@ -74570,6 +74576,7 @@ institutions:
       current_shares: 1466500.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 65.0
       current_value_usd: 95322500.0
       avg_holding_price: 65.0
       portfolio_weight_pct: 2.9776864920957817
@@ -74591,6 +74598,7 @@ institutions:
       current_shares: 887093.0
       change_shares: 258934.0
       change_value_usd: 21496700.72086467
+      trade_report_price: 83.02
       current_value_usd: 73646461.0
       avg_holding_price: 83.02
       portfolio_weight_pct: 2.300569877105183
@@ -74612,6 +74620,7 @@ institutions:
       current_shares: 6590836.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 9.28
       current_value_usd: 61162958.0
       avg_holding_price: 9.28
       portfolio_weight_pct: 1.9106099174195141
@@ -74633,6 +74642,7 @@ institutions:
       current_shares: 121463.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 425.34
       current_value_usd: 51663072.0
       avg_holding_price: 425.34
       portfolio_weight_pct: 1.6138522556014772
@@ -74654,6 +74664,7 @@ institutions:
       current_shares: 1626906.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 31.74
       current_value_usd: 51637996.0
       avg_holding_price: 31.74
       portfolio_weight_pct: 1.6130689309249757
@@ -74675,6 +74686,7 @@ institutions:
       current_shares: 117784.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 436.25
       current_value_usd: 51383270.0
       avg_holding_price: 436.25
       portfolio_weight_pct: 1.6051117941588862
@@ -74696,6 +74708,7 @@ institutions:
       current_shares: 110600.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 253.79
       current_value_usd: 28069174.0
       avg_holding_price: 253.79
       portfolio_weight_pct: 0.8768255161592082
@@ -74717,6 +74730,7 @@ institutions:
       current_shares: 18939.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 539.01
       current_value_usd: 10208310.0
       avg_holding_price: 539.01
       portfolio_weight_pct: 0.318887427355832
@@ -74739,6 +74753,7 @@ institutions:
       current_shares: 2997987.0
       change_shares: -7433400.0
       change_value_usd: -362378250.0
+      trade_report_price: 48.75
       current_value_usd: 146151866.0
       avg_holding_price: 48.75
       portfolio_weight_pct: 4.565495420103257
@@ -74760,6 +74775,7 @@ institutions:
       current_shares: 2543300.0
       change_shares: 92000.0
       change_value_usd: 26455520.00019439
+      trade_report_price: 287.56
       current_value_usd: 731351348.0
       avg_holding_price: 287.56
       portfolio_weight_pct: 22.845970572694185
@@ -74781,6 +74797,7 @@ institutions:
       current_shares: 2451300.0
       change_shares: -92000.0
       change_value_usd: -26391120.000944313
+      trade_report_price: 286.86
       current_value_usd: 703179918.0
       avg_holding_price: 286.86
       portfolio_weight_pct: 21.965950781207162
@@ -74802,6 +74819,7 @@ institutions:
       current_shares: 887093.0
       change_shares: 258934.0
       change_value_usd: 21496700.72086467
+      trade_report_price: 83.02
       current_value_usd: 73646461.0
       avg_holding_price: 83.02
       portfolio_weight_pct: 2.300569877105183
@@ -74837,6 +74855,7 @@ institutions:
       current_shares: 28945607.0
       change_shares: -3412900.0
       change_value_usd: -866159891.0152733
+      trade_report_price: 253.79
       current_value_usd: 7346105601.0
       avg_holding_price: 253.79
       portfolio_weight_pct: 36.723190281920346
@@ -74858,6 +74877,7 @@ institutions:
       current_shares: 9147796.0
       change_shares: 1971600.0
       change_value_usd: 944790720.0
+      trade_report_price: 479.2
       current_value_usd: 4383623843.0
       avg_holding_price: 479.2
       portfolio_weight_pct: 21.913740593238707
@@ -74879,6 +74899,7 @@ institutions:
       current_shares: 13843775.0
       change_shares: 6606675.0
       change_value_usd: 1152204120.0
+      trade_report_price: 174.4
       current_value_usd: 2414354360.0
       avg_holding_price: 174.4
       portfolio_weight_pct: 12.069360200620402
@@ -74900,6 +74921,7 @@ institutions:
       current_shares: 19748294.0
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
+      trade_report_price: 102.18
       current_value_usd: 2017880681.0
       avg_holding_price: 102.18
       portfolio_weight_pct: 10.087387826889751
@@ -74921,6 +74943,7 @@ institutions:
       current_shares: 3408900.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 371.75
       current_value_usd: 1267258575.0
       avg_holding_price: 371.75
       portfolio_weight_pct: 6.3350270624731015
@@ -74942,6 +74965,7 @@ institutions:
       current_shares: 3706000.0
       change_shares: 1850600.0
       change_value_usd: 530863116.0189951
+      trade_report_price: 286.86
       current_value_usd: 1063103160.0
       avg_holding_price: 286.86
       portfolio_weight_pct: 5.314453909929686
@@ -74963,6 +74987,7 @@ institutions:
       current_shares: 10261500.0
       change_shares: -2911100.0
       change_value_usd: -189221500.0
+      trade_report_price: 65.0
       current_value_usd: 666997500.0
       avg_holding_price: 65.0
       portfolio_weight_pct: 3.3343212635999735
@@ -74984,6 +75009,7 @@ institutions:
       current_shares: 1016000.0
       change_shares: 157000.0
       change_value_usd: 58116690.0
+      trade_report_price: 370.17
       current_value_usd: 376092720.0
       avg_holding_price: 370.17
       portfolio_weight_pct: 1.8800879364332717
@@ -75005,6 +75031,7 @@ institutions:
       current_shares: 601400.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 270.59
       current_value_usd: 162732826.0
       avg_holding_price: 270.59
       portfolio_weight_pct: 0.8135015828657749
@@ -75026,6 +75053,7 @@ institutions:
       current_shares: 1511800.0
       change_shares: 799800.0
       change_value_usd: 77084724.0
+      trade_report_price: 96.38
       current_value_usd: 145707284.0
       avg_holding_price: 96.38
       portfolio_weight_pct: 0.7283908789802065
@@ -75047,6 +75075,7 @@ institutions:
       current_shares: 751200.0
       change_shares: 609900.0
       change_value_usd: 57251313.0
+      trade_report_price: 93.87
       current_value_usd: 70515144.0
       avg_holding_price: 93.87
       portfolio_weight_pct: 0.3525052853196813
@@ -75068,6 +75097,7 @@ institutions:
       current_shares: 151200.0
       change_shares: -1073184.0
       change_value_usd: -362682532.8
+      trade_report_price: 337.95
       current_value_usd: 51098040.0
       avg_holding_price: 337.95
       portfolio_weight_pct: 0.2554391602671405
@@ -75089,6 +75119,7 @@ institutions:
       current_shares: 200000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 95.41
       current_value_usd: 19082000.0
       avg_holding_price: 95.41
       portfolio_weight_pct: 0.09539093977415912
@@ -75110,6 +75141,7 @@ institutions:
       current_shares: 60000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 146.28
       current_value_usd: 8776800.0
       avg_holding_price: 146.28
       portfolio_weight_pct: 0.043875233215063404
@@ -75131,6 +75163,7 @@ institutions:
       current_shares: 10000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 396.48
       current_value_usd: 3964800.0
       avg_holding_price: 396.48
       portfolio_weight_pct: 0.019820039724168646
@@ -75152,6 +75185,7 @@ institutions:
       current_shares: 10000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 390.41
       current_value_usd: 3904100.0
       avg_holding_price: 390.41
       portfolio_weight_pct: 0.019516600354904864
@@ -75173,6 +75207,7 @@ institutions:
       current_shares: 10000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 150.82
       current_value_usd: 1508200.0
       avg_holding_price: 150.82
       portfolio_weight_pct: 0.007539493520982434
@@ -75194,6 +75229,7 @@ institutions:
       current_shares: 20000.0
       change_shares: -90000.0
       change_value_usd: -4069800.0
+      trade_report_price: 45.22
       current_value_usd: 904400.0
       avg_holding_price: 45.22
       portfolio_weight_pct: 0.004521096631996097
@@ -75215,6 +75251,7 @@ institutions:
       current_shares: 10000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 38.62
       current_value_usd: 386200.0
       avg_holding_price: 38.62
       portfolio_weight_pct: 0.0019306142406865243
@@ -75237,6 +75274,7 @@ institutions:
       current_shares: 13843775.0
       change_shares: 6606675.0
       change_value_usd: 1152204120.0
+      trade_report_price: 174.4
       current_value_usd: 2414354360.0
       avg_holding_price: 174.4
       portfolio_weight_pct: 12.069360200620402
@@ -75258,6 +75296,7 @@ institutions:
       current_shares: 9147796.0
       change_shares: 1971600.0
       change_value_usd: 944790720.0
+      trade_report_price: 479.2
       current_value_usd: 4383623843.0
       avg_holding_price: 479.2
       portfolio_weight_pct: 21.913740593238707
@@ -75279,6 +75318,7 @@ institutions:
       current_shares: 28945607.0
       change_shares: -3412900.0
       change_value_usd: -866159891.0152733
+      trade_report_price: 253.79
       current_value_usd: 7346105601.0
       avg_holding_price: 253.79
       portfolio_weight_pct: 36.723190281920346
@@ -75300,6 +75340,7 @@ institutions:
       current_shares: 19748294.0
       change_shares: 8211600.0
       change_value_usd: 839061288.0269716
+      trade_report_price: 102.18
       current_value_usd: 2017880681.0
       avg_holding_price: 102.18
       portfolio_weight_pct: 10.087387826889751
@@ -75321,6 +75362,7 @@ institutions:
       current_shares: 3706000.0
       change_shares: 1850600.0
       change_value_usd: 530863116.0189951
+      trade_report_price: 286.86
       current_value_usd: 1063103160.0
       avg_holding_price: 286.86
       portfolio_weight_pct: 5.314453909929686
@@ -75342,6 +75384,7 @@ institutions:
       current_shares: 151200.0
       change_shares: -1073184.0
       change_value_usd: -362682532.8
+      trade_report_price: 337.95
       current_value_usd: 51098040.0
       avg_holding_price: 337.95
       portfolio_weight_pct: 0.2554391602671405
@@ -75363,6 +75406,7 @@ institutions:
       current_shares: 0.0
       change_shares: -2560500.0
       change_value_usd: -321816442.5
+      trade_report_price: 125.685
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -75384,6 +75428,7 @@ institutions:
       current_shares: 10261500.0
       change_shares: -2911100.0
       change_value_usd: -189221500.0
+      trade_report_price: 65.0
       current_value_usd: 666997500.0
       avg_holding_price: 65.0
       portfolio_weight_pct: 3.3343212635999735
@@ -75405,6 +75450,7 @@ institutions:
       current_shares: 1511800.0
       change_shares: 799800.0
       change_value_usd: 77084724.0
+      trade_report_price: 96.38
       current_value_usd: 145707284.0
       avg_holding_price: 96.38
       portfolio_weight_pct: 0.7283908789802065
@@ -75426,6 +75472,7 @@ institutions:
       current_shares: 1016000.0
       change_shares: 157000.0
       change_value_usd: 58116690.0
+      trade_report_price: 370.17
       current_value_usd: 376092720.0
       avg_holding_price: 370.17
       portfolio_weight_pct: 1.8800879364332717
@@ -75447,6 +75494,7 @@ institutions:
       current_shares: 751200.0
       change_shares: 609900.0
       change_value_usd: 57251313.0
+      trade_report_price: 93.87
       current_value_usd: 70515144.0
       avg_holding_price: 93.87
       portfolio_weight_pct: 0.3525052853196813
@@ -75468,6 +75516,7 @@ institutions:
       current_shares: 0.0
       change_shares: -299900.0
       change_value_usd: -38012325.0
+      trade_report_price: 126.75
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -75489,6 +75538,7 @@ institutions:
       current_shares: 0.0
       change_shares: -9900.0
       change_value_usd: -16194271.5
+      trade_report_price: 1635.785
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -75510,6 +75560,7 @@ institutions:
       current_shares: 20000.0
       change_shares: -90000.0
       change_value_usd: -4069800.0
+      trade_report_price: 45.22
       current_value_usd: 904400.0
       avg_holding_price: 45.22
       portfolio_weight_pct: 0.004521096631996097
@@ -75545,6 +75596,7 @@ institutions:
       current_shares: 227917808.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 253.79
       current_value_usd: 57843260493.0
       avg_holding_price: 253.79
       portfolio_weight_pct: 21.985634774005366
@@ -75566,6 +75618,7 @@ institutions:
       current_shares: 151610700.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 302.48
       current_value_usd: 45859204536.0
       avg_holding_price: 302.48
       portfolio_weight_pct: 17.430617039247302
@@ -75587,6 +75640,7 @@ institutions:
       current_shares: 400000000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 76.05
       current_value_usd: 30420000000.0
       avg_holding_price: 76.05
       portfolio_weight_pct: 11.562332484804855
@@ -75608,6 +75662,7 @@ institutions:
       current_shares: 513624165.0
       change_shares: -3671769.0
       change_value_usd: -178998738.75
+      trade_report_price: 48.75
       current_value_usd: 25039178044.0
       avg_holding_price: 48.75
       portfolio_weight_pct: 9.51713680772366
@@ -75629,6 +75684,7 @@ institutions:
       current_shares: 84375856.0
       change_shares: -45780506.0
       change_value_usd: -9471986691.18297
+      trade_report_price: 206.9
       current_value_usd: 17457364606.0
       avg_holding_price: 206.9
       portfolio_weight_pct: 6.635366662821706
@@ -75650,6 +75706,7 @@ institutions:
       current_shares: 264941431.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 65.0
       current_value_usd: 17221193015.0
       avg_holding_price: 65.0
       portfolio_weight_pct: 6.545600244064069
@@ -75671,6 +75728,7 @@ institutions:
       current_shares: 54249798.0
       change_shares: 36403656.0
       change_value_usd: 10468235319.436918
+      trade_report_price: 287.56
       current_value_usd: 15600071913.0
       avg_holding_price: 287.56
       portfolio_weight_pct: 5.929428607658505
@@ -75692,6 +75750,7 @@ institutions:
       current_shares: 34249183.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 325.93
       current_value_usd: 11162836215.0
       avg_holding_price: 325.93
       portfolio_weight_pct: 4.242880466510539
@@ -75713,6 +75772,7 @@ institutions:
       current_shares: 24669778.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 436.25
       current_value_usd: 10762190653.0
       avg_holding_price: 436.25
       portfolio_weight_pct: 4.090599164853553
@@ -75734,6 +75794,7 @@ institutions:
       current_shares: 325634818.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 22.49
       current_value_usd: 7323527057.0
       avg_holding_price: 22.49
       portfolio_weight_pct: 2.783598119477265
@@ -75755,6 +75816,7 @@ institutions:
       current_shares: 30100585.0
       change_shares: -1658480.0
       change_value_usd: -254891791.2192843
+      trade_report_price: 153.69
       current_value_usd: 4626158909.0
       avg_holding_price: 153.69
       portfolio_weight_pct: 1.758355931406972
@@ -75776,6 +75838,7 @@ institutions:
       current_shares: 50000000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 72.36
       current_value_usd: 3618000000.0
       avg_holding_price: 72.36
       portfolio_weight_pct: 1.3751649878377374
@@ -75797,6 +75860,7 @@ institutions:
       current_shares: 124807117.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 23.08
       current_value_usd: 2880548260.0
       avg_holding_price: 23.08
       portfolio_weight_pct: 1.0948670848338626
@@ -75818,6 +75882,7 @@ institutions:
       current_shares: 39809456.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 66.48
       current_value_usd: 2646532635.0
       avg_holding_price: 66.48
       portfolio_weight_pct: 1.0059201268164593
@@ -75839,6 +75904,7 @@ institutions:
       current_shares: 8989880.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 248.36
       current_value_usd: 2232726597.0
       avg_holding_price: 248.36
       portfolio_weight_pct: 0.8486366621361242
@@ -75860,6 +75926,7 @@ institutions:
       current_shares: 7150000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 182.43
       current_value_usd: 1304374500.0
       avg_holding_price: 182.43
       portfolio_weight_pct: 0.4957794757955652
@@ -75881,6 +75948,7 @@ institutions:
       current_shares: 15146535.0
       change_shares: 10080791.0
       change_value_usd: 844064630.729498
+      trade_report_price: 83.73
       current_value_usd: 1268219376.0
       avg_holding_price: 83.73
       portfolio_weight_pct: 0.48203728103168125
@@ -75902,6 +75970,7 @@ institutions:
       current_shares: 29000000.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 39.23
       current_value_usd: 1137670000.0
       avg_holding_price: 39.23
       portfolio_weight_pct: 0.4324167915183413
@@ -75923,6 +75992,7 @@ institutions:
       current_shares: 3585215.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 286.86
       current_value_usd: 1028454775.0
       avg_holding_price: 286.86
       portfolio_weight_pct: 0.3909051957309392
@@ -75944,6 +76014,7 @@ institutions:
       current_shares: 10587143.0
       change_shares: -330518.0
       change_value_usd: -31105048.988429077
+      trade_report_price: 94.11
       current_value_usd: 996356028.0
       avg_holding_price: 94.11
       portfolio_weight_pct: 0.3787047885922267
@@ -75965,6 +76036,7 @@ institutions:
       current_shares: 10099642.0
       change_shares: 3048692.0
       change_value_usd: 264748413.19547883
+      trade_report_price: 86.84
       current_value_usd: 877052911.0
       avg_holding_price: 86.84
       portfolio_weight_pct: 0.3333588876971717
@@ -75986,6 +76058,7 @@ institutions:
       current_shares: 3907075.0
       change_shares: -2500674.0
       change_value_usd: -422863973.7200187
+      trade_report_price: 169.1
       current_value_usd: 660686383.0
       avg_holding_price: 169.1
       portfolio_weight_pct: 0.25112017187472463
@@ -76007,6 +76080,7 @@ institutions:
       current_shares: 4986588.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 91.64
       current_value_usd: 456970925.0
       avg_holding_price: 91.64
       portfolio_weight_pct: 0.17368999903809415
@@ -76028,6 +76102,7 @@ institutions:
       current_shares: 5664793.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 72.75
       current_value_usd: 412113691.0
       avg_holding_price: 72.75
       portfolio_weight_pct: 0.15664022080480378
@@ -76049,6 +76124,7 @@ institutions:
       current_shares: 632890.0
       change_shares: -12367110.0
       change_value_usd: -1855066500.0
+      trade_report_price: 150.0
       current_value_usd: 94933500.0
       avg_holding_price: 150.0
       portfolio_weight_pct: 0.03608325742755496
@@ -76070,6 +76146,7 @@ institutions:
       current_shares: 11112.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 6589.83
       current_value_usd: 73226191.0
       avg_holding_price: 6589.83
       portfolio_weight_pct: 0.0278325301425978
@@ -76091,6 +76168,7 @@ institutions:
       current_shares: 3038355.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 18.09
       current_value_usd: 54963842.0
       avg_holding_price: 18.09
       portfolio_weight_pct: 0.020891197102113134
@@ -76112,6 +76190,7 @@ institutions:
       current_shares: 237703.0
       change_shares: 56723.0
       change_value_usd: 4771538.674093301
+      trade_report_price: 84.12
       current_value_usd: 19995576.0
       avg_holding_price: 84.12
       portfolio_weight_pct: 0.007600114988073121
@@ -76133,6 +76212,7 @@ institutions:
       current_shares: 433558.0
       change_shares: 0
       change_value_usd: 0
+      trade_report_price: 41.27
       current_value_usd: 17892939.0
       avg_holding_price: 41.27
       portfolio_weight_pct: 0.006800924058130563
@@ -76155,6 +76235,7 @@ institutions:
       current_shares: 54249798.0
       change_shares: 36403656.0
       change_value_usd: 10468235319.436918
+      trade_report_price: 287.56
       current_value_usd: 15600071913.0
       avg_holding_price: 287.56
       portfolio_weight_pct: 5.929428607658505
@@ -76176,6 +76257,7 @@ institutions:
       current_shares: 84375856.0
       change_shares: -45780506.0
       change_value_usd: -9471986691.18297
+      trade_report_price: 206.9
       current_value_usd: 17457364606.0
       avg_holding_price: 206.9
       portfolio_weight_pct: 6.635366662821706
@@ -76197,6 +76279,7 @@ institutions:
       current_shares: 0.0
       change_shares: -8297460.0
       change_value_usd: -2665890923.4
+      trade_report_price: 321.29
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76218,6 +76301,7 @@ institutions:
       current_shares: 0.0
       change_shares: -3986648.0
       change_value_usd: -1976380746.0
+      trade_report_price: 495.75
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76239,6 +76323,7 @@ institutions:
       current_shares: 632890.0
       change_shares: -12367110.0
       change_value_usd: -1855066500.0
+      trade_report_price: 150.0
       current_value_usd: 94933500.0
       avg_holding_price: 150.0
       portfolio_weight_pct: 0.03608325742755496
@@ -76260,6 +76345,7 @@ institutions:
       current_shares: 0.0
       change_shares: -5039564.0
       change_value_usd: -1363655622.76
+      trade_report_price: 270.59
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76281,6 +76367,7 @@ institutions:
       current_shares: 0.0
       change_shares: -3602995.0
       change_value_usd: -1150328213.6499999
+      trade_report_price: 319.27
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76302,6 +76389,7 @@ institutions:
       current_shares: 0.0
       change_shares: -3350000.0
       change_value_usd: -1046389250.0000001
+      trade_report_price: 312.355
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76323,6 +76411,7 @@ institutions:
       current_shares: 15146535.0
       change_shares: 10080791.0
       change_value_usd: 844064630.729498
+      trade_report_price: 83.73
       current_value_usd: 1268219376.0
       avg_holding_price: 83.73
       portfolio_weight_pct: 0.48203728103168125
@@ -76344,6 +76433,7 @@ institutions:
       current_shares: 0.0
       change_shares: -2276000.0
       change_value_usd: -597745880.0
+      trade_report_price: 262.63
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76365,6 +76455,7 @@ institutions:
       current_shares: 0.0
       change_shares: -3068885.0
       change_value_usd: -565043106.2
+      trade_report_price: 184.12
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76386,6 +76477,7 @@ institutions:
       current_shares: 0.0
       change_shares: -1294612.0
       change_value_usd: -435015524.23999995
+      trade_report_price: 336.02
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76407,6 +76499,7 @@ institutions:
       current_shares: 3907075.0
       change_shares: -2500674.0
       change_value_usd: -422863973.7200187
+      trade_report_price: 169.1
       current_value_usd: 660686383.0
       avg_holding_price: 169.1
       portfolio_weight_pct: 0.25112017187472463
@@ -76428,6 +76521,7 @@ institutions:
       current_shares: 0.0
       change_shares: -3018555.0
       change_value_usd: -273601825.2
+      trade_report_price: 90.64
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76449,6 +76543,7 @@ institutions:
       current_shares: 10099642.0
       change_shares: 3048692.0
       change_value_usd: 264748413.19547883
+      trade_report_price: 86.84
       current_value_usd: 877052911.0
       avg_holding_price: 86.84
       portfolio_weight_pct: 0.3333588876971717
@@ -76470,6 +76565,7 @@ institutions:
       current_shares: 30100585.0
       change_shares: -1658480.0
       change_value_usd: -254891791.2192843
+      trade_report_price: 153.69
       current_value_usd: 4626158909.0
       avg_holding_price: 153.69
       portfolio_weight_pct: 1.758355931406972
@@ -76491,6 +76587,7 @@ institutions:
       current_shares: 0.0
       change_shares: -1202410.0
       change_value_usd: -182820428.45
+      trade_report_price: 152.045
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76512,6 +76609,7 @@ institutions:
       current_shares: 513624165.0
       change_shares: -3671769.0
       change_value_usd: -178998738.75
+      trade_report_price: 48.75
       current_value_usd: 25039178044.0
       avg_holding_price: 48.75
       portfolio_weight_pct: 9.51713680772366
@@ -76533,6 +76631,7 @@ institutions:
       current_shares: 0.0
       change_shares: -1060882.0
       change_value_usd: -151557602.52
+      trade_report_price: 142.86
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76554,6 +76653,7 @@ institutions:
       current_shares: 0.0
       change_shares: -780133.0
       change_value_usd: -101331475.36999999
+      trade_report_price: 129.89
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76575,6 +76675,7 @@ institutions:
       current_shares: 10587143.0
       change_shares: -330518.0
       change_value_usd: -31105048.988429077
+      trade_report_price: 94.11
       current_value_usd: 996356028.0
       avg_holding_price: 94.11
       portfolio_weight_pct: 0.3787047885922267
@@ -76596,6 +76697,7 @@ institutions:
       current_shares: 0.0
       change_shares: -2396665.0
       change_value_usd: -19317119.900000002
+      trade_report_price: 8.06
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76617,6 +76719,7 @@ institutions:
       current_shares: 0.0
       change_shares: -227750.0
       change_value_usd: -18288325.0
+      trade_report_price: 80.3
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76638,6 +76741,7 @@ institutions:
       current_shares: 0.0
       change_shares: -1284020.0
       change_value_usd: -10458342.9
+      trade_report_price: 8.145
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76659,6 +76763,7 @@ institutions:
       current_shares: 0.0
       change_shares: -115428.0
       change_value_usd: -6178283.7
+      trade_report_price: 53.525
       current_value_usd: 0.0
       avg_holding_price: 0
       portfolio_weight_pct: 0
@@ -76680,6 +76785,7 @@ institutions:
       current_shares: 237703.0
       change_shares: 56723.0
       change_value_usd: 4771538.674093301
+      trade_report_price: 84.12
       current_value_usd: 19995576.0
       avg_holding_price: 84.12
       portfolio_weight_pct: 0.007600114988073121

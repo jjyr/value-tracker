@@ -51,7 +51,11 @@
             <a class="action-card {{ if eq .status_tone "sell" }}sell{{ else }}buy{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
               <strong>{{ .status_label }} {{ .symbol }}</strong>
               <span>{{ .company_name }}</span>
-              <span><b data-money="{{ .change_value_usd }}">--</b> · <em class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</em></span>
+              <span>
+                <b data-money="{{ .change_value_usd }}">--</b>
+                {{ if gt .trade_report_price 0.0 }} · 报告价 ${{ printf "%.2f" .trade_report_price }}{{ end }}
+                · <em class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</em>
+              </span>
             </a>
           {{ else }}
             <p class="muted">本期没有明显变动。</p>
@@ -137,6 +141,7 @@
               <th>股票</th>
               <th>状态</th>
               <th>变动金额</th>
+              <th>报告价</th>
               <th>变动股数</th>
               <th>当前持有</th>
               <th>披露日期</th>
@@ -155,6 +160,7 @@
                 </td>
                 <td><span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span></td>
                 <td><span data-money="{{ .change_value_usd }}">--</span></td>
+                <td>{{ if gt .trade_report_price 0.0 }}${{ printf "%.2f" .trade_report_price }}{{ else }}--{{ end }}</td>
                 <td>{{ printf "%+.0f" .change_shares }}</td>
                 <td><span data-money="{{ .current_value_usd }}">--</span></td>
                 <td>{{ .filing_date }}</td>

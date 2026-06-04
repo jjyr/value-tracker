@@ -372,6 +372,21 @@ def status_tone(status: str) -> str:
     return "hold"
 
 
+def trade_report_price(manager: Dict[str, Any]) -> float:
+    status = manager.get("status") or ""
+    current_shares = float(manager.get("current_shares") or 0)
+    current_value = float(manager.get("current_value_usd") or 0)
+    change_shares = abs(float(manager.get("change_shares") or 0))
+    change_value = abs(float(manager.get("change_value_usd") or 0))
+    if status in {"new_position", "unknown_previous"} and current_shares > 0 and current_value > 0:
+        return current_value / current_shares
+    if status in {"added", "reduced", "exited"} and change_shares > 0 and change_value > 0:
+        return change_value / change_shares
+    if current_shares > 0 and current_value > 0:
+        return current_value / current_shares
+    return 0.0
+
+
 def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str, Any]:
     status = manager.get("status") or ""
     current_shares = float(manager.get("current_shares") or 0)
@@ -387,6 +402,7 @@ def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str,
         "current_shares": current_shares,
         "change_shares": manager.get("change_shares") or 0,
         "change_value_usd": manager.get("change_value_usd") or 0,
+        "trade_report_price": round(trade_report_price(manager), 4),
         "current_value_usd": current_value,
         "avg_holding_price": round(current_value / current_shares, 4) if current_shares > 0 else 0,
         "portfolio_weight_pct": manager.get("portfolio_weight_pct") or 0,
