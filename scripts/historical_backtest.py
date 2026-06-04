@@ -790,7 +790,88 @@ def unique_report_filings(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         current = latest_by_period.get(period)
         if current is None or filing_sort_key(row) > filing_sort_key(current):
             latest_by_period[period] = row
-    return sorted(latest_by_period.values(), key=lambda row: (row["filing_date"], row["report_period"], row["accession_number"]))
+    return sorted(latest_by_period.values(), key=lambda row: (row["report_period"], row["filing_date"], row["accession_number"]))
+
+
+def first_trading_day_on_or_after(trading_days: List[dt.date], date: dt.date) -> Optional[dt.date]:
+    index = bisect.bisect_left(trading_days, date)
+    if index >= len(trading_days):
+        return None
+    return trading_days[index]
+
+
+def interpolated_numeric(points: List[Dict[str, Any]], date: dt.date, key: str) -> float:
+    if not points:
+        return 0.0
+    if date <= points[0]["date_value"]:
+        return float(points[0].get(key) or 0)
+    if date >= points[-1]["date_value"]:
+        return float(points[-1].get(key) or 0)
+    dates = [point["date_value"] for point in points]
+    index = bisect.bisect_right(dates, date)
+    previous = points[index - 1]
+    following = points[index]
+    span = (following["date_value"] - previous["date_value"]).days
+    if span <= 0:
+        return float(previous.get(key) or 0)
+    ratio = (date - previous["date_value"]).days / span
+    start = float(previous.get(key) or 0)
+    end = float(following.get(key) or 0)
+    return start + (end - start) * ratio
+
+
+def report_context_for_date(points: List[Dict[str, Any]], date: dt.date) -> Dict[str, Any]:
+    if not points:
+        return {}
+    dates = [point["date_value"] for point in points]
+    index = bisect.bisect_right(dates, date)
+    if index <= 0:
+        return points[0]
+    return points[index - 1]
+
+
+def interpolated_institution_points(
+    raw_points: List[Dict[str, Any]],
+    trading_days: List[dt.date],
+    start_trade_date: dt.date,
+    final_date: dt.date,
+    initial_value: float,
+) -> List[Dict[str, Any]]:
+    if not raw_points:
+        return []
+    start_index = interpolated_numeric(raw_points, start_trade_date, "profit_index") or 1.0
+    event_by_date: Dict[dt.date, Dict[str, Any]] = {}
+    for raw_point in raw_points:
+        event_date = first_trading_day_on_or_after(trading_days, raw_point["date_value"])
+        if event_date is None or event_date < start_trade_date or event_date > final_date:
+            continue
+        if raw_point.get("new_positions"):
+            event_by_date[event_date] = raw_point
+
+    points = []
+    for date in trading_days:
+        if date < start_trade_date or date > final_date:
+            continue
+        context = report_context_for_date(raw_points, date)
+        value = initial_value * interpolated_numeric(raw_points, date, "profit_index") / start_index
+        return_pct = interpolated_numeric(raw_points, date, "return_pct")
+        total_value = interpolated_numeric(raw_points, date, "total_value_usd")
+        event = event_by_date.get(date)
+        point = {
+            "date": date.isoformat(),
+            "report_period": context.get("report_period"),
+            "filing_date": context.get("filing_date"),
+            "value": round(value, 2),
+            "return_pct": round(return_pct, 2),
+            "total_value_usd": round(total_value, 2),
+            "holdings_count": context.get("holdings_count", 0),
+        }
+        if event:
+            point["event_report_period"] = event["report_period"]
+            point["event_filing_date"] = event["filing_date"]
+            point["new_positions"] = event["new_positions"]
+        points.append(point)
+    return points
 
 
 def benchmark_curve_from(
@@ -895,14 +976,16 @@ def build_key_institution_curves(
             previous_holdings = holdings
             if market_value <= 0 or cost_value <= 0:
                 continue
-            filing_date = parse_date(filing["filing_date"])
-            if filing_date < start_trade_date or filing_date > final_date:
+            report_date = parse_date(filing["report_period"])
+            if report_date > final_date:
                 continue
             return_pct = (market_value - cost_value) / cost_value * 100
             raw_points.append(
                 {
-                    "date": filing["filing_date"],
+                    "date": filing["report_period"],
+                    "date_value": report_date,
                     "report_period": filing["report_period"],
+                    "filing_date": filing["filing_date"],
                     "profit_index": max((market_value / cost_value), 0.0001),
                     "return_pct": round(return_pct, 2),
                     "total_value_usd": round(total_value, 2),
@@ -913,14 +996,9 @@ def build_key_institution_curves(
 
         if not raw_points:
             continue
-        base_index = raw_points[0]["profit_index"] or 1.0
-        points = []
-        for point in raw_points:
-            normalized = initial_value * point["profit_index"] / base_index
-            point = dict(point)
-            point["value"] = round(normalized, 2)
-            point.pop("profit_index", None)
-            points.append(point)
+        points = interpolated_institution_points(raw_points, trading_days, start_trade_date, final_date, initial_value)
+        if not points:
+            continue
 
         color = CHART_COLORS["institutions"][manager_index % len(CHART_COLORS["institutions"])]
         display_name = manager.get("display_name") or manager.get("name") or cik
@@ -930,14 +1008,13 @@ def build_key_institution_curves(
             "color": color,
             "points": points,
         }
-        first_date = parse_date(points[0]["date"])
         curves[slug] = {
             "cik": cik,
             "slug": slug,
             "display_name": display_name,
             "series": series,
             "points": points,
-            "benchmark_curve": benchmark_curve_from(price_index, trading_days, first_date, final_date, initial_value),
+            "benchmark_curve": benchmark_curve_from(price_index, trading_days, start_trade_date, final_date, initial_value),
             "chart_series": [series, base_chart_series()[1], base_chart_series()[2]],
             "summary": {
                 "start_date": points[0]["date"],

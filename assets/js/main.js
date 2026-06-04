@@ -291,8 +291,9 @@ function drawEquityChart(svg) {
       const extra = Number.isFinite(Number(point.return_pct)) ? ` · 持仓 ${formatPercent(Number(point.return_pct))}` : "";
       const disclosure = point.dateMs === hoverDateMs ? "" : ` · 披露 ${point.date.slice(5)}`;
       const newPositions = point.dateMs === hoverDateMs && hasNewPositionEvents(point) ? point.new_positions : [];
+      const eventPeriod = point.event_report_period ? ` · 报告期 ${escapeHtml(point.event_report_period)}` : "";
       const newPositionText = newPositions.length
-        ? `<div class="chart-tooltip-event">新建 ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}</div>`
+        ? `<div class="chart-tooltip-event">新建 ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}${eventPeriod}</div>`
         : "";
       return `<div><span class="chart-tooltip-name" style="color:${item.color}">${escapeHtml(item.label)}</span><strong>${formatPercent(pct)}</strong><span>${moneyFormatter.format(point.value)}${extra}${disclosure}</span></div>${newPositionText}`;
     });
