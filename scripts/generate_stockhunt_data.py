@@ -766,6 +766,71 @@ def simulation_candidates(
     return selected + [row for row in exit_candidates if row["symbol"] not in selected_symbols]
 
 
+def bounded_percentage(value: Any, default: float, minimum: float = 0.0, maximum: float = 100.0) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        parsed = default
+    return max(minimum, min(maximum, parsed))
+
+
+def rebalance_step_rules(config: Dict[str, Any]) -> Dict[str, float]:
+    strategy = config.get("strategy", {})
+    step_weight_pct = bounded_percentage(
+        strategy.get("rebalance_step_weight_pct"),
+        20.0,
+    )
+    min_gap_weight_pct = bounded_percentage(
+        strategy.get("min_buy_gap_weight_pct"),
+        5.0,
+    )
+    return {
+        "rebalance_step_weight_pct": step_weight_pct,
+        "min_buy_gap_weight_pct": min_gap_weight_pct,
+    }
+
+
+def rebalance_step_summary(config: Dict[str, Any]) -> Dict[str, float]:
+    rules = rebalance_step_rules(config)
+    return {
+        "rebalance_step_weight_pct": round(rules["rebalance_step_weight_pct"], 4),
+        "min_buy_gap_weight_pct": round(rules["min_buy_gap_weight_pct"], 4),
+    }
+
+
+def stepped_rebalance_target_shares(
+    config: Dict[str, Any],
+    row: Dict[str, Any],
+    current_shares: int,
+    full_target_shares: int,
+    price: float,
+    total_value: float = 0.0,
+) -> int:
+    full_target_shares = max(full_target_shares, 0)
+    if full_target_shares == current_shares:
+        return current_shares
+    if total_value <= 0 or price <= 0:
+        return full_target_shares
+
+    rules = rebalance_step_rules(config)
+    target_weight_pct = float(row.get("target_weight_pct") or 0)
+    current_weight_pct = current_shares * price / total_value * 100
+    gap_weight_pct = abs(target_weight_pct - current_weight_pct)
+    is_buy = full_target_shares > current_shares
+    if is_buy and gap_weight_pct < rules["min_buy_gap_weight_pct"]:
+        return current_shares
+    if gap_weight_pct <= rules["rebalance_step_weight_pct"]:
+        return full_target_shares
+
+    trade_value = total_value * rules["rebalance_step_weight_pct"] / 100
+    step_shares = math.floor(trade_value / price)
+    if step_shares <= 0 and (price <= trade_value or not is_buy):
+        step_shares = 1
+    if is_buy:
+        return min(full_target_shares, current_shares + step_shares)
+    return max(full_target_shares, current_shares - step_shares)
+
+
 def build_snapshot_simulation(
     config: Dict[str, Any],
     snapshot: Dict[str, Any],
@@ -776,7 +841,6 @@ def build_snapshot_simulation(
     strategy = config.get("strategy", {})
     top_n = int(config.get("rankings", {}).get("top_n_for_simulation", 10))
     max_positions = int(strategy.get("max_positions", 10))
-    min_trade_weight = float(strategy.get("min_trade_weight_pct", 1))
     initial_value = 100000.0
     selected = simulation_candidates(config, rows, ranks)
     data_date = snapshot.get("data_date")
@@ -790,12 +854,18 @@ def build_snapshot_simulation(
         target_weight = row["target_weight_pct"]
         target_value = initial_value * target_weight / 100
         price = row.get("price") or 0
-        shares = math.floor(target_value / price) if price else 0
+        full_target_shares = math.floor(target_value / price) if price else 0
+        shares = stepped_rebalance_target_shares(
+            config,
+            row,
+            0,
+            full_target_shares,
+            price,
+            initial_value,
+        )
         if shares <= 0:
             continue
         buy_value = shares * price
-        if initial_value and buy_value / initial_value * 100 < min_trade_weight:
-            continue
         invested_value += buy_value
         position = {
             "symbol": row["symbol"],
@@ -843,7 +913,7 @@ def build_snapshot_simulation(
             "lookback_trading_days": strategy.get("lookback_trading_days", 21),
             "max_positions": max_positions,
             "weighting_method": strategy.get("weighting_method", "key_institution_signal_score"),
-            "min_trade_weight_pct": min_trade_weight,
+            "rebalance_step": rebalance_step_summary(config),
             "last_rebalance_date": data_date,
             "next_rebalance_date": next_rebalance,
         },

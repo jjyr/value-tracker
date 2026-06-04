@@ -817,7 +817,7 @@ def run_simulation(
     rebalance_until: Optional[dt.date] = None,
 ) -> Dict[str, Any]:
     initial_value = float(config.get("strategy", {}).get("initial_value", 100000))
-    min_trade_weight = float(config.get("strategy", {}).get("min_trade_weight_pct", 1))
+    min_trade_weight = 0.0
     filings_by_cik = group_filings_by_cik(filings)
     price_index = build_price_index(price_history)
     trading_days = trading_dates(price_index, start_date, end_date)
@@ -860,11 +860,25 @@ def run_simulation(
                     price = price_at(price_index, symbol, date) or position.get("last_price") or position.get("avg_cost") or 0.0
                     current_shares = int(position["shares"])
                     row = target_by_symbol.get(symbol)
-                    target_shares = 0
+                    target_row = row or {"target_weight_pct": 0}
+                    full_target_shares = 0
                     if row and price:
                         target_value = total_value * row["target_weight_pct"] / 100
-                        target_shares = math.floor(target_value / price)
+                        full_target_shares = math.floor(target_value / price)
+                    target_shares = hugo_data.stepped_rebalance_target_shares(
+                        config,
+                        target_row,
+                        current_shares,
+                        full_target_shares,
+                        price,
+                        total_value,
+                    )
                     if target_shares >= current_shares:
+                        if not row:
+                            carried = dict(position)
+                            carried["target_weight_pct"] = 0
+                            carried["last_price"] = price
+                            new_positions[symbol] = carried
                         continue
                     sell_shares = current_shares - target_shares
                     sell_value = sell_shares * price
@@ -916,32 +930,48 @@ def run_simulation(
                                 badges,
                         )
                     else:
-                        sold_out_symbols.add(symbol)
+                        if target_shares <= 0:
+                            sold_out_symbols.add(symbol)
                         sells.append(
                             {
                                 "symbol": symbol,
                                 "slug": hugo_data.slugify_symbol(symbol),
-                                "action": "exit",
+                                "action": "exit" if target_shares <= 0 else "sell",
                                 "reason": "不在本期目标持仓",
                                 "from_weight_pct": round(current_shares * price / total_value * 100, 2) if total_value else 0,
+                                "to_weight_pct": 0,
                                 "trade_weight_pct": round(trade_weight_pct(sell_value, total_value), 2),
                                 "sell_value_usd": round(sell_value, 2),
                                 "sell_price": price,
-                                "shares": current_shares,
+                                "shares": sell_shares,
                             }
                         )
+                        if target_shares > 0:
+                            carried = dict(position)
+                            carried["shares"] = target_shares
+                            carried["target_weight_pct"] = 0
+                            carried["last_price"] = price
+                            new_positions[symbol] = carried
 
                 for symbol, row in target_by_symbol.items():
                     price = price_at(price_index, symbol, date)
                     if not price:
                         continue
                     target_value = total_value * row["target_weight_pct"] / 100
-                    target_shares = math.floor(target_value / price)
+                    full_target_shares = math.floor(target_value / price)
                     existing = new_positions.get(symbol) or positions.get(symbol)
                     if symbol in sold_out_symbols and symbol not in new_positions:
                         previous_shares = 0
                     else:
                         previous_shares = int(existing["shares"]) if existing else 0
+                    target_shares = hugo_data.stepped_rebalance_target_shares(
+                        config,
+                        row,
+                        previous_shares,
+                        full_target_shares,
+                        price,
+                        total_value,
+                    )
                     delta_shares = target_shares - previous_shares
                     delta_value = delta_shares * price
                     reason = hugo_data.buy_reason(row.get("source_rankings") or [])
@@ -984,6 +1014,22 @@ def run_simulation(
                             )
                         continue
                     buy_value = buy_shares * price
+                    rules = hugo_data.rebalance_step_rules(config)
+                    if (
+                        buy_shares < delta_shares
+                        and trade_weight_pct(buy_value, total_value) < rules["min_buy_gap_weight_pct"]
+                    ):
+                        if previous_shares > 0 and symbol not in new_positions:
+                            new_positions[symbol] = build_position(
+                                symbol,
+                                row,
+                                previous_shares,
+                                existing["avg_cost"],
+                                existing["entry_date"],
+                                price,
+                                badges,
+                            )
+                        continue
                     if not is_material_trade(buy_value, total_value, min_trade_weight):
                         if previous_shares > 0 and symbol not in new_positions:
                             new_positions[symbol] = build_position(
@@ -1083,7 +1129,7 @@ def run_simulation(
             "lookback_trading_days": config.get("strategy", {}).get("lookback_trading_days", 21),
             "max_positions": int(config.get("strategy", {}).get("max_positions", 10)),
             "weighting_method": config.get("strategy", {}).get("weighting_method", "key_institution_signal_score"),
-            "min_trade_weight_pct": min_trade_weight,
+            "rebalance_step": hugo_data.rebalance_step_summary(config),
             "last_rebalance_date": last_rebalance_date.isoformat() if last_rebalance_date else None,
             "rebalance_until": rebalance_until.isoformat() if rebalance_until else None,
             "next_rebalance_date": hugo_data.next_monday(final_date.isoformat()),

@@ -210,7 +210,7 @@ uv run fetch-all
 - 每周一再平衡；如果周一休市，则顺延到下一个交易日。
 - 每期候选池由“当前模拟盘持仓 + 本期重点机构新建仓或增持股票”组成，普通白名单机构只用于榜单、标签和辅助信息。
 - 目标权重按重点机构信号分线性分配；当前价低于重点机构最近买入价会提高权重，重点机构减持或清仓会降低权重。
-- 单只股票交易百分比 `< 1%` 时跳过该股票本次交易，保留原股数，避免频繁小额调仓。
+- 买卖按当前仓位到目标仓位的权重缺口分步成交：买入缺口 `< 5%` 时不买，买入缺口 `5%~20%` 时补齐到目标，买入缺口 `> 20%` 时本次买入 `20%` 组合权重；卖出不设 5% 最小缺口，每周最多卖出 `20%` 组合权重，尾仓可直接卖到目标。
 - 价格使用 Longbridge 日 K 线，默认 `period=day`、`adjust=forward`。
 - `schedule daily` 会把 `rebalance_until` 固定在上次调仓日，只追加 Longbridge 价格、更新模拟盘净值和收益，不改目标仓位。
 - `schedule weekly` 不冻结 `rebalance_until`，因此会在新的周度调仓日产生调仓记录和新仓位。
@@ -384,9 +384,10 @@ uv run build
 strategy:
   max_positions: 10
   max_position_weight_pct: 50
-  min_trade_weight_pct: 1
   weighting_method: "key_institution_signal_score"
   score_weight_exponent: 1.0
+  rebalance_step_weight_pct: 20
+  min_buy_gap_weight_pct: 5
   allocation_signal:
     key_new_position_score: 30
     key_added_score: 20
@@ -399,7 +400,7 @@ strategy:
     key_exit_penalty: -50
 ```
 
-当前模拟盘默认由历史周度回测生成：每个再平衡日只使用当时已经披露的 13F 和当时价格。候选池只由当前模拟盘持仓和本期重点机构新建仓或增持股票组成。目标权重按重点机构信号分计算，分数使用 `score_weight_exponent` 做幂次归一化，默认 `1.0` 即按分数线性分配。重点机构买入金额占该机构 13F 组合比例越高，`key_buy_intensity_score_per_pct` 贡献的力度分越高，并由 `key_buy_intensity_max_score` 封顶；如果单只股票本次交易金额占组合净值低于 `min_trade_weight_pct`，该股票本次不交易。
+当前模拟盘默认由历史周度回测生成：每个再平衡日只使用当时已经披露的 13F 和当时价格。候选池只由当前模拟盘持仓和本期重点机构新建仓或增持股票组成。目标权重按重点机构信号分计算，分数使用 `score_weight_exponent` 做幂次归一化，默认 `1.0` 即按分数线性分配。重点机构买入金额占该机构 13F 组合比例越高，`key_buy_intensity_score_per_pct` 贡献的力度分越高，并由 `key_buy_intensity_max_score` 封顶。买卖节奏由 `rebalance_step_weight_pct` 和 `min_buy_gap_weight_pct` 控制：买卖每周最多按 `rebalance_step_weight_pct` 的组合权重执行，买入缺口低于 `min_buy_gap_weight_pct` 时跳过，卖出不设最小缺口以避免尾仓残留。
 
 修改策略参数后，推荐重新抓取并 build：
 

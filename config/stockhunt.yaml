@@ -50,9 +50,10 @@ strategy:
   lookback_trading_days: 21
   max_positions: 10
   max_position_weight_pct: 50
-  min_trade_weight_pct: 1
   weighting_method: "key_institution_signal_score"
   score_weight_exponent: 1.0
+  rebalance_step_weight_pct: 20
+  min_buy_gap_weight_pct: 5
   rebalance_weekday: "monday"
   if_market_closed: "next_trading_day"
   if_no_candidates: "hold_existing_positions"
