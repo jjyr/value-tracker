@@ -123,6 +123,7 @@ Settings -> Pages -> Build and deployment -> Source: GitHub Actions
   - 周二/周三 09:30 Asia/Shanghai 跑 `weekly`。
   - 周四/周五/周六 09:30 Asia/Shanghai 跑 `daily`。
 - 恢复 `raw/generated/cache/`、`snapshot.yaml`、`historical_simulation.yaml` 的 Actions cache。
+- 数据变化时自动提交 `data/stockhunt.yaml` 和补齐的 `content/institutions/*.md`，让仓库快照与 Pages 数据保持一致。
 - 跑完数据任务后发布 GitHub Pages。
 
 ### Longbridge Secrets
