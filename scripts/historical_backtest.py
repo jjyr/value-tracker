@@ -800,26 +800,6 @@ def first_trading_day_on_or_after(trading_days: List[dt.date], date: dt.date) ->
     return trading_days[index]
 
 
-def interpolated_numeric(points: List[Dict[str, Any]], date: dt.date, key: str) -> float:
-    if not points:
-        return 0.0
-    if date <= points[0]["date_value"]:
-        return float(points[0].get(key) or 0)
-    if date >= points[-1]["date_value"]:
-        return float(points[-1].get(key) or 0)
-    dates = [point["date_value"] for point in points]
-    index = bisect.bisect_right(dates, date)
-    previous = points[index - 1]
-    following = points[index]
-    span = (following["date_value"] - previous["date_value"]).days
-    if span <= 0:
-        return float(previous.get(key) or 0)
-    ratio = (date - previous["date_value"]).days / span
-    start = float(previous.get(key) or 0)
-    end = float(following.get(key) or 0)
-    return start + (end - start) * ratio
-
-
 def report_context_for_date(points: List[Dict[str, Any]], date: dt.date) -> Dict[str, Any]:
     if not points:
         return {}
@@ -830,32 +810,60 @@ def report_context_for_date(points: List[Dict[str, Any]], date: dt.date) -> Dict
     return points[index - 1]
 
 
-def interpolated_institution_points(
-    raw_points: List[Dict[str, Any]],
+def institution_report_profit_index(
+    report: Dict[str, Any],
+    price_index: Dict[str, Dict[str, Any]],
+    date: dt.date,
+) -> Tuple[float, float, float]:
+    market_value = 0.0
+    cost_value = 0.0
+    for symbol, holding in (report.get("holdings") or {}).items():
+        shares = float(holding.get("shares") or 0)
+        report_price = float(holding.get("report_price") or 0)
+        avg_cost = float(holding.get("avg_cost") or 0)
+        if shares <= 0 or avg_cost <= 0:
+            continue
+        price = price_at(price_index, symbol, date) or report_price
+        if price <= 0:
+            continue
+        market_value += shares * price
+        cost_value += shares * avg_cost
+    if market_value <= 0 or cost_value <= 0:
+        return 1.0, market_value, cost_value
+    return market_value / cost_value, market_value, cost_value
+
+
+def daily_institution_points(
+    reports: List[Dict[str, Any]],
+    price_index: Dict[str, Dict[str, Any]],
     trading_days: List[dt.date],
     start_trade_date: dt.date,
     final_date: dt.date,
     initial_value: float,
 ) -> List[Dict[str, Any]]:
-    if not raw_points:
+    if not reports:
         return []
-    start_index = interpolated_numeric(raw_points, start_trade_date, "profit_index") or 1.0
+    start_context = report_context_for_date(reports, start_trade_date)
+    start_index, _, _ = institution_report_profit_index(start_context, price_index, start_trade_date)
+    start_index = start_index or 1.0
     event_by_date: Dict[dt.date, Dict[str, Any]] = {}
-    for raw_point in raw_points:
-        event_date = first_trading_day_on_or_after(trading_days, raw_point["date_value"])
+    for report in reports:
+        if report["date_value"] < start_trade_date:
+            continue
+        event_date = first_trading_day_on_or_after(trading_days, report["date_value"])
         if event_date is None or event_date < start_trade_date or event_date > final_date:
             continue
-        if raw_point.get("new_positions"):
-            event_by_date[event_date] = raw_point
+        if report.get("new_positions"):
+            event_by_date[event_date] = report
 
     points = []
     for date in trading_days:
         if date < start_trade_date or date > final_date:
             continue
-        context = report_context_for_date(raw_points, date)
-        value = initial_value * interpolated_numeric(raw_points, date, "profit_index") / start_index
-        return_pct = interpolated_numeric(raw_points, date, "return_pct")
-        total_value = interpolated_numeric(raw_points, date, "total_value_usd")
+        context = report_context_for_date(reports, date)
+        profit_index, market_value, cost_value = institution_report_profit_index(context, price_index, date)
+        value = initial_value * profit_index / start_index
+        return_pct = (market_value - cost_value) / cost_value * 100 if cost_value > 0 else 0.0
         event = event_by_date.get(date)
         point = {
             "date": date.isoformat(),
@@ -863,7 +871,7 @@ def interpolated_institution_points(
             "filing_date": context.get("filing_date"),
             "value": round(value, 2),
             "return_pct": round(return_pct, 2),
-            "total_value_usd": round(total_value, 2),
+            "total_value_usd": round(market_value, 2),
             "holdings_count": context.get("holdings_count", 0),
         }
         if event:
@@ -935,10 +943,10 @@ def build_key_institution_curves(
                     avg_cost_by_symbol.pop(symbol, None)
 
             new_positions = []
-            total_value = 0.0
             cost_value = 0.0
             market_value = 0.0
             holdings_count = 0
+            report_holdings: Dict[str, Dict[str, float]] = {}
 
             for symbol, holding in sorted(holdings.items()):
                 shares = float(holding.get("shares") or 0)
@@ -968,10 +976,14 @@ def build_key_institution_curves(
                 else:
                     avg_cost_by_symbol[symbol] = existing_cost
 
-                total_value += value
                 market_value += value
                 cost_value += avg_cost_by_symbol[symbol] * shares
                 holdings_count += 1
+                report_holdings[symbol] = {
+                    "shares": shares,
+                    "report_price": price,
+                    "avg_cost": avg_cost_by_symbol[symbol],
+                }
 
             previous_holdings = holdings
             if market_value <= 0 or cost_value <= 0:
@@ -979,24 +991,21 @@ def build_key_institution_curves(
             report_date = parse_date(filing["report_period"])
             if report_date > final_date:
                 continue
-            return_pct = (market_value - cost_value) / cost_value * 100
             raw_points.append(
                 {
                     "date": filing["report_period"],
                     "date_value": report_date,
                     "report_period": filing["report_period"],
                     "filing_date": filing["filing_date"],
-                    "profit_index": max((market_value / cost_value), 0.0001),
-                    "return_pct": round(return_pct, 2),
-                    "total_value_usd": round(total_value, 2),
                     "holdings_count": holdings_count,
+                    "holdings": report_holdings,
                     "new_positions": new_positions[:8],
                 }
             )
 
         if not raw_points:
             continue
-        points = interpolated_institution_points(raw_points, trading_days, start_trade_date, final_date, initial_value)
+        points = daily_institution_points(raw_points, price_index, trading_days, start_trade_date, final_date, initial_value)
         if not points:
             continue
 
