@@ -1,6 +1,6 @@
 {{ define "main" }}
 {{ partial "topbar.html" . }}
-{{ $stock := index site.Data.stockhunt.stocks .Params.symbol }}
+{{ $stock := index hugo.Data.stockhunt.stocks .Params.symbol }}
 {{ if not $stock }}
   <main class="page-shell">
     <section class="panel">

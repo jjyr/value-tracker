@@ -1,5 +1,5 @@
 baseURL = "https://jjylab.com/value-tracker/"
-languageCode = "zh-CN"
+locale = "zh-CN"
 title = "价值追踪"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap", "robotsTXT"]
 

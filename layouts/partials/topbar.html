@@ -1,5 +1,5 @@
-{{ $build := site.Data.stockhunt.build }}
-{{ $sim := site.Data.stockhunt.simulation }}
+{{ $build := hugo.Data.stockhunt.build }}
+{{ $sim := hugo.Data.stockhunt.simulation }}
 {{ $snapshotDate := $build.market_data_date | default $build.data_date | default "--" }}
 {{ $simulationDate := $sim.meta.end_date | default $snapshotDate }}
 {{ $siteBuiltAt := now.Format "2006-01-02T15:04:05Z07:00" }}

@@ -1,5 +1,5 @@
 {{ define "main" }}
-{{ $data := site.Data.stockhunt }}
+{{ $data := hugo.Data.stockhunt }}
 {{ $sim := $data.simulation }}
 {{ $isHistorical := eq $sim.meta.mode "historical_weekly_rebalance" }}
 {{ $dailyReturnPct := default 0 $sim.summary.daily_return_pct }}

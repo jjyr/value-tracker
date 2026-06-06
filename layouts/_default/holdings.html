@@ -1,5 +1,5 @@
 {{ define "main" }}
-{{ $data := site.Data.stockhunt }}
+{{ $data := hugo.Data.stockhunt }}
 {{ $periods := $data.holding_periods }}
 {{ if not $periods }}
   {{ $periods = slice (dict "key" "current" "period_label" "" "rankings" $data.rankings) }}

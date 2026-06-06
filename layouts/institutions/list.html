@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ partial "topbar.html" . }}
-{{ $institutions := site.Data.stockhunt.institutions }}
-{{ $order := site.Data.stockhunt.tracked_institution_order }}
+{{ $institutions := hugo.Data.stockhunt.institutions }}
+{{ $order := hugo.Data.stockhunt.tracked_institution_order }}
 <main class="page-shell">
   <section class="directory-hero">
     <div>
