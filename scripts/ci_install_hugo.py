@@ -13,7 +13,7 @@ import tempfile
 import urllib.request
 
 
-DEFAULT_VERSION = "0.156.0"
+DEFAULT_VERSION = "0.162.1"
 
 
 def asset_name(version: str) -> str:
