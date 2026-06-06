@@ -1,4 +1,8 @@
 {{ $build := site.Data.stockhunt.build }}
+{{ $sim := site.Data.stockhunt.simulation }}
+{{ $snapshotDate := $build.market_data_date | default $build.data_date | default "--" }}
+{{ $simulationDate := $sim.meta.end_date | default $snapshotDate }}
+{{ $siteBuiltAt := now.Format "2006-01-02T15:04:05Z07:00" }}
 <header class="topbar">
   <div class="topbar-primary">
     <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="价值追踪 首页">
@@ -15,8 +19,9 @@
   </div>
   <div class="topbar-meta" aria-label="数据状态">
     <span class="status-pill status-{{ lower ($build.status | default "unknown") }}">{{ $build.status | default "--" }}</span>
-    <span>数据 {{ $build.data_date | default "--" }}</span>
     <span>13F {{ $build.latest_13f_report_period | default "--" }}</span>
-    <span>构建 {{ $build.built_at | default "--" }}</span>
+    <span>快照 {{ $snapshotDate }}</span>
+    <span>模拟截至 {{ $simulationDate }}</span>
+    <span>生成 {{ $siteBuiltAt }}</span>
   </div>
 </header>

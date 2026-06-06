@@ -826,9 +826,12 @@ def build_institutions(config: Dict[str, Any], rows: List[Dict[str, Any]]) -> Di
 def build_metadata(config: Dict[str, Any], snapshot: Dict[str, Any]) -> Dict[str, Any]:
     build = snapshot.get("build") or {}
     now = dt.datetime.now().astimezone().replace(microsecond=0).isoformat()
+    snapshot_built_at = build.get("built_at") or now
     return {
         "build_id": build.get("build_id") or re.sub(r"[-:+T]", "", now)[:14],
-        "built_at": build.get("built_at") or now,
+        "built_at": now,
+        "generated_at": now,
+        "snapshot_built_at": snapshot_built_at,
         "data_date": snapshot.get("data_date"),
         "market_data_date": snapshot.get("market_data_date") or snapshot.get("data_date"),
         "latest_13f_report_period": snapshot.get("latest_13f_report_period"),
