@@ -2,7 +2,14 @@
 {{ $data := hugo.Data.stockhunt }}
 {{ $sim := $data.simulation }}
 {{ $isHistorical := eq $sim.meta.mode "historical_weekly_rebalance" }}
-{{ $dailyReturnPct := default 0 $sim.summary.daily_return_pct }}
+{{ $metricItems := slice
+  (dict "label" "今日" "value" (default 0 $sim.summary.daily_return_pct) "spy" (default 0 $sim.summary.daily_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.daily_excess_vs_qqq_pct) "drawdown" false)
+  (dict "label" "本月" "value" (default 0 $sim.summary.monthly_return_pct) "spy" (default 0 $sim.summary.monthly_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.monthly_excess_vs_qqq_pct) "drawdown" false)
+  (dict "label" "3 个月" "value" (default 0 $sim.summary.three_month_return_pct) "spy" (default 0 $sim.summary.three_month_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.three_month_excess_vs_qqq_pct) "drawdown" false)
+  (dict "label" "6 个月" "value" (default 0 $sim.summary.six_month_return_pct) "spy" (default 0 $sim.summary.six_month_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.six_month_excess_vs_qqq_pct) "drawdown" false)
+  (dict "label" "YTD" "value" (default 0 $sim.summary.ytd_return_pct) "spy" (default 0 $sim.summary.ytd_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.ytd_excess_vs_qqq_pct) "drawdown" false)
+  (dict "label" "最大回撤" "value" (default 0 $sim.summary.max_drawdown_pct) "spy" (default 0 $sim.summary.max_drawdown_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.max_drawdown_excess_vs_qqq_pct) "drawdown" true)
+}}
 {{ partial "topbar.html" . }}
 
 <main class="page-shell">
@@ -27,26 +34,17 @@
       <div class="hero-value" data-money="{{ $sim.summary.current_value }}">--</div>
       <div class="hero-change {{ if lt $sim.summary.total_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.total_return_pct }} 累计</div>
       <div class="metric-grid">
-        <div>
-          <span>今日</span>
-          <strong class="{{ if lt $dailyReturnPct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $dailyReturnPct }}</strong>
-        </div>
-        <div>
-          <span>本周</span>
-          <strong class="{{ if lt $sim.summary.weekly_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.weekly_return_pct }}</strong>
-        </div>
-        <div>
-          <span>YTD</span>
-          <strong class="{{ if lt $sim.summary.ytd_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.ytd_return_pct }}</strong>
-        </div>
-        <div>
-          <span>最大回撤</span>
-          <strong class="negative">{{ printf "%.1f%%" $sim.summary.max_drawdown_pct }}</strong>
-        </div>
-      </div>
-      <div class="benchmark-row">
-        <span>vs SPY <strong class="{{ if lt $sim.summary.excess_vs_spy_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.excess_vs_spy_pct }}</strong></span>
-        <span>vs QQQ <strong class="{{ if lt $sim.summary.excess_vs_qqq_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.excess_vs_qqq_pct }}</strong></span>
+        {{ range $metricItems }}
+          {{ $value := float .value }}
+          {{ $spy := float .spy }}
+          {{ $qqq := float .qqq }}
+          <div class="metric-card">
+            <span class="metric-label">{{ .label }}</span>
+            <strong class="{{ if lt $value 0.0 }}negative{{ else }}positive{{ end }}">{{ if .drawdown }}{{ printf "%.1f%%" $value }}{{ else }}{{ printf "%+.1f%%" $value }}{{ end }}</strong>
+            <small class="metric-benchmark">vs SPY <b class="{{ if lt $spy 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $spy }}</b></small>
+            <small class="metric-benchmark">vs QQQ <b class="{{ if lt $qqq 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $qqq }}</b></small>
+          </div>
+        {{ end }}
       </div>
     </div>
 
@@ -58,38 +56,6 @@
       "range" "ytd"
       "ariaLabel" "模拟盘与重点机构收益曲线"
     ) }}
-
-    <div class="panel rebalance-panel">
-      <p class="eyebrow">最近调仓</p>
-      <h2>{{ $sim.meta.last_rebalance_date }}</h2>
-      <div class="rebalance-stats">
-        <span>候选 {{ $sim.summary.candidates_count }}</span>
-        <span>持仓 {{ $sim.summary.positions_count }}</span>
-        <span>下次 {{ $sim.meta.next_rebalance_date }}</span>
-      </div>
-      {{ with index $sim.rebalance_history 0 }}
-        <div class="action-list">
-          <h3>买入</h3>
-          {{ range .buys }}
-            {{ $isInitial := eq .action "initial-buy" }}
-            <a class="action-card buy {{ if $isInitial }}initial-buy{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
-              <strong>{{ if $isInitial }}首次买入{{ else }}买入{{ end }} {{ .symbol }}</strong>
-              <span>{{ .reason }}</span>
-              <span><b data-money="{{ .buy_value_usd }}">--</b> · ${{ printf "%.2f" .buy_price }} · <em class="trade-pct buy">买入 {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
-            </a>
-          {{ end }}
-          <h3>卖出</h3>
-          {{ range .sells }}
-            {{ $isExit := eq .action "exit" }}
-            <a class="action-card sell {{ if $isExit }}exit{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
-              <strong>{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ .symbol }}</strong>
-              <span>{{ .reason }}</span>
-              <span><b data-money="{{ .sell_value_usd }}">--</b> · ${{ printf "%.2f" .sell_price }} · <em class="trade-pct sell">{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
-            </a>
-          {{ end }}
-        </div>
-      {{ end }}
-    </div>
   </section>
 
   <section class="panel">

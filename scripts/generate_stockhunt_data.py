@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import calendar
 import copy
 import datetime as dt
 import math
@@ -41,6 +42,93 @@ def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
 
 def slugify_symbol(symbol: str) -> str:
     return symbol.lower().replace(".", "-")
+
+
+def parse_date(value: Any) -> dt.date:
+    if isinstance(value, dt.date):
+        return value
+    return dt.date.fromisoformat(str(value)[:10])
+
+
+def percent_change(current: Optional[float], previous: Optional[float]) -> float:
+    if previous in (None, 0) or current is None:
+        return 0.0
+    return (current - previous) / previous * 100
+
+
+def max_drawdown_pct(values: List[float]) -> float:
+    peak = 0.0
+    max_drawdown = 0.0
+    for value in values:
+        peak = max(peak, value)
+        if peak:
+            max_drawdown = min(max_drawdown, (value - peak) / peak * 100)
+    return max_drawdown
+
+
+def subtract_months(date: dt.date, months: int) -> dt.date:
+    month_index = date.month - months - 1
+    year = date.year + month_index // 12
+    month = month_index % 12 + 1
+    day = min(date.day, calendar.monthrange(year, month)[1])
+    return dt.date(year, month, day)
+
+
+def curve_point_on_or_before(curve: List[Dict[str, Any]], date: dt.date) -> Optional[Dict[str, Any]]:
+    point = None
+    for candidate in curve:
+        if parse_date(candidate.get("date")) <= date:
+            point = candidate
+        else:
+            break
+    return point
+
+
+def point_value(point: Optional[Dict[str, Any]], key: str) -> Optional[float]:
+    if not point or point.get(key) in (None, ""):
+        return None
+    return float(point[key])
+
+
+def simulation_performance_summary(curve: List[Dict[str, Any]]) -> Dict[str, float]:
+    if not curve:
+        return {}
+    current = curve[-1]
+    final_date = parse_date(current["date"])
+    periods = {
+        "daily": final_date - dt.timedelta(days=1),
+        "monthly": dt.date(final_date.year, final_date.month, 1),
+        "three_month": subtract_months(final_date, 3),
+        "six_month": subtract_months(final_date, 6),
+        "ytd": dt.date(final_date.year, 1, 1),
+    }
+    summary: Dict[str, float] = {}
+    for key, start_date in periods.items():
+        previous = curve_point_on_or_before(curve, start_date)
+        portfolio_return = percent_change(point_value(current, "value"), point_value(previous, "value"))
+        spy_return = percent_change(point_value(current, "spy_value"), point_value(previous, "spy_value"))
+        qqq_return = percent_change(point_value(current, "qqq_value"), point_value(previous, "qqq_value"))
+        summary[f"{key}_return_pct"] = round(portfolio_return, 2)
+        summary[f"{key}_spy_return_pct"] = round(spy_return, 2)
+        summary[f"{key}_qqq_return_pct"] = round(qqq_return, 2)
+        summary[f"{key}_excess_vs_spy_pct"] = round(portfolio_return - spy_return, 2)
+        summary[f"{key}_excess_vs_qqq_pct"] = round(portfolio_return - qqq_return, 2)
+
+    portfolio_drawdown = max_drawdown_pct([float(point["value"]) for point in curve if point.get("value") is not None])
+    spy_drawdown = max_drawdown_pct([float(point["spy_value"]) for point in curve if point.get("spy_value") is not None])
+    qqq_drawdown = max_drawdown_pct([float(point["qqq_value"]) for point in curve if point.get("qqq_value") is not None])
+    summary["max_drawdown_pct"] = round(portfolio_drawdown, 2)
+    summary["spy_max_drawdown_pct"] = round(spy_drawdown, 2)
+    summary["qqq_max_drawdown_pct"] = round(qqq_drawdown, 2)
+    summary["max_drawdown_excess_vs_spy_pct"] = round(portfolio_drawdown - spy_drawdown, 2)
+    summary["max_drawdown_excess_vs_qqq_pct"] = round(portfolio_drawdown - qqq_drawdown, 2)
+    return summary
+
+
+def enrich_simulation_summary(simulation: Dict[str, Any]) -> Dict[str, Any]:
+    summary = simulation.setdefault("summary", {})
+    summary.update(simulation_performance_summary(simulation.get("equity_curve") or []))
+    return simulation
 
 
 def content_title(value: str) -> str:
@@ -1410,7 +1498,9 @@ def build_hugo_data(
         for manager in enabled_managers(config)
         if normalize_cik(manager.get("cik")) in institutions
     ]
-    simulation = snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
+    simulation = enrich_simulation_summary(
+        snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
+    )
     current_rankings = holding_rankings_for_rows(ranking_rows, period_label)
     current_period = {
         "key": "quarter",

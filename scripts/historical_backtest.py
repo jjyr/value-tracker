@@ -1401,12 +1401,11 @@ def run_simulation(
         )
     current_value = curve[-1]["value"] if curve else initial_value
     final_date = parse_date(curve[-1]["date"]) if curve else end_date
-    previous_value = curve[-2]["value"] if len(curve) > 1 else current_value
     one_week_value = point_value_on_or_before(curve, final_date - dt.timedelta(days=7))
-    ytd_value = point_value_on_or_before(curve, dt.date(final_date.year, 1, 1))
     spy_return = percent_change(curve[-1]["spy_value"], curve[0]["spy_value"]) if curve else 0
     qqq_return = percent_change(curve[-1]["qqq_value"], curve[0]["qqq_value"]) if curve else 0
     total_return = percent_change(current_value, initial_value)
+    performance_summary = hugo_data.simulation_performance_summary(curve)
     key_institution_curves = build_key_institution_curves(
         config,
         filings_by_cik,
@@ -1474,10 +1473,8 @@ def run_simulation(
             "cash_value": round(cash, 2),
             "cash_weight_pct": round(cash / current_value * 100, 2) if current_value else 0,
             "total_return_pct": round(total_return, 2),
-            "daily_return_pct": round(percent_change(current_value, previous_value), 2),
             "weekly_return_pct": round(percent_change(current_value, one_week_value), 2),
-            "ytd_return_pct": round(percent_change(current_value, ytd_value), 2),
-            "max_drawdown_pct": round(max_drawdown_pct([point["value"] for point in curve]), 2),
+            **performance_summary,
             "spy_return_pct": round(spy_return, 2),
             "qqq_return_pct": round(qqq_return, 2),
             "excess_vs_spy_pct": round(total_return - spy_return, 2),

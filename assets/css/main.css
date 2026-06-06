@@ -190,7 +190,7 @@ button {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(280px, 0.92fr) minmax(420px, 1.7fr) minmax(280px, 0.9fr);
+  grid-template-columns: minmax(340px, 0.92fr) minmax(520px, 1.6fr);
   gap: var(--grid-gap);
   align-items: stretch;
   scroll-margin-top: 96px;
@@ -268,7 +268,6 @@ button {
   position: relative;
 }
 
-.hero-panel .benchmark-row,
 .chart-panel .legend {
   margin-top: auto;
 }
@@ -372,6 +371,22 @@ h3 {
 .metric-grid strong,
 .stat-list strong {
   font-size: 18px;
+}
+
+.metric-benchmark {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+  color: var(--muted-2);
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.metric-benchmark b {
+  font-size: 11px;
+  font-weight: 760;
 }
 
 .benchmark-row,
@@ -2172,9 +2187,12 @@ button.tip-trigger,
     width: 100%;
   }
 
-  .metric-grid,
   .stat-list {
     grid-template-columns: 1fr;
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .timeline-item {
@@ -2196,5 +2214,11 @@ button.tip-trigger,
     width: auto;
     margin: 8px;
     transform: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .metric-grid {
+    grid-template-columns: 1fr;
   }
 }
