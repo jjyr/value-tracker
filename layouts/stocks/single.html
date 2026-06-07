@@ -9,6 +9,11 @@
     </section>
   </main>
 {{ else }}
+  {{ $googleSymbol := replaceRE "\\.US$" "" $stock.symbol }}
+  {{ $googleExchange := cond (eq $stock.exchange "NASD") "NASDAQ" $stock.exchange }}
+  {{ $googleFinanceURL := printf "https://www.google.com/finance/beta/quote/%s:%s" $googleSymbol $googleExchange }}
+  {{ $yahooSymbol := replace $googleSymbol "." "-" }}
+  {{ $yahooFinanceURL := printf "https://finance.yahoo.com/quote/%s" $yahooSymbol }}
   <main class="page-shell detail-shell">
     <a class="back-link" href="{{ site.Home.RelPermalink }}">← 返回首页</a>
     <section class="detail-hero">
@@ -17,6 +22,10 @@
         <h1>{{ $stock.symbol }}</h1>
         <p>{{ $stock.company_name }} · {{ $stock.industry }}</p>
         {{ partial "tags.html" $stock.tags }}
+        <div class="detail-hero-links">
+          <a class="external-link" href="{{ $googleFinanceURL }}" target="_blank" rel="noopener noreferrer" aria-label="在 Google Finance 打开 {{ $stock.symbol }}">Google Finance</a>
+          <a class="external-link" href="{{ $yahooFinanceURL }}" target="_blank" rel="noopener noreferrer" aria-label="在 Yahoo Finance 打开 {{ $stock.symbol }}">Yahoo Finance</a>
+        </div>
       </div>
       <div class="quote-card">
         <span>当前价格</span>
@@ -85,6 +94,7 @@
             <tr>
               <th>机构</th>
               <th>状态</th>
+              <th>报告价</th>
               <th>变动金额</th>
               <th>当前持有</th>
               <th>组合权重</th>
@@ -93,6 +103,31 @@
           </thead>
           <tbody>
             {{ range $stock.managers }}
+              {{ $status := .status | default "" }}
+              {{ $statusLabel := "--" }}
+              {{ if or (eq $status "new_position") (eq $status "unknown_previous") }}{{ $statusLabel = "新建仓" }}{{ end }}
+              {{ if eq $status "added" }}{{ $statusLabel = "增持" }}{{ end }}
+              {{ if eq $status "reduced" }}{{ $statusLabel = "减持" }}{{ end }}
+              {{ if eq $status "exited" }}{{ $statusLabel = "清仓" }}{{ end }}
+              {{ if eq $status "unchanged" }}{{ $statusLabel = "持有" }}{{ end }}
+              {{ $badgeTone := "holding" }}
+              {{ if or (eq $status "new_position") (eq $status "unknown_previous") (eq $status "added") }}{{ $badgeTone = "buying" }}{{ else if or (eq $status "reduced") (eq $status "exited") }}{{ $badgeTone = "selling" }}{{ end }}
+              {{ $currentShares := float (.current_shares | default 0) }}
+              {{ $currentValue := float (.current_value_usd | default 0) }}
+              {{ $changeShares := float (.change_shares | default 0) }}
+              {{ $changeValue := float (.change_value_usd | default 0) }}
+              {{ $absChangeShares := $changeShares }}
+              {{ if lt $absChangeShares 0.0 }}{{ $absChangeShares = mul $absChangeShares -1 }}{{ end }}
+              {{ $absChangeValue := $changeValue }}
+              {{ if lt $absChangeValue 0.0 }}{{ $absChangeValue = mul $absChangeValue -1 }}{{ end }}
+              {{ $tradeReportPrice := 0.0 }}
+              {{ if and (or (eq $status "new_position") (eq $status "unknown_previous")) (gt $currentShares 0.0) (gt $currentValue 0.0) }}
+                {{ $tradeReportPrice = div $currentValue $currentShares }}
+              {{ else if and (or (eq $status "added") (eq $status "reduced") (eq $status "exited")) (gt $absChangeShares 0.0) (gt $absChangeValue 0.0) }}
+                {{ $tradeReportPrice = div $absChangeValue $absChangeShares }}
+              {{ else if and (gt $currentShares 0.0) (gt $currentValue 0.0) }}
+                {{ $tradeReportPrice = div $currentValue $currentShares }}
+              {{ end }}
               <tr>
                 <td>
                   <a class="stock-link" href="{{ .href | replaceRE "^/" "" | relURL }}">
@@ -100,7 +135,8 @@
                     <span>{{ .name }}</span>
                   </a>
                 </td>
-                <td><span class="status-chip">{{ .status }}</span></td>
+                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ $statusLabel }}</span></td>
+                <td>{{ if gt $tradeReportPrice 0.0 }}${{ printf "%.2f" $tradeReportPrice }}{{ else }}--{{ end }}</td>
                 <td><span data-money="{{ .change_value_usd }}">--</span></td>
                 <td><span data-money="{{ .current_value_usd }}">--</span></td>
                 <td>{{ printf "%.2f%%" .portfolio_weight_pct }}</td>

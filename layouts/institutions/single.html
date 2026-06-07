@@ -20,7 +20,7 @@
       </div>
     </section>
 
-    <section class="detail-grid">
+    <section class="dashboard-grid institution-summary-grid">
       <div class="panel">
         <div class="panel-heading compact">
           <div>
@@ -37,43 +37,17 @@
         </div>
       </div>
 
-      <div class="panel">
-        <div class="panel-heading compact">
-          <div>
-            <p class="eyebrow">Recent Activity</p>
-            <h2>最近变动</h2>
-          </div>
-        </div>
-        <div class="action-list">
-          {{ range first 5 $institution.recent_changes }}
-            {{ $badgeTone := "holding" }}
-            {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
-            <a class="action-card {{ if eq .status_tone "sell" }}sell{{ else }}buy{{ end }}" href="{{ printf "stocks/%s/" .slug | relURL }}">
-              <strong>{{ .status_label }} {{ .symbol }}</strong>
-              <span>{{ .company_name }}</span>
-              <span>
-                <b data-money="{{ .change_value_usd }}">--</b>
-                {{ if gt .trade_report_price 0.0 }} · 报告价 ${{ printf "%.2f" .trade_report_price }}{{ end }}
-                · <em class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</em>
-              </span>
-            </a>
-          {{ else }}
-            <p class="muted">本期没有明显变动。</p>
-          {{ end }}
-        </div>
-      </div>
+      {{ with $historicalCurve }}
+        {{ partial "equity-chart.html" (dict
+          "eyebrow" "13F Curve"
+          "title" (printf "%s vs SPY / QQQ" $institution.display_name)
+          "points" .benchmark_curve
+          "series" .chart_series
+          "range" "all"
+          "ariaLabel" (printf "%s 13F 持仓收益曲线" $institution.display_name)
+        ) }}
+      {{ end }}
     </section>
-
-    {{ with $historicalCurve }}
-      {{ partial "equity-chart.html" (dict
-        "eyebrow" "13F Curve"
-        "title" (printf "%s vs SPY / QQQ" $institution.display_name)
-        "points" .benchmark_curve
-        "series" .chart_series
-        "range" "all"
-        "ariaLabel" (printf "%s 13F 持仓收益曲线" $institution.display_name)
-      ) }}
-    {{ end }}
 
     <section class="panel">
       <div class="panel-heading">

@@ -350,8 +350,8 @@ h3 {
   align-content: start;
 }
 
-.metric-grid div,
-.stat-list div {
+.metric-grid > div,
+.stat-list > div {
   min-width: 0;
   padding: 12px;
   border: 1px solid var(--line);
@@ -360,16 +360,16 @@ h3 {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-.metric-grid span,
-.stat-list span {
+.metric-grid > div > span,
+.stat-list > div > span {
   display: block;
   margin-bottom: 8px;
   color: var(--muted);
   font-size: 12px;
 }
 
-.metric-grid strong,
-.stat-list strong {
+.metric-grid > div > strong,
+.stat-list > div > strong {
   font-size: 18px;
 }
 
@@ -1751,7 +1751,6 @@ button.tip-trigger,
 .institution-card-section {
   display: grid;
   gap: 8px;
-  margin-top: auto;
 }
 
 .institution-card-section h3 {
@@ -1942,6 +1941,42 @@ button.tip-trigger,
 
 .detail-hero p {
   color: var(--muted);
+}
+
+.detail-hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: max-content;
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(103, 212, 255, 0.075);
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 780;
+  line-height: 1;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.external-link::after {
+  content: "↗";
+  color: rgba(103, 212, 255, 0.78);
+  font-size: 11px;
+}
+
+.external-link:hover,
+.external-link:focus-visible {
+  border-color: rgba(103, 212, 255, 0.48);
+  background: rgba(103, 212, 255, 0.12);
 }
 
 .quote-card {

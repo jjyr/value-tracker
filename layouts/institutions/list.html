@@ -43,22 +43,6 @@
           </div>
         </div>
         <div class="institution-card-section">
-          <h3>最近变动</h3>
-          <div class="institution-activity-list">
-            {{ range first 4 .recent_changes }}
-              {{ $badgeTone := "holding" }}
-              {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
-              <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relURL }}">
-                <span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span>
-                <strong>{{ .symbol }}</strong>
-                <em data-money="{{ .change_value_usd }}">--</em>
-              </a>
-            {{ else }}
-              <span class="muted">本期没有明显变动。</span>
-            {{ end }}
-          </div>
-        </div>
-        <div class="institution-card-section">
           <h3>Top 10 持仓</h3>
           <div class="institution-holding-list">
             {{ range first 10 .holdings }}
@@ -81,6 +65,22 @@
               </a>
             {{ else }}
               <span class="muted">暂无持仓。</span>
+            {{ end }}
+          </div>
+        </div>
+        <div class="institution-card-section">
+          <h3>最近变动</h3>
+          <div class="institution-activity-list">
+            {{ range first 50 .recent_changes }}
+              {{ $badgeTone := "holding" }}
+              {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+              <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relURL }}">
+                <span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span>
+                <strong>{{ .symbol }}</strong>
+                <em data-money="{{ .change_value_usd }}">--</em>
+              </a>
+            {{ else }}
+              <span class="muted">本期没有明显变动。</span>
             {{ end }}
           </div>
         </div>
