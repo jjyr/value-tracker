@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Restore the Longbridge CLI OAuth token from GitHub Actions secrets."""
+"""Restore Longbridge CLI auth from GitHub Actions secrets."""
 
 from __future__ import annotations
 
@@ -16,29 +16,54 @@ def required_env(name: str) -> str:
     return value
 
 
+def decode_secret(name: str, value: str) -> bytes:
+    try:
+        decoded = base64.b64decode(value.encode("ascii"), validate=True)
+    except Exception as exc:  # noqa: BLE001
+        raise SystemExit(f"failed to decode {name}: {exc}") from exc
+    if not decoded:
+        raise SystemExit(f"decoded {name} is empty")
+    return decoded
+
+
 def safe_token_name(value: str) -> str:
     if "/" in value or "\\" in value or value in {".", ".."}:
         raise SystemExit("LONGBRIDGE_CLIENT_ID must be a token filename, not a path")
     return value
 
 
-def main() -> None:
-    client_id = safe_token_name(required_env("LONGBRIDGE_CLIENT_ID"))
-    encoded = required_env("LONGBRIDGE_TOKEN_FILE_B64")
-    try:
-        token_bytes = base64.b64decode(encoded.encode("ascii"), validate=True)
-    except Exception as exc:  # noqa: BLE001
-        raise SystemExit(f"failed to decode LONGBRIDGE_TOKEN_FILE_B64: {exc}") from exc
-    if not token_bytes:
-        raise SystemExit("decoded Longbridge token file is empty")
+def openapi_dir() -> pathlib.Path:
+    auth_dir = pathlib.Path.home() / ".longbridge/openapi"
+    auth_dir.mkdir(parents=True, exist_ok=True)
+    auth_dir.chmod(0o700)
+    return auth_dir
 
+
+def restore_cli_auth(encoded: str) -> None:
+    auth_path = openapi_dir() / "cli-auth"
+    auth_path.write_bytes(decode_secret("LONGBRIDGE_CLI_AUTH_B64", encoded))
+    auth_path.chmod(stat.S_IRUSR | stat.S_IWUSR)
+    print(f"restored Longbridge CLI auth file: {auth_path}")
+
+
+def restore_legacy_token() -> None:
+    client_id = safe_token_name(required_env("LONGBRIDGE_CLIENT_ID"))
+    token_bytes = decode_secret("LONGBRIDGE_TOKEN_FILE_B64", required_env("LONGBRIDGE_TOKEN_FILE_B64"))
     token_dir = pathlib.Path.home() / ".longbridge/openapi/tokens"
     token_dir.mkdir(parents=True, exist_ok=True)
     token_dir.chmod(0o700)
     token_path = token_dir / client_id
     token_path.write_bytes(token_bytes)
     token_path.chmod(stat.S_IRUSR | stat.S_IWUSR)
-    print(f"restored Longbridge token file: {token_path}")
+    print(f"restored legacy Longbridge token file: {token_path}")
+
+
+def main() -> None:
+    cli_auth = os.environ.get("LONGBRIDGE_CLI_AUTH_B64", "").strip()
+    if cli_auth:
+        restore_cli_auth(cli_auth)
+        return
+    restore_legacy_token()
 
 
 if __name__ == "__main__":

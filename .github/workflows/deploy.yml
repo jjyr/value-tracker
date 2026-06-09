@@ -47,7 +47,7 @@ jobs:
           echo "$RUNNER_TEMP/hugo-bin" >> "$GITHUB_PATH"
 
       - name: Check scripts
-        run: uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py scripts/ci_install_hugo.py scripts/ci_restore_longbridge_token.py scripts/ci_run_data_job.py
+        run: uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py scripts/ci_install_hugo.py scripts/ci_restore_longbridge_token.py scripts/ci_check_longbridge_auth.py scripts/ci_run_data_job.py
 
       - name: Build site
         run: uv run build
