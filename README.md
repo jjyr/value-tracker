@@ -135,10 +135,12 @@ LONGBRIDGE_CLIENT_ID
 LONGBRIDGE_TOKEN_FILE_B64
 ```
 
-CI 需要 SDK OAuth token 文件，不要使用 `longbridge auth login` 生成的 `cli-auth`。生成 token 文件：
+CI 需要 SDK OAuth token 文件，不要使用 `longbridge auth login` 生成的 `cli-auth`。详细更新流程见 [docs/ci-longbridge-token.md](docs/ci-longbridge-token.md)。
+
+快速生成 token 文件：
 
 ```bash
-CLIENT_ID="<registered-oauth-client-id>"
+CLIENT_ID="fd52fbc5-02a9-47f5-ad30-0842c841aae9"
 uv run --with longbridge python -c 'from longbridge.openapi import OAuthBuilder; import webbrowser; OAuthBuilder("'$CLIENT_ID'").build(webbrowser.open)'
 ```
 
