@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Restore Longbridge CLI auth from GitHub Actions secrets."""
+"""Restore the Longbridge SDK OAuth token from GitHub Actions secrets."""
 
 from __future__ import annotations
 
@@ -32,21 +32,7 @@ def safe_token_name(value: str) -> str:
     return value
 
 
-def openapi_dir() -> pathlib.Path:
-    auth_dir = pathlib.Path.home() / ".longbridge/openapi"
-    auth_dir.mkdir(parents=True, exist_ok=True)
-    auth_dir.chmod(0o700)
-    return auth_dir
-
-
-def restore_cli_auth(encoded: str) -> None:
-    auth_path = openapi_dir() / "cli-auth"
-    auth_path.write_bytes(decode_secret("LONGBRIDGE_CLI_AUTH_B64", encoded))
-    auth_path.chmod(stat.S_IRUSR | stat.S_IWUSR)
-    print(f"restored Longbridge CLI auth file: {auth_path}")
-
-
-def restore_legacy_token() -> None:
+def main() -> None:
     client_id = safe_token_name(required_env("LONGBRIDGE_CLIENT_ID"))
     token_bytes = decode_secret("LONGBRIDGE_TOKEN_FILE_B64", required_env("LONGBRIDGE_TOKEN_FILE_B64"))
     token_dir = pathlib.Path.home() / ".longbridge/openapi/tokens"
@@ -55,15 +41,7 @@ def restore_legacy_token() -> None:
     token_path = token_dir / client_id
     token_path.write_bytes(token_bytes)
     token_path.chmod(stat.S_IRUSR | stat.S_IWUSR)
-    print(f"restored legacy Longbridge token file: {token_path}")
-
-
-def main() -> None:
-    cli_auth = os.environ.get("LONGBRIDGE_CLI_AUTH_B64", "").strip()
-    if cli_auth:
-        restore_cli_auth(cli_auth)
-        return
-    restore_legacy_token()
+    print(f"restored Longbridge token file: {token_path}")
 
 
 if __name__ == "__main__":

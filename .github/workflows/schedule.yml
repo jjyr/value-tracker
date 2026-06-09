@@ -86,7 +86,6 @@ jobs:
 
       - name: Restore Longbridge token
         env:
-          LONGBRIDGE_CLI_AUTH_B64: ${{ secrets.LONGBRIDGE_CLI_AUTH_B64 }}
           LONGBRIDGE_CLIENT_ID: ${{ secrets.LONGBRIDGE_CLIENT_ID }}
           LONGBRIDGE_TOKEN_FILE_B64: ${{ secrets.LONGBRIDGE_TOKEN_FILE_B64 }}
         run: python scripts/ci_restore_longbridge_token.py

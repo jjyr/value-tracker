@@ -131,22 +131,25 @@ Settings -> Pages -> Build and deployment -> Source: GitHub Actions
 定时数据任务需要 GitHub Secrets：
 
 ```text
-LONGBRIDGE_CLI_AUTH_B64
+LONGBRIDGE_CLIENT_ID
+LONGBRIDGE_TOKEN_FILE_B64
 ```
 
-本地登录 Longbridge 后，token 文件在：
+CI 需要 SDK OAuth token 文件，不要使用 `longbridge auth login` 生成的 `cli-auth`。生成 token 文件：
 
-```text
-~/.longbridge/openapi/cli-auth
+```bash
+CLIENT_ID="<registered-oauth-client-id>"
+uv run --with longbridge python -c 'from longbridge.openapi import OAuthBuilder; import webbrowser; OAuthBuilder("'$CLIENT_ID'").build(webbrowser.open)'
 ```
 
 生成 secrets：
 
 ```bash
-base64 -i "$HOME/.longbridge/openapi/cli-auth" | tr -d '\n'
+printf "%s" "$CLIENT_ID"
+base64 -i "$HOME/.longbridge/openapi/tokens/$CLIENT_ID" | tr -d '\n'
 ```
 
-把输出填入 `LONGBRIDGE_CLI_AUTH_B64`。
+把第一行输出填入 `LONGBRIDGE_CLIENT_ID`，第二行输出填入 `LONGBRIDGE_TOKEN_FILE_B64`。
 
 ### 首次部署
 
