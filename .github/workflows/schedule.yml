@@ -12,11 +12,6 @@ on:
           - daily
           - weekly
           - fetch-all
-  schedule:
-    # 09:30 Asia/Shanghai, Tue/Wed. Covers weekly rebalance and Monday US market holidays.
-    - cron: "30 1 * * 2,3"
-    # 09:30 Asia/Shanghai, Thu/Fri/Sat. Daily price/P&L refresh.
-    - cron: "30 1 * * 4-6"
 
 permissions:
   contents: write
