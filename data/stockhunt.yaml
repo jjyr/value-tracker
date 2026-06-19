@@ -1,7 +1,7 @@
 build:
   build_id: live-20260616091141
-  built_at: '2026-06-18T09:11:47+00:00'
-  generated_at: '2026-06-18T09:11:47+00:00'
+  built_at: '2026-06-19T09:11:03+00:00'
+  generated_at: '2026-06-19T09:11:03+00:00'
   snapshot_built_at: '2026-06-16T09:11:41+00:00'
   data_date: '2026-06-16'
   market_data_date: '2026-06-16'
@@ -18,7 +18,7 @@ simulation:
     strategy: institutional_signal_weekly
     mode: historical_weekly_rebalance
     start_date: '2024-01-01'
-    end_date: '2026-06-17'
+    end_date: '2026-06-18'
     lookback_trading_days: 21
     max_positions: 10
     weighting_method: key_institution_signal_score
@@ -31,45 +31,45 @@ simulation:
   summary:
     start_date: '2024-01-02'
     initial_value: 100000.0
-    current_value: 157385.49
+    current_value: 157336.23
     cash_value: 13548.28
     cash_weight_pct: 8.61
-    total_return_pct: 57.39
-    weekly_return_pct: 0.2
-    daily_return_pct: -1.64
-    daily_spy_return_pct: -1.25
-    daily_qqq_return_pct: -1.01
-    daily_excess_vs_spy_pct: -0.4
-    daily_excess_vs_qqq_pct: -0.64
-    monthly_return_pct: -4.39
-    monthly_spy_return_pct: -2.49
-    monthly_qqq_return_pct: -2.94
-    monthly_excess_vs_spy_pct: -1.91
-    monthly_excess_vs_qqq_pct: -1.45
-    three_month_return_pct: 5.08
-    three_month_spy_return_pct: 10.76
-    three_month_qqq_return_pct: 19.91
-    three_month_excess_vs_spy_pct: -5.68
-    three_month_excess_vs_qqq_pct: -14.83
-    six_month_return_pct: 8.8
-    six_month_spy_return_pct: 10.99
-    six_month_qqq_return_pct: 20.64
-    six_month_excess_vs_spy_pct: -2.19
-    six_month_excess_vs_qqq_pct: -11.84
-    ytd_return_pct: 10.9
-    ytd_spy_return_pct: 8.95
-    ytd_qqq_return_pct: 17.77
-    ytd_excess_vs_spy_pct: 1.95
-    ytd_excess_vs_qqq_pct: -6.86
+    total_return_pct: 57.34
+    weekly_return_pct: -0.53
+    daily_return_pct: -0.03
+    daily_spy_return_pct: 0.78
+    daily_qqq_return_pct: 2.51
+    daily_excess_vs_spy_pct: -0.81
+    daily_excess_vs_qqq_pct: -2.54
+    monthly_return_pct: -4.42
+    monthly_spy_return_pct: -1.73
+    monthly_qqq_return_pct: -0.51
+    monthly_excess_vs_spy_pct: -2.7
+    monthly_excess_vs_qqq_pct: -3.91
+    three_month_return_pct: 7.47
+    three_month_spy_return_pct: 13.2
+    three_month_qqq_return_pct: 24.66
+    three_month_excess_vs_spy_pct: -5.73
+    three_month_excess_vs_qqq_pct: -17.19
+    six_month_return_pct: 9.69
+    six_month_spy_return_pct: 11.02
+    six_month_qqq_return_pct: 21.9
+    six_month_excess_vs_spy_pct: -1.33
+    six_month_excess_vs_qqq_pct: -12.2
+    ytd_return_pct: 10.87
+    ytd_spy_return_pct: 9.8
+    ytd_qqq_return_pct: 20.72
+    ytd_excess_vs_spy_pct: 1.07
+    ytd_excess_vs_qqq_pct: -9.85
     max_drawdown_pct: -16.03
     spy_max_drawdown_pct: -18.75
     qqq_max_drawdown_pct: -22.77
     max_drawdown_excess_vs_spy_pct: 2.73
     max_drawdown_excess_vs_qqq_pct: 6.74
-    spy_return_pct: 61.08
-    qqq_return_pct: 81.68
-    excess_vs_spy_pct: -3.7
-    excess_vs_qqq_pct: -24.3
+    spy_return_pct: 62.34
+    qqq_return_pct: 86.24
+    excess_vs_spy_pct: -5.0
+    excess_vs_qqq_pct: -28.9
     candidates_count: 10
     positions_count: 10
   current_positions:
@@ -77,7 +77,7 @@ simulation:
     slug: pdd-us
     company_name: PDD Holdings Inc. ADR
     target_weight_pct: 14.79
-    actual_weight_pct: 14.26
+    actual_weight_pct: 14.21
     allocation_score: 92.5557
     allocation_components:
       key_new_position_score: 0
@@ -104,19 +104,19 @@ simulation:
       tip: 段永平：重点机构本期增持该股票。
     entry_date: '2026-02-17'
     entry_price: 94.8206
-    current_price: 79.86
-    return_pct: -15.78
+    current_price: 79.56
+    return_pct: -16.09
     institutional_avg_holding_price: 102.18
     latest_institutional_buy_price: 102.18
     discount_to_institutional_avg_pct: 18.23
     key_institution_bought: true
     shares: 281
-    market_value_usd: 22440.66
+    market_value_usd: 22356.36
   - symbol: BRK.B.US
     slug: brk-b-us
     company_name: Berkshire Hathaway Inc.
     target_weight_pct: 10.33
-    actual_weight_pct: 10.3
+    actual_weight_pct: 10.27
     allocation_score: 81.7841
     allocation_components:
       key_new_position_score: 0
@@ -142,19 +142,19 @@ simulation:
       tip: 段永平：重点机构本期增持该股票。
     entry_date: '2025-11-17'
     entry_price: 487.9686
-    current_price: 491.28
-    return_pct: 0.68
+    current_price: 489.46
+    return_pct: 0.31
     institutional_avg_holding_price: 479.2
     latest_institutional_buy_price: 479.2
     discount_to_institutional_avg_pct: -3.41
     key_institution_bought: true
     shares: 33
-    market_value_usd: 16212.24
+    market_value_usd: 16152.18
   - symbol: TSLA.US
     slug: tsla-us
     company_name: Tesla Inc.
     target_weight_pct: 10.16
-    actual_weight_pct: 9.32
+    actual_weight_pct: 9.42
     allocation_score: 86
     allocation_components:
       key_new_position_score: 30
@@ -176,19 +176,19 @@ simulation:
       tip: 段永平：重点机构本期新建仓该股票。
     entry_date: '2026-05-26'
     entry_price: 433.59
-    current_price: 396.38
-    return_pct: -8.58
+    current_price: 400.49
+    return_pct: -7.63
     institutional_avg_holding_price: 371.75
     latest_institutional_buy_price: 371.75
     discount_to_institutional_avg_pct: -10.6
     key_institution_bought: true
     shares: 37
-    market_value_usd: 14666.06
+    market_value_usd: 14818.13
   - symbol: CRCL.US
     slug: crcl-us
     company_name: Circle Internet Group Inc.
     target_weight_pct: 9.23
-    actual_weight_pct: 9.11
+    actual_weight_pct: 9.08
     allocation_score: 61.7631
     allocation_components:
       key_new_position_score: 30
@@ -211,19 +211,19 @@ simulation:
       tip: 段永平：重点机构本期新建仓该股票。
     entry_date: '2026-06-08'
     entry_price: 82.53
-    current_price: 80.59
-    return_pct: -2.35
+    current_price: 80.23
+    return_pct: -2.79
     institutional_avg_holding_price: 95.41
     latest_institutional_buy_price: 95.41
     discount_to_institutional_avg_pct: 12.62
     key_institution_bought: true
     shares: 178
-    market_value_usd: 14345.02
+    market_value_usd: 14280.94
   - symbol: MCO.US
     slug: mco-us
     company_name: Moody's Corp.
     target_weight_pct: 8.39
-    actual_weight_pct: 8.41
+    actual_weight_pct: 8.31
     allocation_score: 66.8409
     allocation_components:
       key_new_position_score: 30
@@ -249,19 +249,19 @@ simulation:
       tip: 伯克希尔：重点机构当前持有该股票。
     entry_date: '2026-05-18'
     entry_price: 443.41
-    current_price: 456.22
-    return_pct: 2.89
+    current_price: 450.67
+    return_pct: 1.64
     institutional_avg_holding_price: 436.25
     latest_institutional_buy_price: 436.25
     discount_to_institutional_avg_pct: -4.08
     key_institution_bought: true
     shares: 29
-    market_value_usd: 13230.38
+    market_value_usd: 13069.43
   - symbol: SPGI.US
     slug: spgi-us
     company_name: S&P Global Inc.
     target_weight_pct: 9.68
-    actual_weight_pct: 8.23
+    actual_weight_pct: 8.1
     allocation_score: 73.9108
     allocation_components:
       key_new_position_score: 30
@@ -284,19 +284,19 @@ simulation:
       tip: 李录：重点机构本期新建仓该股票。
     entry_date: '2026-05-18'
     entry_price: 416.45
-    current_price: 418.02
-    return_pct: 0.38
+    current_price: 410.92
+    return_pct: -1.33
     institutional_avg_holding_price: 425.34
     latest_institutional_buy_price: 425.34
     discount_to_institutional_avg_pct: 0.3
     key_institution_bought: true
     shares: 31
-    market_value_usd: 12958.62
+    market_value_usd: 12738.52
   - symbol: PLTR.US
     slug: pltr-us
     company_name: Palantir Technologies Inc.
     target_weight_pct: 8.7
-    actual_weight_pct: 8.22
+    actual_weight_pct: 8.08
     allocation_score: 61.351
     allocation_components:
       key_new_position_score: 30
@@ -319,19 +319,53 @@ simulation:
       tip: 段永平：重点机构本期新建仓该股票。
     entry_date: '2026-06-08'
     entry_price: 136.47
-    current_price: 130.63
-    return_pct: -4.28
+    current_price: 128.47
+    return_pct: -5.86
     institutional_avg_holding_price: 146.28
     latest_institutional_buy_price: 146.28
     discount_to_institutional_avg_pct: 7.91
     key_institution_bought: true
     shares: 99
-    market_value_usd: 12932.37
+    market_value_usd: 12718.53
+  - symbol: NVDA.US
+    slug: nvda-us
+    company_name: NVIDIA Corp.
+    target_weight_pct: 8.15
+    actual_weight_pct: 8.03
+    allocation_score: 76
+    allocation_components:
+      key_new_position_score: 0
+      key_added_score: 20
+      key_holding_score: 8
+      key_buy_intensity_score: 40.0
+      below_key_latest_buy_price_bonus: 0
+      multiple_key_institution_bonus: 8
+      key_reduced_penalty: 0
+      key_exit_penalty: 0
+    source_rankings:
+    - key_added
+    - key_holding
+    - key_buy_intensity
+    badges:
+    - label: 段永平
+      tone: key
+      href: institutions/0001759760/
+      tip: 段永平：重点机构本期增持该股票。
+    entry_date: '2026-02-17'
+    entry_price: 184.952
+    current_price: 210.69
+    return_pct: 13.92
+    institutional_avg_holding_price: 174.4
+    latest_institutional_buy_price: 174.4
+    discount_to_institutional_avg_pct: -21.82
+    key_institution_bought: true
+    shares: 60
+    market_value_usd: 12641.4
   - symbol: TME.US
     slug: tme-us
     company_name: Tencent Music Entertainment Group ADR
     target_weight_pct: 10.02
-    actual_weight_pct: 7.92
+    actual_weight_pct: 7.96
     allocation_score: 76.2849
     allocation_components:
       key_new_position_score: 30
@@ -354,19 +388,19 @@ simulation:
       tip: 李录：重点机构本期新建仓该股票。
     entry_date: '2026-05-18'
     entry_price: 9.06
-    current_price: 8.69
-    return_pct: -4.08
+    current_price: 8.73
+    return_pct: -3.64
     institutional_avg_holding_price: 9.28
     latest_institutional_buy_price: 9.28
     discount_to_institutional_avg_pct: 0.54
     key_institution_bought: true
     shares: 1434
-    market_value_usd: 12461.46
+    market_value_usd: 12518.82
   - symbol: GOOG.US
     slug: goog-us
     company_name: Alphabet Inc. Class C
     target_weight_pct: 10.54
-    actual_weight_pct: 7.82
+    actual_weight_pct: 7.94
     allocation_score: 103.2303
     allocation_components:
       key_new_position_score: 30
@@ -397,48 +431,14 @@ simulation:
       tip: 伯克希尔：重点机构本期新建仓该股票。
     entry_date: '2026-05-18'
     entry_price: 393.11
-    current_price: 362.1
-    return_pct: -7.89
+    current_price: 367.46
+    return_pct: -6.52
     institutional_avg_holding_price: 286.86
     latest_institutional_buy_price: 286.86
     discount_to_institutional_avg_pct: -27.98
     key_institution_bought: true
     shares: 34
-    market_value_usd: 12311.4
-  - symbol: NVDA.US
-    slug: nvda-us
-    company_name: NVIDIA Corp.
-    target_weight_pct: 8.15
-    actual_weight_pct: 7.8
-    allocation_score: 76
-    allocation_components:
-      key_new_position_score: 0
-      key_added_score: 20
-      key_holding_score: 8
-      key_buy_intensity_score: 40.0
-      below_key_latest_buy_price_bonus: 0
-      multiple_key_institution_bonus: 8
-      key_reduced_penalty: 0
-      key_exit_penalty: 0
-    source_rankings:
-    - key_added
-    - key_holding
-    - key_buy_intensity
-    badges:
-    - label: 段永平
-      tone: key
-      href: institutions/0001759760/
-      tip: 段永平：重点机构本期增持该股票。
-    entry_date: '2026-02-17'
-    entry_price: 184.952
-    current_price: 204.65
-    return_pct: 10.65
-    institutional_avg_holding_price: 174.4
-    latest_institutional_buy_price: 174.4
-    discount_to_institutional_avg_pct: -21.82
-    key_institution_bought: true
-    shares: 60
-    market_value_usd: 12279.0
+    market_value_usd: 12493.64
   equity_curve:
   - date: '2024-01-02'
     value: 100000.0
@@ -4759,6 +4759,13 @@ simulation:
     spy_return_pct: 61.08
     qqq_value: 181682.16
     qqq_return_pct: 81.68
+  - date: '2026-06-18'
+    value: 157336.23
+    return_pct: 57.34
+    spy_value: 162340.78
+    spy_return_pct: 62.34
+    qqq_value: 186236.1
+    qqq_return_pct: 86.24
   equity_chart_series:
   - key: value
     valueKey: return_pct
@@ -9782,6 +9789,14 @@ simulation:
       return_pct: 54.96
       book_return_pct: 93.45
       total_value_usd: 3596213964.59
+      holdings_count: 14
+    - date: '2026-06-18'
+      report_period: '2026-03-31'
+      filing_date: '2026-05-15'
+      value: 3610702433.11
+      return_pct: 55.59
+      book_return_pct: 94.23
+      total_value_usd: 3610702433.11
       holdings_count: 14
   - key: institution_0001759760
     valueKey: return_pct
@@ -14819,6 +14834,14 @@ simulation:
       return_pct: 1.35
       book_return_pct: 36.53
       total_value_usd: 21778358091.12
+      holdings_count: 19
+    - date: '2026-06-18'
+      report_period: '2026-03-31'
+      filing_date: '2026-05-19'
+      value: 21947460334.62
+      return_pct: 2.13
+      book_return_pct: 37.59
+      total_value_usd: 21947460334.62
       holdings_count: 19
   - key: institution_0001067983
     valueKey: return_pct
@@ -19954,6 +19977,14 @@ simulation:
       book_return_pct: 18.99
       total_value_usd: 286748308189.55
       holdings_count: 29
+    - date: '2026-06-18'
+      report_period: '2026-03-31'
+      filing_date: '2026-05-15'
+      value: 285356090521.75
+      return_pct: 17.34
+      book_return_pct: 18.41
+      total_value_usd: 285356090521.75
+      holdings_count: 29
   key_institution_curves:
     0001709323:
       cik: 0001709323
@@ -24962,6 +24993,14 @@ simulation:
           book_return_pct: 93.45
           total_value_usd: 3596213964.59
           holdings_count: 14
+        - date: '2026-06-18'
+          report_period: '2026-03-31'
+          filing_date: '2026-05-15'
+          value: 3610702433.11
+          return_pct: 55.59
+          book_return_pct: 94.23
+          total_value_usd: 3610702433.11
+          holdings_count: 14
       points:
       - date: '2024-01-02'
         report_period: '2023-12-31'
@@ -29959,6 +29998,14 @@ simulation:
         book_return_pct: 93.45
         total_value_usd: 3596213964.59
         holdings_count: 14
+      - date: '2026-06-18'
+        report_period: '2026-03-31'
+        filing_date: '2026-05-15'
+        value: 3610702433.11
+        return_pct: 55.59
+        book_return_pct: 94.23
+        total_value_usd: 3610702433.11
+        holdings_count: 14
       benchmark_curve:
       - date: '2024-01-02'
         spy_value: 100000.0
@@ -33045,6 +33092,11 @@ simulation:
         qqq_value: 181682.16
         spy_return_pct: 61.08
         qqq_return_pct: 81.68
+      - date: '2026-06-18'
+        spy_value: 162340.78
+        qqq_value: 186236.1
+        spy_return_pct: 62.34
+        qqq_return_pct: 86.24
       chart_series:
       - key: institution_0001709323
         valueKey: return_pct
@@ -38048,6 +38100,14 @@ simulation:
           book_return_pct: 93.45
           total_value_usd: 3596213964.59
           holdings_count: 14
+        - date: '2026-06-18'
+          report_period: '2026-03-31'
+          filing_date: '2026-05-15'
+          value: 3610702433.11
+          return_pct: 55.59
+          book_return_pct: 94.23
+          total_value_usd: 3610702433.11
+          holdings_count: 14
       - key: spy_value
         valueKey: spy_return_pct
         amountKey: spy_value
@@ -38064,11 +38124,11 @@ simulation:
         color: '#b69cff'
       summary:
         start_date: '2024-01-02'
-        end_date: '2026-06-17'
-        points_count: 617
-        latest_value: 3596213964.59
-        latest_return_pct: 54.96
-        latest_total_value_usd: 3596213964.59
+        end_date: '2026-06-18'
+        points_count: 618
+        latest_value: 3610702433.11
+        latest_return_pct: 55.59
+        latest_total_value_usd: 3610702433.11
     0001759760:
       cik: 0001759760
       slug: 0001759760
@@ -43111,6 +43171,14 @@ simulation:
           book_return_pct: 36.53
           total_value_usd: 21778358091.12
           holdings_count: 19
+        - date: '2026-06-18'
+          report_period: '2026-03-31'
+          filing_date: '2026-05-19'
+          value: 21947460334.62
+          return_pct: 2.13
+          book_return_pct: 37.59
+          total_value_usd: 21947460334.62
+          holdings_count: 19
       points:
       - date: '2024-01-02'
         report_period: '2023-12-31'
@@ -48143,6 +48211,14 @@ simulation:
         book_return_pct: 36.53
         total_value_usd: 21778358091.12
         holdings_count: 19
+      - date: '2026-06-18'
+        report_period: '2026-03-31'
+        filing_date: '2026-05-19'
+        value: 21947460334.62
+        return_pct: 2.13
+        book_return_pct: 37.59
+        total_value_usd: 21947460334.62
+        holdings_count: 19
       benchmark_curve:
       - date: '2024-01-02'
         spy_value: 100000.0
@@ -51229,6 +51305,11 @@ simulation:
         qqq_value: 181682.16
         spy_return_pct: 61.08
         qqq_return_pct: 81.68
+      - date: '2026-06-18'
+        spy_value: 162340.78
+        qqq_value: 186236.1
+        spy_return_pct: 62.34
+        qqq_return_pct: 86.24
       chart_series:
       - key: institution_0001759760
         valueKey: return_pct
@@ -56267,6 +56348,14 @@ simulation:
           book_return_pct: 36.53
           total_value_usd: 21778358091.12
           holdings_count: 19
+        - date: '2026-06-18'
+          report_period: '2026-03-31'
+          filing_date: '2026-05-19'
+          value: 21947460334.62
+          return_pct: 2.13
+          book_return_pct: 37.59
+          total_value_usd: 21947460334.62
+          holdings_count: 19
       - key: spy_value
         valueKey: spy_return_pct
         amountKey: spy_value
@@ -56283,11 +56372,11 @@ simulation:
         color: '#b69cff'
       summary:
         start_date: '2024-01-02'
-        end_date: '2026-06-17'
-        points_count: 617
-        latest_value: 21778358091.12
-        latest_return_pct: 1.35
-        latest_total_value_usd: 21778358091.12
+        end_date: '2026-06-18'
+        points_count: 618
+        latest_value: 21947460334.62
+        latest_return_pct: 2.13
+        latest_total_value_usd: 21947460334.62
     0001067983:
       cik: 0001067983
       slug: 0001067983
@@ -61427,6 +61516,14 @@ simulation:
           book_return_pct: 18.99
           total_value_usd: 286748308189.55
           holdings_count: 29
+        - date: '2026-06-18'
+          report_period: '2026-03-31'
+          filing_date: '2026-05-15'
+          value: 285356090521.75
+          return_pct: 17.34
+          book_return_pct: 18.41
+          total_value_usd: 285356090521.75
+          holdings_count: 29
       points:
       - date: '2024-01-02'
         report_period: '2023-12-31'
@@ -66556,6 +66653,14 @@ simulation:
         book_return_pct: 18.99
         total_value_usd: 286748308189.55
         holdings_count: 29
+      - date: '2026-06-18'
+        report_period: '2026-03-31'
+        filing_date: '2026-05-15'
+        value: 285356090521.75
+        return_pct: 17.34
+        book_return_pct: 18.41
+        total_value_usd: 285356090521.75
+        holdings_count: 29
       benchmark_curve:
       - date: '2024-01-02'
         spy_value: 100000.0
@@ -69642,6 +69747,11 @@ simulation:
         qqq_value: 181682.16
         spy_return_pct: 61.08
         qqq_return_pct: 81.68
+      - date: '2026-06-18'
+        spy_value: 162340.78
+        qqq_value: 186236.1
+        spy_return_pct: 62.34
+        qqq_return_pct: 86.24
       chart_series:
       - key: institution_0001067983
         valueKey: return_pct
@@ -74777,6 +74887,14 @@ simulation:
           book_return_pct: 18.99
           total_value_usd: 286748308189.55
           holdings_count: 29
+        - date: '2026-06-18'
+          report_period: '2026-03-31'
+          filing_date: '2026-05-15'
+          value: 285356090521.75
+          return_pct: 17.34
+          book_return_pct: 18.41
+          total_value_usd: 285356090521.75
+          holdings_count: 29
       - key: spy_value
         valueKey: spy_return_pct
         amountKey: spy_value
@@ -74793,11 +74911,11 @@ simulation:
         color: '#b69cff'
       summary:
         start_date: '2024-01-02'
-        end_date: '2026-06-17'
-        points_count: 617
-        latest_value: 286748308189.55
-        latest_return_pct: 17.91
-        latest_total_value_usd: 286748308189.55
+        end_date: '2026-06-18'
+        points_count: 618
+        latest_value: 285356090521.75
+        latest_return_pct: 17.34
+        latest_total_value_usd: 285356090521.75
   rebalance_history:
   - date: '2026-06-15'
     buys: []
