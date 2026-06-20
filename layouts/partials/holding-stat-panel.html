@@ -27,7 +27,7 @@
         {{ $show = true }}
       {{ end }}
       {{ if $show }}
-        {{ $managers = $managers | append (.display_name | default .name) }}
+        {{ $managers = $managers | append (partial "display-name.html" .) }}
       {{ end }}
     {{ end }}
     {{ $pieRows = $pieRows | append (dict
@@ -43,11 +43,11 @@
   <div class="holding-stat-chart panel">
     <div class="panel-heading compact">
       <div>
-        <p class="eyebrow">{{ $ranking.sort_label }}</p>
-        <h2>{{ $ranking.title }}</h2>
+        <p class="eyebrow">{{ i18n $ranking.sort_label_key }}</p>
+        <h2>{{ i18n $ranking.title_key }}</h2>
       </div>
     </div>
-    <div class="holding-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ $ranking.title }}占比图"></div>
+    <div class="holding-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ i18n "holding_share_chart_aria" (dict "Title" (i18n $ranking.title_key)) }}"></div>
   </div>
   {{ partial "ranking-table.html" (dict "ranking" $ranking) }}
 </section>

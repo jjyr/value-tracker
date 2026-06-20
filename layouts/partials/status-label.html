@@ -1,0 +1,4 @@
+{{- $status := .status | default "unknown" -}}
+{{- $key := .status_key | default (printf "status_%s" $status) -}}
+{{- if eq $status "unknown_previous" -}}{{- $key = "status_new_position" -}}{{- end -}}
+{{- i18n $key -}}

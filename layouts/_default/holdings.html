@@ -9,19 +9,19 @@
 <main class="page-shell holdings-page">
   <section class="panel holdings-hero">
     <div>
-      <p class="eyebrow">Institution Positions</p>
-      <h1>{{ .Title }}</h1>
+      <p class="eyebrow">{{ i18n "institution_positions" }}</p>
+      <h1>{{ i18n "nav_holdings" }}</h1>
     </div>
-    <p>按机构买入、卖出和当前持有股数统计 Top 10，并展示每只股票在该组统计中的占比。</p>
+    <p>{{ i18n "holdings_hero_text" }}</p>
   </section>
 
   <section class="panel holding-period-panel" data-holding-period-control>
     <div>
-      <p class="eyebrow">Report Period</p>
-      <h2>统计期间</h2>
+      <p class="eyebrow">{{ i18n "report_period" }}</p>
+      <h2>{{ i18n "stats_period" }}</h2>
     </div>
-    <div class="holding-period-field" role="group" aria-label="统计期间">
-      <span>13F 变化区间</span>
+    <div class="holding-period-field" role="group" aria-label="{{ i18n "stats_period" }}">
+      <span>{{ i18n "report_change_period" }}</span>
       <div class="holding-period-options" data-holding-period-options>
         {{ range $idx, $period := $periods }}
           <button
@@ -31,12 +31,12 @@
             data-period-label="{{ $period.period_label }}"
             aria-pressed="{{ if eq $idx 0 }}true{{ else }}false{{ end }}"
           >
-            {{ $period.label | default $period.period_label }}
+            {{ with $period.label_key }}{{ i18n . }}{{ else }}{{ $period.period_label }}{{ end }}
           </button>
         {{ end }}
       </div>
     </div>
-    <p class="holding-period-summary">覆盖区间：<strong data-holding-period-summary>{{ $defaultPeriod.period_label }}</strong></p>
+    <p class="holding-period-summary">{{ i18n "covered_period" }}<strong data-holding-period-summary>{{ $defaultPeriod.period_label }}</strong></p>
   </section>
 
   <div class="holding-period-groups">
@@ -52,7 +52,7 @@
   </div>
 
   <footer class="risk-note">
-    13F 数据存在披露延迟，统计仅反映公开报告期内的白名单机构持仓变化，不代表机构当前实时持仓。
+    {{ i18n "holdings_risk_note" }}
   </footer>
 </main>
 {{ end }}

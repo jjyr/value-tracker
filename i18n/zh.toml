@@ -1,0 +1,419 @@
+[site_title]
+other = "价值追踪"
+
+[site_description]
+other = "价值追踪追踪价值投资机构的 13F 交易和持仓，帮助你观察它们买入、卖出和长期持有的股票。"
+
+[brand_mark]
+other = "价"
+
+[brand_home_aria]
+other = "价值追踪 首页"
+
+[nav_label]
+other = "主导航"
+
+[nav_home]
+other = "首页"
+
+[nav_holdings]
+other = "持仓统计"
+
+[data_status]
+other = "数据状态"
+
+[snapshot]
+other = "快照"
+
+[generated]
+other = "生成"
+
+[back_home]
+other = "返回首页"
+
+[about]
+other = "关于"
+
+[stocks]
+other = "股票"
+
+[tracked_institutions]
+other = "Tracked Institutions"
+
+[home_title]
+other = "机构收益追踪"
+
+[home_subtitle]
+other = "按 YTD 收益排序，查看重点机构 13F 持仓组合的涨跌、回撤、当前持仓和最近变动。"
+
+[home_institution_count]
+other = "追踪机构"
+
+[equity_curve]
+other = "Equity Curve"
+
+[home_chart_title]
+other = "重点机构 vs SPY / QQQ"
+
+[home_chart_aria]
+other = "重点机构收益曲线"
+
+[home_risk_note]
+other = "13F 数据有披露延迟；机构收益曲线按公开持仓和市场价格估算，不代表实时持仓或投资建议。"
+
+[home_risk_note_start]
+other = "13F 数据有披露延迟；持仓效率自 {{ .StartDate }} 起计算，机构收益曲线按公开持仓和市场价格估算，不代表实时持仓或投资建议。"
+
+[home_grid_aria]
+other = "追踪机构涨跌情况"
+
+[portfolio_value]
+other = "持仓市值"
+
+[today]
+other = "今日"
+
+[this_month]
+other = "本月"
+
+[max_drawdown]
+other = "最大回撤"
+
+[allocation]
+other = "持仓分布"
+
+[holdings_count]
+other = "{{ .Count }} 个持仓"
+
+[other_small_holdings]
+other = "{{ .Count }} 个 <1% 持仓"
+
+[latest_changes]
+other = "最近变动"
+
+[latest_5]
+other = "Latest 5"
+
+[no_period_changes]
+other = "本期没有明显变动。"
+
+[holding_distribution_aria]
+other = "{{ .Name }}持仓分布"
+
+[institution_positions]
+other = "Institution Positions"
+
+[holdings_hero_text]
+other = "按机构买入、卖出和当前持有股数统计 Top 10，并展示每只股票在该组统计中的占比。"
+
+[report_period]
+other = "Report Period"
+
+[stats_period]
+other = "统计期间"
+
+[report_change_period]
+other = "13F 变化区间"
+
+[covered_period]
+other = "覆盖区间："
+
+[holdings_risk_note]
+other = "13F 数据存在披露延迟，统计仅反映公开报告期内的白名单机构持仓变化，不代表机构当前实时持仓。"
+
+[ranking_buying_title]
+other = "最近买入最多"
+
+[ranking_buying_description]
+other = "按本期白名单机构新建仓与增持的股数排序"
+
+[ranking_buying_sort_label]
+other = "买入股数"
+
+[ranking_selling_title]
+other = "最近卖出最多"
+
+[ranking_selling_description]
+other = "按本期白名单机构减持与清仓的股数排序"
+
+[ranking_selling_sort_label]
+other = "卖出股数"
+
+[ranking_holding_title]
+other = "持有最多"
+
+[ranking_holding_description]
+other = "按白名单机构当前持有股数排序"
+
+[ranking_holding_sort_label]
+other = "持有股数"
+
+[holding_period_quarter]
+other = "最近一季度"
+
+[holding_period_half_year]
+other = "最近半年"
+
+[holding_period_one_year]
+other = "最近一年"
+
+[holding_period_ytd]
+other = "YTD"
+
+[holding_period_all]
+other = "All"
+
+[chart_range_aria]
+other = "图表范围"
+
+[chart_series_aria]
+other = "图表序列开关"
+
+[holding_share_chart_aria]
+other = "{{ .Title }}占比图"
+
+[buy]
+other = "买入"
+
+[sell]
+other = "卖出"
+
+[change]
+other = "变动"
+
+[shares]
+other = "股"
+
+[status_new_position]
+other = "新建仓"
+
+[status_added]
+other = "增持"
+
+[status_reduced]
+other = "减持"
+
+[status_exited]
+other = "清仓"
+
+[status_unchanged]
+other = "持有"
+
+[status_unknown]
+other = "--"
+
+[badge_tip_signal]
+other = "{{ .Name }}：机构信号标签。"
+
+[badge_tip_buying]
+other = "{{ .Name }}：按本期新建仓与增持美元金额排序得到的买入信号。"
+
+[badge_tip_selling]
+other = "{{ .Name }}：按本期减持与清仓美元金额排序得到的卖出信号。"
+
+[badge_tip_new]
+other = "{{ .Name }}：按本期新建仓美元金额排序得到的新建仓信号。"
+
+[badge_tip_exit]
+other = "{{ .Name }}：按本期清仓美元金额排序得到的清仓信号。"
+
+[badge_tip_cleared]
+other = "已清仓：追踪机构当前持有市值为 0，但因清仓信号仍进入综合榜。"
+
+[badge_tip_key_new_position]
+other = "{{ .Name }}：重点机构本期新建仓该股票。"
+
+[badge_tip_key_added]
+other = "{{ .Name }}：重点机构本期增持该股票。"
+
+[badge_tip_key_reduced]
+other = "{{ .Name }}：重点机构本期减持该股票。"
+
+[badge_tip_key_exited]
+other = "{{ .Name }}：重点机构本期清仓该股票。"
+
+[badge_tip_key_holding]
+other = "{{ .Name }}：重点机构当前持有该股票。"
+
+[badge_tip_key_related]
+other = "{{ .Name }}：重点机构与该股票有关。"
+
+[manager_tip_holding]
+other = "{{ .Name }}：机构持有该股票。"
+
+[manager_tip_current_holding]
+other = "{{ .Name }}：当前持有该股票。"
+
+[manager_tip_buying]
+other = "{{ .Name }}：本期买入或增持该股票。"
+
+[manager_tip_selling]
+other = "{{ .Name }}：本期卖出或清仓该股票。"
+
+[tag_tip_default]
+other = "{{ .Name }} 标签"
+
+[tag_tip_sp500]
+other = "S&P 500 成分股标签。"
+
+[tag_tip_nasdaq100]
+other = "Nasdaq 100 成分股标签。"
+
+[tag_tip_russell1000]
+other = "Russell 1000 成分股标签。"
+
+[tag_tip_russell2000]
+other = "Russell 2000 成分股标签。"
+
+[tag_tip_russell3000]
+other = "Russell 3000 成分股标签。"
+
+[tag_tip_mag7]
+other = "Magnificent Seven 大型科技股标签。"
+
+[redirect_institutions]
+other = "追踪机构列表已合并到首页。"
+
+[current_price]
+other = "当前价格"
+
+[five_signals]
+other = "Five Signals"
+
+[five_signal_title]
+other = "五维度机构信号"
+
+[valuation]
+other = "估值"
+
+[market_cap]
+other = "市值"
+
+[basic_info]
+other = "基本信息"
+
+[institutional_avg_holding_price]
+other = "机构平均持有价"
+
+[key_institutions]
+other = "重点机构"
+
+[institutions]
+other = "Institutions"
+
+[institution_detail]
+other = "机构明细"
+
+[institution]
+other = "机构"
+
+[status]
+other = "状态"
+
+[report_price]
+other = "报告价"
+
+[change_value]
+other = "变动金额"
+
+[current_holding]
+other = "当前持有"
+
+[portfolio_weight]
+other = "组合权重"
+
+[filing_date]
+other = "披露日期"
+
+[no_stock_data]
+other = "暂无该股票的数据。"
+
+[no_institution_data]
+other = "暂无该机构的数据。"
+
+[open_google_finance]
+other = "在 Google Finance 打开 {{ .Symbol }}"
+
+[open_yahoo_finance]
+other = "在 Yahoo Finance 打开 {{ .Symbol }}"
+
+[holdings]
+other = "Holdings"
+
+[current_holdings_overview]
+other = "当前持仓概览"
+
+[holdings_number]
+other = "持仓数量"
+
+[period_changes]
+other = "本期变动"
+
+[bought_value]
+other = "买入金额"
+
+[sold_value]
+other = "卖出金额"
+
+[portfolio]
+other = "Portfolio"
+
+[current_holdings]
+other = "当前持仓"
+
+[stock]
+other = "股票"
+
+[price]
+other = "价格"
+
+[recent_change_details]
+other = "最近变动明细"
+
+[change_shares]
+other = "变动股数"
+
+[risk_note_short]
+other = "本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。"
+
+[source_institutional_buying]
+other = "买入榜 Top 10"
+
+[source_institutional_holding]
+other = "持有榜 Top 10"
+
+[source_institutional_selling]
+other = "卖出榜 Top 10"
+
+[source_key_new_position]
+other = "重点机构新建仓"
+
+[source_key_added]
+other = "重点机构增持"
+
+[source_key_holding]
+other = "重点机构持有"
+
+[source_key_buy_intensity]
+other = "重点机构买入力度"
+
+[source_below_key_latest_buy]
+other = "低于重点机构最近买入价"
+
+[source_key_reduced]
+other = "重点机构减持"
+
+[source_key_exit]
+other = "重点机构清仓"
+
+[source_key_signal]
+other = "重点机构信号"
+
+[rebalance_reason_target_zero]
+other = "目标权重降至 0"
+
+[rebalance_reason_target_down]
+other = "目标权重下降"
+
+[rebalance_reason_not_target]
+other = "不在本期目标持仓"

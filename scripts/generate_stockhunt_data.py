@@ -177,8 +177,54 @@ def enrich_simulation_summary(simulation: Dict[str, Any]) -> Dict[str, Any]:
     return simulation
 
 
+def localize_institution_curves(config: Dict[str, Any], simulation: Dict[str, Any]) -> None:
+    managers = manager_by_cik(config)
+    for curve in (simulation.get("key_institution_curves") or {}).values():
+        cik = normalize_cik(curve.get("cik"))
+        fields = manager_display_fields({**curve, **managers.get(cik, {})})
+        curve.update(fields)
+        series = curve.get("series") or {}
+        series.update({
+            "label": fields["display_name"],
+            "label_en": fields["display_name_en"],
+            "label_zh": fields["display_name_zh"],
+        })
+        for item in curve.get("chart_series") or []:
+            if item.get("key") == series.get("key"):
+                item.update({
+                    "label": fields["display_name"],
+                    "label_en": fields["display_name_en"],
+                    "label_zh": fields["display_name_zh"],
+                })
+
+
 def content_title(value: str) -> str:
     return value.replace('"', '\\"')
+
+
+def write_content_page(path: pathlib.Path, content: str, overwrite: bool = False) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and not overwrite:
+        return
+    path.write_text(content, encoding="utf-8")
+
+
+def ensure_static_language_pages(content_root: pathlib.Path, language: str) -> None:
+    labels = {
+        "en": {
+            "home": "Value Tracker",
+            "holdings": "Position Stats",
+            "institutions": "Tracked Institutions",
+        },
+        "zh": {
+            "home": "价值追踪",
+            "holdings": "持仓统计",
+            "institutions": "追踪机构",
+        },
+    }[language]
+    write_content_page(content_root / "_index.md", f'---\ntitle: "{labels["home"]}"\n---\n')
+    write_content_page(content_root / "holdings.md", f'---\ntitle: "{labels["holdings"]}"\ntype: "holdings"\n---\n')
+    write_content_page(content_root / "institutions/_index.md", f'---\ntitle: "{labels["institutions"]}"\n---\n')
 
 
 def ensure_content_pages(content_dir: pathlib.Path, rows: Iterable[Dict[str, Any]]) -> None:
@@ -189,24 +235,25 @@ def ensure_content_pages(content_dir: pathlib.Path, rows: Iterable[Dict[str, Any
         if path.exists():
             continue
         title = content_title(row.get("company_name") or row["symbol"])
-        path.write_text(
+        write_content_page(
+            path,
             f'---\ntitle: "{title}"\nsymbol: "{row["symbol"]}"\nslug: "{slug}"\n---\n',
-            encoding="utf-8",
         )
 
 
-def ensure_institution_pages(content_dir: pathlib.Path, managers: Iterable[Dict[str, Any]]) -> None:
+def ensure_institution_pages(content_dir: pathlib.Path, managers: Iterable[Dict[str, Any]], language: str = "en") -> None:
     content_dir.mkdir(parents=True, exist_ok=True)
     for manager in managers:
         cik = normalize_cik(manager.get("cik"))
         path = content_dir / f"{manager_slug(cik)}.md"
         if path.exists():
             continue
-        title = content_title(manager.get("display_name") or manager.get("name") or cik)
+        display_fields = manager_display_fields(manager)
+        title = content_title(display_fields["display_name_zh"] if language == "zh" else display_fields["display_name_en"])
         name = content_title(manager.get("name") or title)
-        path.write_text(
+        write_content_page(
+            path,
             f'---\ntitle: "{title}"\ncik: "{cik}"\nmanager_name: "{name}"\n---\n',
-            encoding="utf-8",
         )
 
 
@@ -239,6 +286,23 @@ def key_institution_names(config: Dict[str, Any]) -> set:
     return {member.get("display_name") for member in members if member.get("enabled", True)}
 
 
+def manager_display_fields(manager: Dict[str, Any]) -> Dict[str, str]:
+    fallback = str(manager.get("name") or manager.get("display_name") or normalize_cik(manager.get("cik")))
+    display_name_en = manager.get("display_name_en") or manager.get("name") or fallback
+    display_name_zh = manager.get("display_name_zh") or manager.get("display_name") or fallback
+    return {
+        "display_name": display_name_en,
+        "display_name_zh": display_name_zh,
+        "display_name_en": display_name_en,
+    }
+
+
+def localized_manager_row(manager: Dict[str, Any]) -> Dict[str, Any]:
+    row = dict(manager)
+    row.update(manager_display_fields(row))
+    return row
+
+
 def rank_by_value(rows: List[Dict[str, Any]], key: str) -> Dict[str, int]:
     candidates = [row for row in rows if (row.get(key) or 0) > 0]
     candidates.sort(key=lambda row: (-(row.get(key) or 0), row["symbol"]))
@@ -261,12 +325,23 @@ def badge(label: str, tone: str) -> Dict[str, str]:
     return {"label": label, "tone": tone}
 
 
-def linked_badge(label: str, tone: str, href: Optional[str] = None, tip: Optional[str] = None) -> Dict[str, str]:
+def linked_badge(
+    label: str,
+    tone: str,
+    href: Optional[str] = None,
+    tip_key: Optional[str] = None,
+    label_en: Optional[str] = None,
+    label_zh: Optional[str] = None,
+) -> Dict[str, str]:
     item = badge(label, tone)
+    if label_en:
+        item["label_en"] = label_en
+    if label_zh:
+        item["label_zh"] = label_zh
     if href:
         item["href"] = href
-    if tip:
-        item["tip"] = tip
+    if tip_key:
+        item["tip_key"] = tip_key
     return item
 
 
@@ -300,18 +375,22 @@ def manager_links_by_name(config: Dict[str, Any]) -> Dict[str, str]:
     return links
 
 
-def institution_badge_tip(name: str, status: Optional[str], current_shares: float) -> str:
+def manager_by_cik(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    return {normalize_cik(manager.get("cik")): manager for manager in enabled_managers(config)}
+
+
+def institution_badge_tip_key(status: Optional[str], current_shares: float) -> str:
     if status in {"new_position", "unknown_previous"}:
-        return f"{name}：重点机构本期新建仓该股票。"
+        return "badge_tip_key_new_position"
     if status == "added":
-        return f"{name}：重点机构本期增持该股票。"
+        return "badge_tip_key_added"
     if status == "reduced":
-        return f"{name}：重点机构本期减持该股票。"
+        return "badge_tip_key_reduced"
     if status == "exited":
-        return f"{name}：重点机构本期清仓该股票。"
+        return "badge_tip_key_exited"
     if current_shares > 0:
-        return f"{name}：重点机构当前持有该股票。"
-    return f"{name}：重点机构与该股票有关。"
+        return "badge_tip_key_holding"
+    return "badge_tip_key_related"
 
 
 def rank_in_limit(ranks: Dict[str, Dict[str, int]], kind: str, symbol: str, limit: int) -> Optional[int]:
@@ -325,23 +404,34 @@ def build_badges(
     key_names: set,
     activity_tag_limit: int = 10,
     manager_links: Optional[Dict[str, str]] = None,
+    managers_by_cik: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> List[Dict[str, str]]:
     del ranks, activity_tag_limit
     badges: List[Dict[str, str]] = []
     manager_links = manager_links or {}
-    institution_tips: Dict[str, str] = {}
-    for holder in row.get("key_institution_holders") or []:
-        if holder in key_names:
-            institution_tips.setdefault(holder, institution_badge_tip(holder, None, 1.0))
+    managers_by_cik = managers_by_cik or {}
+    institution_tips: Dict[str, Tuple[str, Dict[str, str], str]] = {}
     for manager in row.get("managers") or []:
+        cik = normalize_cik(manager.get("cik"))
+        config_manager = managers_by_cik.get(cik, {})
         name = manager.get("display_name") or manager.get("name")
         status = manager.get("status")
         current_shares = float(manager.get("current_shares") or 0)
         changed = status in {"new_position", "unknown_previous", "added", "reduced", "exited"}
         if name in key_names and (current_shares > 0 or changed):
-            institution_tips[name] = institution_badge_tip(name, status, current_shares)
-    for name, tip in institution_tips.items():
-        badges.append(linked_badge(name, "key", manager_links.get(name), tip))
+            fields = manager_display_fields({**config_manager, **manager})
+            institution_tips[cik or name] = (name, fields, institution_badge_tip_key(status, current_shares))
+    for name, fields, tip_key in institution_tips.values():
+        badges.append(
+            linked_badge(
+                fields["display_name_en"],
+                "key",
+                manager_links.get(name),
+                tip_key,
+                fields.get("display_name_en"),
+                fields.get("display_name_zh"),
+            )
+        )
     return badges
 
 
@@ -379,25 +469,25 @@ def holding_rankings_for_rows(
     return [
         {
             "type": "institutional_buying",
-            "title": "最近买入最多",
-            "description": "按本期白名单机构新建仓与增持的股数排序",
-            "sort_label": "买入股数",
+            "title_key": "ranking_buying_title",
+            "description_key": "ranking_buying_description",
+            "sort_label_key": "ranking_buying_sort_label",
             "period_label": period_label,
             "rows": maybe_limit_rows(sort_rows_by_value(ranking_rows, "total_bought_shares"), row_limit),
         },
         {
             "type": "institutional_selling",
-            "title": "最近卖出最多",
-            "description": "按本期白名单机构减持与清仓的股数排序",
-            "sort_label": "卖出股数",
+            "title_key": "ranking_selling_title",
+            "description_key": "ranking_selling_description",
+            "sort_label_key": "ranking_selling_sort_label",
             "period_label": period_label,
             "rows": maybe_limit_rows(sort_rows_by_value(ranking_rows, "total_sold_shares"), row_limit),
         },
         {
             "type": "institutional_holding",
-            "title": "持有最多",
-            "description": "按白名单机构当前持有股数排序",
-            "sort_label": "持有股数",
+            "title_key": "ranking_holding_title",
+            "description_key": "ranking_holding_description",
+            "sort_label_key": "ranking_holding_sort_label",
             "rows": maybe_limit_rows(sort_rows_by_value(holding_source, "total_tracked_shares"), row_limit),
         },
     ]
@@ -450,7 +540,7 @@ def activity_share_metrics(managers: List[Dict[str, Any]]) -> Dict[str, float]:
 
 def ranking_row(raw: Dict[str, Any], badges: List[Dict[str, str]]) -> Dict[str, Any]:
     institution = raw.get("institution") or {}
-    managers = institution.get("managers") or []
+    managers = [localized_manager_row(manager) for manager in institution.get("managers") or []]
     latest_buy_price = latest_institutional_buy_price(raw)
     row = {
         "symbol": raw["symbol"],
@@ -525,11 +615,11 @@ def filing_periods(filings: List[Dict[str, Any]]) -> List[str]:
 
 
 HOLDING_RANGE_PRESETS = [
-    ("quarter", "最近一季度", 1),
-    ("half_year", "最近半年", 2),
-    ("one_year", "最近一年", 4),
-    ("ytd", "YTD", None),
-    ("all", "All", None),
+    ("quarter", "holding_period_quarter", 1),
+    ("half_year", "holding_period_half_year", 2),
+    ("one_year", "holding_period_one_year", 4),
+    ("ytd", "holding_period_ytd", None),
+    ("all", "holding_period_all", None),
 ]
 
 BUY_STATUSES = {"new_position", "unknown_previous", "added"}
@@ -572,7 +662,7 @@ def build_holding_quarter_intervals(
         output.append(
             {
                 "key": report_period,
-                "label": activity_period_label(previous_period, report_period),
+                "label_key": "holding_period_quarter",
                 "report_period": report_period,
                 "previous_report_period": previous_period,
                 "rows": rows,
@@ -605,7 +695,7 @@ def aggregate_manager_action(manager: Dict[str, Any], action: str, shares: float
     return {
         "cik": manager.get("cik"),
         "name": manager.get("name"),
-        "display_name": manager.get("display_name") or manager.get("name"),
+        **manager_display_fields(manager),
         "status": "added" if action == "buy" else "reduced",
         "previous_shares": 0,
         "current_shares": shares if action == "buy" else 0,
@@ -755,7 +845,7 @@ def build_holding_periods_from_intervals(
     manager_count = enabled_manager_count(config)
     holding_rows = intervals[0].get("rows") or []
     output = []
-    for key, label, count in HOLDING_RANGE_PRESETS:
+    for key, label_key, count in HOLDING_RANGE_PRESETS:
         selected = intervals_for_preset(intervals, key, count)
         if not selected:
             continue
@@ -764,7 +854,7 @@ def build_holding_periods_from_intervals(
         output.append(
             {
                 "key": key,
-                "label": label,
+                "label_key": label_key,
                 "report_period": selected[0].get("report_period"),
                 "previous_report_period": selected[-1].get("previous_report_period"),
                 "period_label": period_label,
@@ -795,12 +885,15 @@ def merge_holding_periods(current_period: Dict[str, Any], historical_periods: Li
 
 def stock_entry(raw: Dict[str, Any], key_names: set) -> Dict[str, Any]:
     institution = raw.get("institution") or {}
-    key_holders = [name for name in institution.get("key_institution_holders", []) if name in key_names]
+    key_holders = []
     managers = []
     for manager in institution.get("managers") or []:
-        manager_row = dict(manager)
+        manager_row = localized_manager_row(manager)
         manager_row["href"] = manager_href(manager_row.get("cik"))
         managers.append(manager_row)
+        name = manager_row.get("display_name") or manager_row.get("name")
+        if name in key_names and float(manager_row.get("current_shares") or 0) > 0:
+            key_holders.append(manager_display_fields(manager_row))
     return {
         "symbol": raw["symbol"],
         "slug": raw.get("slug") or slugify_symbol(raw["symbol"]),
@@ -834,16 +927,16 @@ def stock_entry(raw: Dict[str, Any], key_names: set) -> Dict[str, Any]:
     }
 
 
-def status_label(status: str) -> str:
+def status_label_key(status: str) -> str:
     labels = {
-        "new_position": "新建仓",
-        "unknown_previous": "新建仓",
-        "added": "增持",
-        "reduced": "减持",
-        "exited": "清仓",
-        "unchanged": "持有",
+        "new_position": "status_new_position",
+        "unknown_previous": "status_new_position",
+        "added": "status_added",
+        "reduced": "status_reduced",
+        "exited": "status_exited",
+        "unchanged": "status_unchanged",
     }
-    return labels.get(status, status or "--")
+    return labels.get(status, "status_unknown")
 
 
 def status_tone(status: str) -> str:
@@ -878,7 +971,7 @@ def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str,
         "slug": raw.get("slug") or slugify_symbol(raw["symbol"]),
         "company_name": raw.get("company_name") or raw["symbol"],
         "status": status,
-        "status_label": status_label(status),
+        "status_key": status_label_key(status),
         "status_tone": status_tone(status),
         "previous_shares": manager.get("previous_shares") or 0,
         "current_shares": current_shares,
@@ -942,7 +1035,7 @@ def build_institutions(config: Dict[str, Any], rows: List[Dict[str, Any]]) -> Di
             "slug": slug,
             "href": manager_href(cik),
             "name": manager.get("name"),
-            "display_name": manager.get("display_name") or manager.get("name"),
+            **manager_display_fields(manager),
             "style": manager.get("style"),
             "summary": {
                 "holdings_count": len(holdings),
@@ -1055,6 +1148,7 @@ def discount_to_institutional_avg(row: Dict[str, Any]) -> float:
 def key_manager_events(row: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, Any]:
     key_ciks = key_institution_ciks(config)
     key_names = key_institution_names(config)
+    holders_by_key: Dict[str, Dict[str, str]] = {}
     events: Dict[str, Any] = {
         "new_count": 0,
         "added_count": 0,
@@ -1075,7 +1169,8 @@ def key_manager_events(row: Dict[str, Any], config: Dict[str, Any]) -> Dict[str,
     institution = row.get("institution") or row
     for manager in institution.get("managers") or row.get("managers") or []:
         cik = normalize_cik(manager.get("cik"))
-        name = manager.get("display_name") or manager.get("name")
+        fields = manager_display_fields(manager)
+        name = manager.get("display_name_zh") or manager.get("display_name") or manager.get("name")
         if cik not in key_ciks and name not in key_names:
             continue
         status = manager.get("status")
@@ -1088,7 +1183,7 @@ def key_manager_events(row: Dict[str, Any], config: Dict[str, Any]) -> Dict[str,
             events["holding_count"] += 1
             events["holding_value_usd"] += current_value
             if name:
-                events["holders"].append(name)
+                holders_by_key[cik or name] = fields
         if status in {"new_position", "unknown_previous", "added"}:
             bought_value = current_value if status in {"new_position", "unknown_previous"} else max(change_value, 0.0)
             bought_shares = current_shares if status in {"new_position", "unknown_previous"} else max(change_shares, 0.0)
@@ -1112,7 +1207,7 @@ def key_manager_events(row: Dict[str, Any], config: Dict[str, Any]) -> Dict[str,
                 events["reduced_count"] += 1
             else:
                 events["exit_count"] += 1
-    events["holders"] = list(dict.fromkeys(events["holders"]))
+    events["holders"] = list(holders_by_key.values())
     events["latest_buy_price"] = (
         events["latest_buy_value_usd"] / events["latest_buy_shares"] if events["latest_buy_shares"] > 0 else 0.0
     )
@@ -1166,24 +1261,24 @@ def score_components(
     return sum(components.values()), components, source_rankings, events
 
 
-def source_ranking_label(source: str) -> str:
+def source_ranking_label_key(source: str) -> str:
     labels = {
-        "institutional_buying": "买入榜 Top 10",
-        "institutional_holding": "持有榜 Top 10",
-        "institutional_selling": "卖出榜 Top 10",
-        "key_new_position": "重点机构新建仓",
-        "key_added": "重点机构增持",
-        "key_holding": "重点机构持有",
-        "key_buy_intensity": "重点机构买入力度",
-        "below_key_latest_buy": "低于重点机构最近买入价",
-        "key_reduced": "重点机构减持",
-        "key_exit": "重点机构清仓",
+        "institutional_buying": "source_institutional_buying",
+        "institutional_holding": "source_institutional_holding",
+        "institutional_selling": "source_institutional_selling",
+        "key_new_position": "source_key_new_position",
+        "key_added": "source_key_added",
+        "key_holding": "source_key_holding",
+        "key_buy_intensity": "source_key_buy_intensity",
+        "below_key_latest_buy": "source_below_key_latest_buy",
+        "key_reduced": "source_key_reduced",
+        "key_exit": "source_key_exit",
     }
     return labels.get(source, source)
 
 
-def buy_reason(source_rankings: List[str]) -> str:
-    return " + ".join(source_ranking_label(source) for source in source_rankings) or "重点机构信号"
+def buy_reason_keys(source_rankings: List[str]) -> List[str]:
+    return [source_ranking_label_key(source) for source in source_rankings] or ["source_key_signal"]
 
 
 def latest_institutional_buy_price(row: Dict[str, Any]) -> float:
@@ -1424,7 +1519,7 @@ def build_snapshot_simulation(
                 "symbol": row["symbol"],
                 "slug": position["slug"],
                 "action": "initial-buy",
-                "reason": buy_reason(row["source_rankings"]),
+                "reason_keys": buy_reason_keys(row["source_rankings"]),
                 "target_weight_pct": round(target_weight, 2),
                 "trade_weight_pct": round(buy_value / initial_value * 100, 2) if initial_value else 0,
                 "buy_value_usd": round(buy_value, 2),
@@ -1539,7 +1634,7 @@ def build_hugo_data(
     tracked_institution_order = [
         {
             "cik": normalize_cik(manager.get("cik")),
-            "display_name": manager.get("display_name") or manager.get("name") or normalize_cik(manager.get("cik")),
+            **manager_display_fields(manager),
         }
         for manager in enabled_managers(config)
         if normalize_cik(manager.get("cik")) in institutions
@@ -1547,10 +1642,11 @@ def build_hugo_data(
     simulation = enrich_simulation_summary(
         snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
     )
+    localize_institution_curves(config, simulation)
     current_rankings = holding_rankings_for_rows(ranking_rows, period_label)
     current_period = {
         "key": "quarter",
-        "label": "最近一季度",
+        "label_key": "holding_period_quarter",
         "report_period": snapshot.get("latest_13f_report_period"),
         "previous_report_period": snapshot.get("previous_13f_report_period"),
         "period_label": period_label,
@@ -1585,8 +1681,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--simulation", type=pathlib.Path, default=None)
     parser.add_argument("--historical-holdings", type=pathlib.Path, default=ROOT / "raw/generated/historical_13f_holdings.yaml")
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
-    parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/stocks")
-    parser.add_argument("--institution-content-dir", type=pathlib.Path, default=ROOT / "content/institutions")
+    parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/en/stocks")
+    parser.add_argument("--institution-content-dir", type=pathlib.Path, default=ROOT / "content/en/institutions")
+    parser.add_argument("--en-content-root", type=pathlib.Path, default=ROOT / "content/en")
+    parser.add_argument("--zh-content-root", type=pathlib.Path, default=ROOT / "content/zh")
     parser.add_argument("--skip-content", action="store_true")
     return parser.parse_args()
 
@@ -1610,8 +1708,12 @@ def main() -> None:
     data = build_hugo_data(config, snapshot)
     write_yaml(args.output, data)
     if not args.skip_content:
+        ensure_static_language_pages(args.en_content_root, "en")
+        ensure_static_language_pages(args.zh_content_root, "zh")
         ensure_content_pages(args.content_dir, snapshot.get("securities") or [])
-        ensure_institution_pages(args.institution_content_dir, enabled_managers(config))
+        ensure_institution_pages(args.institution_content_dir, enabled_managers(config), language="en")
+        ensure_content_pages(args.zh_content_root / "stocks", snapshot.get("securities") or [])
+        ensure_institution_pages(args.zh_content_root / "institutions", enabled_managers(config), language="zh")
     print(f"wrote {args.output}")
 
 

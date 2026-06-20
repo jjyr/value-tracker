@@ -613,7 +613,7 @@ def metrics_as_of(
                 metric["total_tracked_value_usd"] += current_value
                 metric["total_tracked_shares"] += current_shares
                 if cik in key_set:
-                    metric["key_institution_holders"].append(manager.get("display_name") or manager["name"])
+                    metric["key_institution_holders"].append(hugo_data.manager_display_fields(manager))
             if status in {"new_position", "added"}:
                 metric["buyers_count"] += 1
                 if status == "new_position":
@@ -646,7 +646,7 @@ def metrics_as_of(
                 {
                     "cik": cik,
                     "name": manager.get("name"),
-                    "display_name": manager.get("display_name") or manager.get("name"),
+                    **hugo_data.manager_display_fields(manager),
                     "status": status,
                     "previous_shares": previous_shares,
                     "current_shares": current_shares,
@@ -754,6 +754,8 @@ def base_chart_series() -> List[Dict[str, Any]]:
             "valueKey": "return_pct",
             "amountKey": "value",
             "label": "Value Tracker",
+            "label_en": "Value Tracker",
+            "label_key": "site_title",
             "className": "line-portfolio",
             "pointClass": "point-portfolio",
             "color": CHART_COLORS["portfolio"],
@@ -1029,19 +1031,21 @@ def build_key_institution_curves(
             continue
 
         color = CHART_COLORS["institutions"][manager_index % len(CHART_COLORS["institutions"])]
-        display_name = manager.get("display_name") or manager.get("name") or cik
+        display_fields = hugo_data.manager_display_fields(manager)
         series = {
             "key": f"institution_{slug}",
             "valueKey": "return_pct",
             "amountKey": "value",
-            "label": display_name,
+            "label": display_fields["display_name"],
+            "label_en": display_fields["display_name_en"],
+            "label_zh": display_fields["display_name_zh"],
             "color": color,
             "points": points,
         }
         curves[slug] = {
             "cik": cik,
             "slug": slug,
-            "display_name": display_name,
+            **display_fields,
             "series": series,
             "points": points,
             "benchmark_curve": benchmark_curve_from(price_index, trading_days, start_trade_date, final_date, initial_value),
@@ -1065,7 +1069,7 @@ def point_value_on_or_before(curve: List[Dict[str, Any]], date: dt.date) -> Opti
 
 
 def build_trade(
-    label: str,
+    reason_keys: List[str],
     symbol: str,
     row: Dict[str, Any],
     value: float,
@@ -1079,7 +1083,7 @@ def build_trade(
         "symbol": symbol,
         "slug": hugo_data.slugify_symbol(symbol),
         "action": action,
-        "reason": label,
+        "reason_keys": reason_keys,
         "target_weight_pct": round(float(row.get("target_weight_pct") or 0), 2),
         "trade_weight_pct": round(trade_weight_pct, 2),
         "buy_value_usd": round(max(value, 0.0), 2),
@@ -1227,7 +1231,7 @@ def run_simulation(
                                 "symbol": symbol,
                                 "slug": hugo_data.slugify_symbol(symbol),
                                 "action": "exit" if target_shares <= 0 else "sell",
-                                "reason": "目标权重降至 0" if target_shares <= 0 else "目标权重下降",
+                                "reason_keys": ["rebalance_reason_target_zero" if target_shares <= 0 else "rebalance_reason_target_down"],
                                 "from_weight_pct": round(current_shares * price / total_value * 100, 2) if total_value else 0,
                                 "to_weight_pct": round(row["target_weight_pct"], 2),
                                 "trade_weight_pct": round(trade_weight_pct(sell_value, total_value), 2),
@@ -1255,7 +1259,7 @@ def run_simulation(
                                 "symbol": symbol,
                                 "slug": hugo_data.slugify_symbol(symbol),
                                 "action": "exit" if target_shares <= 0 else "sell",
-                                "reason": "不在本期目标持仓",
+                                "reason_keys": ["rebalance_reason_not_target"],
                                 "from_weight_pct": round(current_shares * price / total_value * 100, 2) if total_value else 0,
                                 "to_weight_pct": 0,
                                 "trade_weight_pct": round(trade_weight_pct(sell_value, total_value), 2),
@@ -1292,7 +1296,7 @@ def run_simulation(
                     )
                     delta_shares = target_shares - previous_shares
                     delta_value = delta_shares * price
-                    reason = hugo_data.buy_reason(row.get("source_rankings") or [])
+                    reason_keys = hugo_data.buy_reason_keys(row.get("source_rankings") or [])
                     badges = hugo_data.build_badges(row, ranks, key_name_set, activity_limit, manager_links)
                     if delta_shares <= 0:
                         if previous_shares > 0 and symbol not in new_positions:
@@ -1361,7 +1365,7 @@ def run_simulation(
                             )
                         continue
                     action = "initial-buy" if previous_shares <= 0 else "buy"
-                    buys.append(build_trade(reason, symbol, row, buy_value, price, buy_shares, total_value, action))
+                    buys.append(build_trade(reason_keys, symbol, row, buy_value, price, buy_shares, total_value, action))
                     cash -= buy_value
                     final_shares = previous_shares + buy_shares
                     if previous_shares <= 0:

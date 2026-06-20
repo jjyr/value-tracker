@@ -2,8 +2,8 @@
 <section class="panel ranking-panel compact-ranking-panel" id="{{ $ranking.type }}">
   <div class="panel-heading compact">
     <div>
-      <p class="eyebrow">{{ $ranking.sort_label }}</p>
-      <h2>{{ $ranking.title }}</h2>
+      <p class="eyebrow">{{ i18n $ranking.sort_label_key }}</p>
+      <h2>{{ i18n $ranking.title_key }}</h2>
     </div>
   </div>
   <div class="compact-ranking-list">
@@ -24,13 +24,13 @@
       {{ $hasSell := gt $sellValue 0.0 }}
       {{ $primaryTone := "holding" }}
       {{ if eq $ranking.type "institutional_buying" }}{{ $primaryTone = "buying" }}{{ else if eq $ranking.type "institutional_selling" }}{{ $primaryTone = "selling" }}{{ end }}
-      {{ $actionLabel := "买入" }}
+      {{ $actionLabel := i18n "buy" }}
       {{ $actionPct := $buyPct }}
       {{ $actionShares := $buyShares }}
       {{ $actionSign := "+" }}
       {{ $actionClass := "is-buy" }}
       {{ if eq $ranking.type "institutional_selling" }}
-        {{ $actionLabel = "卖出" }}
+        {{ $actionLabel = i18n "sell" }}
         {{ $actionPct = $sellPct }}
         {{ $actionShares = $sellShares }}
         {{ $actionSign = "-" }}
@@ -39,31 +39,31 @@
       <article class="compact-ranking-item ranking-{{ $primaryTone }}">
         <div class="compact-rank">#{{ add $idx 1 }}</div>
         <div class="compact-ranking-body">
-          <a class="stock-link" href="{{ printf "stocks/%s/" $row.slug | relURL }}">
+          <a class="stock-link" href="{{ printf "stocks/%s/" $row.slug | relLangURL }}">
             <strong>{{ $row.symbol }}</strong>
             <span>{{ $row.company_name }}</span>
           </a>
         </div>
         <div class="compact-ranking-primary">
           <strong>{{ partial "ranking-primary-value.html" (dict "type" $ranking.type "row" $row) }}</strong>
-          <span>{{ $ranking.sort_label }}</span>
+          <span>{{ i18n $ranking.sort_label_key }}</span>
         </div>
         <div class="compact-ranking-details">
           {{ if eq $ranking.type "institutional_holding" }}
             {{ if or $hasBuy $hasSell }}
               {{ if $hasBuy }}
-                <span class="compact-flow-text is-buy">买入 <strong data-money="{{ $buyValue }}">--</strong> · +{{ printf "%.1f%%" $buyPct }} · <span data-shares="{{ $buyShares }}">--</span> 股</span>
+                <span class="compact-flow-text is-buy">{{ i18n "buy" }} <strong data-money="{{ $buyValue }}">--</strong> · +{{ printf "%.1f%%" $buyPct }} · <span data-shares="{{ $buyShares }}">--</span> {{ i18n "shares" }}</span>
               {{ end }}
               {{ if $hasSell }}
-                <span class="compact-flow-text is-sell">卖出 <strong data-money="{{ $sellValue }}">--</strong> · -{{ printf "%.1f%%" $sellPct }} · <span data-shares="{{ $sellShares }}">--</span> 股</span>
+                <span class="compact-flow-text is-sell">{{ i18n "sell" }} <strong data-money="{{ $sellValue }}">--</strong> · -{{ printf "%.1f%%" $sellPct }} · <span data-shares="{{ $sellShares }}">--</span> {{ i18n "shares" }}</span>
               {{ end }}
             {{ else }}
-              <span class="compact-flow-text is-muted">变动 --</span>
+              <span class="compact-flow-text is-muted">{{ i18n "change" }} --</span>
             {{ end }}
           {{ else }}
-            <span class="compact-flow-text is-buy">买入 <strong>{{ if $hasBuy }}<span data-money="{{ $buyValue }}">--</span>{{ else }}--{{ end }}</strong></span>
-            <span class="compact-flow-text is-sell">卖出 <strong>{{ if $hasSell }}<span data-money="{{ $sellValue }}">--</span>{{ else }}--{{ end }}</strong></span>
-            <span class="compact-flow-text {{ $actionClass }}">{{ $actionLabel }} {{ $actionSign }}{{ printf "%.1f%%" $actionPct }} · <span data-shares="{{ $actionShares }}">--</span> 股</span>
+            <span class="compact-flow-text is-buy">{{ i18n "buy" }} <strong>{{ if $hasBuy }}<span data-money="{{ $buyValue }}">--</span>{{ else }}--{{ end }}</strong></span>
+            <span class="compact-flow-text is-sell">{{ i18n "sell" }} <strong>{{ if $hasSell }}<span data-money="{{ $sellValue }}">--</span>{{ else }}--{{ end }}</strong></span>
+            <span class="compact-flow-text {{ $actionClass }}">{{ $actionLabel }} {{ $actionSign }}{{ printf "%.1f%%" $actionPct }} · <span data-shares="{{ $actionShares }}">--</span> {{ i18n "shares" }}</span>
           {{ end }}
         </div>
         <div class="compact-ranking-tags">
@@ -72,23 +72,24 @@
               {{ $status := .status | default "" }}
               {{ $shares := float (.current_shares | default 0) }}
               {{ $showManager := false }}
-              {{ $tip := printf "%s：机构持有该股票。" (.display_name | default .name) }}
+              {{ $managerName := partial "display-name.html" . }}
+              {{ $tipKey := "manager_tip_holding" }}
               {{ if eq $ranking.type "institutional_holding" }}
                 {{ if gt $shares 0.0 }}
                   {{ $showManager = true }}
-                  {{ $tip = printf "%s：当前持有该股票。" (.display_name | default .name) }}
+                  {{ $tipKey = "manager_tip_current_holding" }}
                 {{ end }}
               {{ else if in $statusSet $status }}
                 {{ $showManager = true }}
                 {{ if eq $ranking.type "institutional_buying" }}
-                  {{ $tip = printf "%s：本期买入或增持该股票。" (.display_name | default .name) }}
+                  {{ $tipKey = "manager_tip_buying" }}
                 {{ else }}
-                  {{ $tip = printf "%s：本期卖出或清仓该股票。" (.display_name | default .name) }}
+                  {{ $tipKey = "manager_tip_selling" }}
                 {{ end }}
               {{ end }}
               {{ if $showManager }}
                 {{ $shown = true }}
-                <a class="activity-badge badge-key tip-trigger" href="{{ printf "institutions/%s/" .cik | relURL }}" data-tooltip="{{ $tip }}">{{ .display_name | default .name }}</a>
+                <a class="activity-badge badge-key tip-trigger" href="{{ printf "institutions/%s/" .cik | relLangURL }}" data-tooltip="{{ i18n $tipKey (dict "Name" $managerName) }}">{{ $managerName }}</a>
               {{ end }}
             {{ end }}
             {{ if not $shown }}<span class="muted">--</span>{{ end }}

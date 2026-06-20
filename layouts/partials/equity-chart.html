@@ -7,7 +7,7 @@
       <p class="eyebrow">{{ .eyebrow | default "Equity Curve" }}</p>
       <h2>{{ .title }}</h2>
     </div>
-    <div class="segmented-control" aria-label="图表范围">
+    <div class="segmented-control" aria-label="{{ i18n "chart_range_aria" }}">
       <button class="range-button {{ if eq $range "ytd" }}is-active{{ end }}" type="button" data-range="ytd">YTD</button>
       <button class="range-button {{ if eq $range "all" }}is-active{{ end }}" type="button" data-range="all">ALL</button>
       <button class="range-button {{ if eq $range "3m" }}is-active{{ end }}" type="button" data-range="3m">3M</button>
@@ -22,15 +22,19 @@
     role="img"
     aria-label="{{ .ariaLabel | default .title }}"></svg>
   {{ if $series }}
-    <div class="legend" aria-label="图表序列开关">
+    <div class="legend" aria-label="{{ i18n "chart_series_aria" }}">
       {{ range $series }}
+        {{ $label := .label }}
+        {{ if .label_key }}{{ $label = i18n .label_key }}{{ end }}
+        {{ if and (not .label_key) (eq site.Language.Lang "en") .label_en }}{{ $label = .label_en }}{{ end }}
+        {{ if and (not .label_key) (eq site.Language.Lang "zh") .label_zh }}{{ $label = .label_zh }}{{ end }}
         <button
           class="legend-toggle is-active"
           type="button"
           data-series="{{ .key }}"
           aria-pressed="true"
           style="--legend-color: {{ .color | default "#54d690" }}">
-          <i class="legend-dot"></i>{{ .label }}
+          <i class="legend-dot"></i>{{ $label }}
         </button>
       {{ end }}
     </div>

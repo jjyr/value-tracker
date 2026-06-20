@@ -172,6 +172,45 @@ button {
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
 }
 
+.language-switcher {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 34px);
+  align-items: center;
+  gap: 2px;
+  min-height: 28px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.language-option {
+  display: grid;
+  height: 22px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.language-option:hover,
+.language-option:focus-visible {
+  border-color: rgba(103, 212, 255, 0.34);
+  background: rgba(103, 212, 255, 0.08);
+  color: var(--text);
+}
+
+.language-option.is-active {
+  border-color: rgba(84, 214, 144, 0.42);
+  background: linear-gradient(145deg, rgba(84, 214, 144, 0.22), rgba(103, 212, 255, 0.14));
+  color: var(--text);
+}
+
 .status-ok {
   border-color: rgba(84, 214, 144, 0.35);
   color: var(--green);

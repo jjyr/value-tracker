@@ -1,22 +1,56 @@
-const moneyFormatter = new Intl.NumberFormat("en-US", {
+const languageCode = document.documentElement.lang || "en-US";
+const languageKey = (document.documentElement.dataset.lang || languageCode).toLowerCase().startsWith("zh") ? "zh" : "en";
+const languageStorageKey = "value-tracker-language";
+
+const text = {
+  en: {
+    collapse: "Collapse",
+    disclosed: "Disclosed {date}",
+    emptyPie: "No data available.",
+    expand: "Expand",
+    newPositions: "New",
+    portfolioWeight: "Portfolio {value}",
+    reportPeriod: "Report period {period}",
+    sharesValue: "{value} shares",
+    site_title: "Value Tracker"
+  },
+  zh: {
+    collapse: "收起",
+    disclosed: "披露 {date}",
+    emptyPie: "暂无可统计数据。",
+    expand: "展开",
+    newPositions: "新建",
+    portfolioWeight: "组合 {value}",
+    reportPeriod: "报告期 {period}",
+    sharesValue: "{value} 股",
+    site_title: "价值追踪"
+  }
+};
+
+function t(key, params = {}) {
+  const template = (text[languageKey] && text[languageKey][key]) || text.en[key] || key;
+  return Object.entries(params).reduce((output, [name, value]) => output.replaceAll(`{${name}}`, value), template);
+}
+
+const moneyFormatter = new Intl.NumberFormat(languageCode, {
   style: "currency",
   currency: "USD",
   notation: "compact",
   maximumFractionDigits: 2
 });
 
-const percentFormatter = new Intl.NumberFormat("en-US", {
+const percentFormatter = new Intl.NumberFormat(languageCode, {
   maximumFractionDigits: 1,
   minimumFractionDigits: 1,
   signDisplay: "always"
 });
 
-const ratioFormatter = new Intl.NumberFormat("en-US", {
+const ratioFormatter = new Intl.NumberFormat(languageCode, {
   maximumFractionDigits: 1,
   minimumFractionDigits: 1
 });
 
-const shareFormatter = new Intl.NumberFormat("en-US", {
+const shareFormatter = new Intl.NumberFormat(languageCode, {
   maximumFractionDigits: 0
 });
 
@@ -116,16 +150,16 @@ function formatPieValue(row) {
   const value = Number(row.value);
   if (!Number.isFinite(value)) return "--";
   if (row.valueKind === "money") return moneyFormatter.format(value);
-  return `${shareFormatter.format(value)} 股`;
+  return t("sharesValue", { value: shareFormatter.format(value) });
 }
 
 function pieDetailText(row) {
   const details = [];
   if (row.company_name) details.push(row.company_name);
   const weight = Number(row.weight);
-  if (Number.isFinite(weight) && weight > 0) details.push(`组合 ${formatRatio(weight)}`);
+  if (Number.isFinite(weight) && weight > 0) details.push(t("portfolioWeight", { value: formatRatio(weight) }));
   const shares = Number(row.shares);
-  if (Number.isFinite(shares) && shares > 0) details.push(`${shareFormatter.format(shares)} 股`);
+  if (Number.isFinite(shares) && shares > 0) details.push(t("sharesValue", { value: shareFormatter.format(shares) }));
   if (Array.isArray(row.managers) && row.managers.length) details.push(row.managers.join(" / "));
   return details.join(" · ") || "--";
 }
@@ -160,7 +194,7 @@ function setupHoldingPies() {
       .filter((row) => Number.isFinite(row.value) && row.value > 0);
     const total = rows.reduce((sum, row) => sum + row.value, 0);
     if (!rows.length || total <= 0) {
-      container.innerHTML = '<p class="muted">暂无可统计数据。</p>';
+      container.innerHTML = `<p class="muted">${escapeHtml(t("emptyPie"))}</p>`;
       return;
     }
 
@@ -228,11 +262,18 @@ function chartSeriesFor(svg) {
     key: item.key || `series_${index}`,
     valueKey: item.valueKey || "return_pct",
     amountKey: item.amountKey || "value",
-    label: item.label || item.key || `Series ${index + 1}`,
+    label: localizedSeriesLabel(item, index),
     pointClass: item.pointClass || `point-series-${index}`,
     className: item.className || "",
     color: item.color || ["#54d690", "#67d4ff", "#b69cff", "#f3c969", "#ff8a65", "#7dd3fc"][index % 6]
   }));
+}
+
+function localizedSeriesLabel(item, index) {
+  if (item.label_key) return t(item.label_key);
+  if (languageKey === "zh" && item.label_zh) return item.label_zh;
+  if (languageKey === "en" && item.label_en) return item.label_en;
+  return item.label || item.key || `Series ${index + 1}`;
 }
 
 function activeChartSeries(svg) {
@@ -467,12 +508,12 @@ function drawEquityChart(svg) {
       circle.setAttribute("cy", y(point.value));
       const pct = point.value;
       const amount = Number.isFinite(point.amount) ? moneyFormatter.format(point.amount) : "";
-      const disclosure = point.dateMs === hoverDateMs ? "" : `披露 ${point.date.slice(5)}`;
+      const disclosure = point.dateMs === hoverDateMs ? "" : t("disclosed", { date: point.date.slice(5) });
       const details = [amount, disclosure].filter(Boolean).join(" · ");
       const newPositions = point.dateMs === hoverDateMs && hasNewPositionEvents(point) ? point.new_positions : [];
-      const eventPeriod = point.event_report_period ? ` · 报告期 ${escapeHtml(point.event_report_period)}` : "";
+      const eventPeriod = point.event_report_period ? ` · ${escapeHtml(t("reportPeriod", { period: point.event_report_period }))}` : "";
       const newPositionText = newPositions.length
-        ? `<div class="chart-tooltip-event">新建 ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}${eventPeriod}</div>`
+        ? `<div class="chart-tooltip-event">${escapeHtml(t("newPositions"))} ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}${eventPeriod}</div>`
         : "";
       return `<div><span class="chart-tooltip-name" style="color:${item.color}">${escapeHtml(item.label)}</span><strong>${formatPercent(pct)}</strong><span>${details}</span></div>${newPositionText}`;
     });
@@ -556,7 +597,7 @@ function renderRankingExpansion(panel, expanded) {
   const extraRows = body.querySelectorAll(".extra-row");
   button.hidden = !extraRows.length;
   button.setAttribute("aria-expanded", String(expanded));
-  button.querySelector("span").textContent = expanded ? "收起" : "展开";
+  button.querySelector("span").textContent = expanded ? t("collapse") : t("expand");
   extraRows.forEach((row) => row.classList.toggle("is-hidden", !expanded));
 }
 
@@ -721,7 +762,33 @@ function setupTooltips() {
   window.addEventListener("resize", positionTooltip);
 }
 
+function setupLanguageSwitcher() {
+  const options = Array.from(document.querySelectorAll("[data-language-option]"));
+  if (!options.length) return;
+  let basePath = document.documentElement.dataset.basePath || "/";
+  if (!basePath.endsWith("/")) basePath += "/";
+  const path = window.location.pathname;
+  if (!path.startsWith(basePath)) return;
+
+  const relativePath = path.slice(basePath.length);
+  const isZhPath = relativePath === "zh" || relativePath.startsWith("zh/");
+  const unprefixedPath = isZhPath ? relativePath.replace(/^zh\/?/, "") : relativePath;
+  const suffix = `${window.location.search}${window.location.hash}`;
+
+  options.forEach((option) => {
+    const targetLang = option.dataset.languageOption;
+    const targetPath = targetLang === "zh" ? `${basePath}zh/${unprefixedPath}` : `${basePath}${unprefixedPath}`;
+    option.href = `${targetPath}${suffix}`;
+    option.addEventListener("click", () => {
+      if (targetLang === "zh" || targetLang === "en") {
+        localStorage.setItem(languageStorageKey, targetLang);
+      }
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  setupLanguageSwitcher();
   formatMoneyElements();
   formatShareElements();
   setupChartControls();

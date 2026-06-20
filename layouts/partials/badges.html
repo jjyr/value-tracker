@@ -2,24 +2,28 @@
   <div class="badge-list">
     {{ range . }}
       {{ $label := .label }}
+      {{ if and (eq site.Language.Lang "en") .label_en }}{{ $label = .label_en }}{{ end }}
+      {{ if and (eq site.Language.Lang "zh") .label_zh }}{{ $label = .label_zh }}{{ end }}
       {{ $tone := .tone | default "neutral" }}
-      {{ $tip := printf "%s：机构信号标签。" $label }}
+      {{ $tipKey := "badge_tip_signal" }}
       {{ if eq $tone "buying" }}
-        {{ $tip = printf "%s：按本期新建仓与增持美元金额排序得到的买入信号。" $label }}
+        {{ $tipKey = "badge_tip_buying" }}
       {{ else if eq $tone "selling" }}
-        {{ $tip = printf "%s：按本期减持与清仓美元金额排序得到的卖出信号。" $label }}
+        {{ $tipKey = "badge_tip_selling" }}
       {{ else if eq $tone "new" }}
-        {{ $tip = printf "%s：按本期新建仓美元金额排序得到的新建仓信号。" $label }}
+        {{ $tipKey = "badge_tip_new" }}
       {{ else if eq $tone "exit" }}
-        {{ $tip = printf "%s：按本期清仓美元金额排序得到的清仓信号。" $label }}
+        {{ $tipKey = "badge_tip_exit" }}
       {{ else if eq $tone "cleared" }}
-        {{ $tip = "已清仓：追踪机构当前持有市值为 0，但因清仓信号仍进入综合榜。" }}
+        {{ $tipKey = "badge_tip_cleared" }}
       {{ else if eq $tone "key" }}
-        {{ $tip = printf "%s：重点机构当前持有该股票。" $label }}
+        {{ $tipKey = "badge_tip_key_holding" }}
       {{ end }}
+      {{ with .tip_key }}{{ $tipKey = . }}{{ end }}
+      {{ $tip := i18n $tipKey (dict "Name" $label) }}
       {{ with .tip }}{{ $tip = . }}{{ end }}
       {{ with .href }}
-        <a class="activity-badge badge-{{ $tone }} tip-trigger" href="{{ . | replaceRE "^/" "" | relURL }}" data-tooltip="{{ $tip }}">{{ $label }}</a>
+        <a class="activity-badge badge-{{ $tone }} tip-trigger" href="{{ . | replaceRE "^/" "" | relLangURL }}" data-tooltip="{{ $tip }}">{{ $label }}</a>
       {{ else }}
         <span class="activity-badge badge-{{ $tone }} tip-trigger" data-tooltip="{{ $tip }}">{{ $label }}</span>
       {{ end }}

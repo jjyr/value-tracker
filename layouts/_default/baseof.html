@@ -1,10 +1,44 @@
+{{- $basePath := (urls.Parse site.BaseURL).Path | default "/" -}}
+{{- if not (hasPrefix $basePath "/") -}}{{- $basePath = printf "/%s" $basePath -}}{{- end -}}
+{{- if not (hasSuffix $basePath "/") -}}{{- $basePath = printf "%s/" $basePath -}}{{- end -}}
+{{- $pathWithoutBase := replaceRE (printf "^%s" $basePath) "" .RelPermalink -}}
+{{- $pathWithoutLang := replaceRE "^zh/?" "" $pathWithoutBase -}}
 <!doctype html>
-<html lang="{{ site.Language.Locale | default "zh-CN" }}">
+<html lang="{{ site.Language.Locale | default site.Language.Lang }}" data-lang="{{ site.Language.Lang }}" data-base-path="{{ $basePath }}">
   <head>
     <meta charset="utf-8">
+    <script>
+      (() => {
+        try {
+          const storageKey = "value-tracker-language";
+          const html = document.documentElement;
+          let basePath = html.dataset.basePath || "/";
+          if (!basePath.endsWith("/")) basePath += "/";
+          const path = window.location.pathname;
+          if (!path.startsWith(basePath)) return;
+
+          const relativePath = path.slice(basePath.length);
+          const isZhPath = relativePath === "zh" || relativePath.startsWith("zh/");
+          const unprefixedPath = isZhPath ? relativePath.replace(/^zh\/?/, "") : relativePath;
+          const stored = localStorage.getItem(storageKey);
+          const storedLang = stored === "zh" || stored === "en" ? stored : "";
+          const browserLangs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
+          const browserLang = browserLangs.some((lang) => String(lang).toLowerCase().startsWith("zh")) ? "zh" : "en";
+          const targetLang = storedLang || (isZhPath ? "zh" : browserLang) || "en";
+          if (targetLang === "zh" && !isZhPath) {
+            window.location.replace(`${basePath}zh/${unprefixedPath}${window.location.search}${window.location.hash}`);
+          } else if (targetLang === "en" && isZhPath) {
+            window.location.replace(`${basePath}${unprefixedPath}${window.location.search}${window.location.hash}`);
+          }
+        } catch (_) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ site.Params.description }}">
-    <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+    <meta name="description" content="{{ i18n "site_description" }}">
+    <title>{{ if .IsHome }}{{ i18n "site_title" }}{{ else }}{{ .Title }} | {{ i18n "site_title" }}{{ end }}</title>
+    <link rel="alternate" hreflang="en" href="{{ printf "%s%s" site.BaseURL $pathWithoutLang }}">
+    <link rel="alternate" hreflang="zh-CN" href="{{ printf "%szh/%s" site.BaseURL $pathWithoutLang }}">
+    <link rel="alternate" hreflang="x-default" href="{{ printf "%s%s" site.BaseURL $pathWithoutLang }}">
     <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
     {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
     <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

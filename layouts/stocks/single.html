@@ -5,7 +5,7 @@
   <main class="page-shell">
     <section class="panel">
       <h1>{{ .Title }}</h1>
-      <p>暂无该股票的数据。</p>
+      <p>{{ i18n "no_stock_data" }}</p>
     </section>
   </main>
 {{ else }}
@@ -15,7 +15,7 @@
   {{ $yahooSymbol := replace $googleSymbol "." "-" }}
   {{ $yahooFinanceURL := printf "https://finance.yahoo.com/quote/%s" $yahooSymbol }}
   <main class="page-shell detail-shell">
-    <a class="back-link" href="{{ site.Home.RelPermalink }}">← 返回首页</a>
+    <a class="back-link" href="{{ site.Home.RelPermalink }}">← {{ i18n "back_home" }}</a>
     <section class="detail-hero">
       <div>
         <p class="eyebrow">{{ $stock.exchange }} · {{ $stock.sector }}</p>
@@ -23,12 +23,12 @@
         <p>{{ $stock.company_name }} · {{ $stock.industry }}</p>
         {{ partial "tags.html" $stock.tags }}
         <div class="detail-hero-links">
-          <a class="external-link" href="{{ $googleFinanceURL }}" target="_blank" rel="noopener noreferrer" aria-label="在 Google Finance 打开 {{ $stock.symbol }}">Google Finance</a>
-          <a class="external-link" href="{{ $yahooFinanceURL }}" target="_blank" rel="noopener noreferrer" aria-label="在 Yahoo Finance 打开 {{ $stock.symbol }}">Yahoo Finance</a>
+          <a class="external-link" href="{{ $googleFinanceURL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ i18n "open_google_finance" (dict "Symbol" $stock.symbol) }}">Google Finance</a>
+          <a class="external-link" href="{{ $yahooFinanceURL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ i18n "open_yahoo_finance" (dict "Symbol" $stock.symbol) }}">Yahoo Finance</a>
         </div>
       </div>
       <div class="quote-card">
-        <span>当前价格</span>
+        <span>{{ i18n "current_price" }}</span>
         <strong>${{ printf "%.2f" $stock.market.price }}</strong>
         <em class="{{ if lt $stock.market.price_change_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.2f%%" $stock.market.price_change_pct }}</em>
       </div>
@@ -38,39 +38,39 @@
       <div class="panel">
         <div class="panel-heading compact">
           <div>
-            <p class="eyebrow">Five Signals</p>
-            <h2>五维度机构信号</h2>
+            <p class="eyebrow">{{ i18n "five_signals" }}</p>
+            <h2>{{ i18n "five_signal_title" }}</h2>
           </div>
         </div>
         <div class="signal-wheel">
           <div class="signal-core">{{ $stock.symbol }}</div>
-          <div class="signal-node n1"><span>买入</span><strong>{{ $stock.metrics.buyers_count }} / {{ $stock.metrics.manager_count }}</strong></div>
-          <div class="signal-node n2"><span>持有</span><strong>{{ $stock.metrics.holders_count }} / {{ $stock.metrics.manager_count }}</strong></div>
-          <div class="signal-node n3"><span>卖出</span><strong>{{ $stock.metrics.sellers_count }} / {{ $stock.metrics.manager_count }}</strong></div>
-          <div class="signal-node n4"><span>估值</span><strong>Fwd {{ $stock.market.forward_pe }}x</strong></div>
-          <div class="signal-node n5"><span>市值</span><strong data-money="{{ $stock.market.market_cap_usd }}">--</strong></div>
+          <div class="signal-node n1"><span>{{ i18n "buy" }}</span><strong>{{ $stock.metrics.buyers_count }} / {{ $stock.metrics.manager_count }}</strong></div>
+          <div class="signal-node n2"><span>{{ i18n "status_unchanged" }}</span><strong>{{ $stock.metrics.holders_count }} / {{ $stock.metrics.manager_count }}</strong></div>
+          <div class="signal-node n3"><span>{{ i18n "sell" }}</span><strong>{{ $stock.metrics.sellers_count }} / {{ $stock.metrics.manager_count }}</strong></div>
+          <div class="signal-node n4"><span>{{ i18n "valuation" }}</span><strong>Fwd {{ $stock.market.forward_pe }}x</strong></div>
+          <div class="signal-node n5"><span>{{ i18n "market_cap" }}</span><strong data-money="{{ $stock.market.market_cap_usd }}">--</strong></div>
         </div>
       </div>
 
       <div class="panel">
         <div class="panel-heading compact">
           <div>
-            <p class="eyebrow">Snapshot</p>
-            <h2>基本信息</h2>
+            <p class="eyebrow">{{ i18n "snapshot" }}</p>
+            <h2>{{ i18n "basic_info" }}</h2>
           </div>
         </div>
         <div class="stat-list">
-          <div><span>市值</span><strong data-money="{{ $stock.market.market_cap_usd }}">--</strong></div>
+          <div><span>{{ i18n "market_cap" }}</span><strong data-money="{{ $stock.market.market_cap_usd }}">--</strong></div>
           <div><span>PE</span><strong>{{ $stock.market.pe }}x</strong></div>
           <div><span>Forward PE</span><strong>{{ $stock.market.forward_pe }}x</strong></div>
           <div><span>PS</span><strong>{{ $stock.market.ps }}x</strong></div>
-          <div><span>机构平均持有价</span><strong>${{ printf "%.2f" $stock.metrics.institutional_avg_holding_price }}</strong></div>
+          <div><span>{{ i18n "institutional_avg_holding_price" }}</span><strong>${{ printf "%.2f" $stock.metrics.institutional_avg_holding_price }}</strong></div>
           <div>
-            <span>重点机构</span>
+            <span>{{ i18n "key_institutions" }}</span>
             {{ with $stock.metrics.key_institution_holders }}
               <div class="badge-list compact-badges">
                 {{ range . }}
-                  <span class="activity-badge badge-key">{{ . }}</span>
+                  <span class="activity-badge badge-key">{{ partial "display-name.html" . }}</span>
                 {{ end }}
               </div>
             {{ else }}
@@ -84,32 +84,26 @@
     <section class="panel">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow">Institutions</p>
-          <h2>机构明细</h2>
+          <p class="eyebrow">{{ i18n "institutions" }}</p>
+          <h2>{{ i18n "institution_detail" }}</h2>
         </div>
       </div>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
             <tr>
-              <th>机构</th>
-              <th>状态</th>
-              <th>报告价</th>
-              <th>变动金额</th>
-              <th>当前持有</th>
-              <th>组合权重</th>
-              <th>披露日期</th>
+              <th>{{ i18n "institution" }}</th>
+              <th>{{ i18n "status" }}</th>
+              <th>{{ i18n "report_price" }}</th>
+              <th>{{ i18n "change_value" }}</th>
+              <th>{{ i18n "current_holding" }}</th>
+              <th>{{ i18n "portfolio_weight" }}</th>
+              <th>{{ i18n "filing_date" }}</th>
             </tr>
           </thead>
           <tbody>
             {{ range $stock.managers }}
               {{ $status := .status | default "" }}
-              {{ $statusLabel := "--" }}
-              {{ if or (eq $status "new_position") (eq $status "unknown_previous") }}{{ $statusLabel = "新建仓" }}{{ end }}
-              {{ if eq $status "added" }}{{ $statusLabel = "增持" }}{{ end }}
-              {{ if eq $status "reduced" }}{{ $statusLabel = "减持" }}{{ end }}
-              {{ if eq $status "exited" }}{{ $statusLabel = "清仓" }}{{ end }}
-              {{ if eq $status "unchanged" }}{{ $statusLabel = "持有" }}{{ end }}
               {{ $badgeTone := "holding" }}
               {{ if or (eq $status "new_position") (eq $status "unknown_previous") (eq $status "added") }}{{ $badgeTone = "buying" }}{{ else if or (eq $status "reduced") (eq $status "exited") }}{{ $badgeTone = "selling" }}{{ end }}
               {{ $currentShares := float (.current_shares | default 0) }}
@@ -130,12 +124,12 @@
               {{ end }}
               <tr>
                 <td>
-                  <a class="stock-link" href="{{ .href | replaceRE "^/" "" | relURL }}">
-                    <strong>{{ .display_name }}</strong>
+                  <a class="stock-link" href="{{ .href | replaceRE "^/" "" | relLangURL }}">
+                    <strong>{{ partial "display-name.html" . }}</strong>
                     <span>{{ .name }}</span>
                   </a>
                 </td>
-                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ $statusLabel }}</span></td>
+                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" (dict "status" $status) }}</span></td>
                 <td>{{ if gt $tradeReportPrice 0.0 }}${{ printf "%.2f" $tradeReportPrice }}{{ else }}--{{ end }}</td>
                 <td><span data-money="{{ .change_value_usd }}">--</span></td>
                 <td><span data-money="{{ .current_value_usd }}">--</span></td>
@@ -148,8 +142,8 @@
       </div>
     </section>
 
-    <footer class="risk-note">
-      本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。
+  <footer class="risk-note">
+      {{ i18n "risk_note_short" }}
     </footer>
   </main>
 {{ end }}

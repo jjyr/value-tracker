@@ -1,0 +1,5 @@
+{{- $key := . -}}
+{{- if reflect.IsMap . -}}
+  {{- $key = .key -}}
+{{- end -}}
+{{- i18n $key -}}

@@ -1,21 +1,21 @@
 {{ with . }}
   <div class="tag-list">
     {{ range . }}
-      {{ $tip := printf "%s 标签" . }}
+      {{ $tipKey := "tag_tip_default" }}
       {{ if eq . "S&P 500" }}
-        {{ $tip = "S&P 500 成分股标签。" }}
+        {{ $tipKey = "tag_tip_sp500" }}
       {{ else if eq . "Nasdaq 100" }}
-        {{ $tip = "Nasdaq 100 成分股标签。" }}
+        {{ $tipKey = "tag_tip_nasdaq100" }}
       {{ else if eq . "Russell 1000" }}
-        {{ $tip = "Russell 1000 成分股标签。" }}
+        {{ $tipKey = "tag_tip_russell1000" }}
       {{ else if eq . "Russell 2000" }}
-        {{ $tip = "Russell 2000 成分股标签。" }}
+        {{ $tipKey = "tag_tip_russell2000" }}
       {{ else if eq . "Russell 3000" }}
-        {{ $tip = "Russell 3000 成分股标签。" }}
+        {{ $tipKey = "tag_tip_russell3000" }}
       {{ else if eq . "Mag7" }}
-        {{ $tip = "Magnificent Seven 大型科技股标签。" }}
+        {{ $tipKey = "tag_tip_mag7" }}
       {{ end }}
-      <span class="tag tip-trigger" data-tooltip="{{ $tip }}">{{ . }}</span>
+      <span class="tag tip-trigger" data-tooltip="{{ i18n $tipKey (dict "Name" .) }}">{{ . }}</span>
     {{ end }}
   </div>
 {{ end }}

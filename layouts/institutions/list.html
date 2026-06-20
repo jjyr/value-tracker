@@ -3,8 +3,8 @@
 <main class="page-shell">
   <section class="panel redirect-panel">
     <meta http-equiv="refresh" content="0; url={{ site.Home.RelPermalink }}">
-    <p>追踪机构列表已合并到首页。</p>
-    <p><a class="ghost-button" href="{{ site.Home.RelPermalink }}">返回首页</a></p>
+    <p>{{ i18n "redirect_institutions" }}</p>
+    <p><a class="ghost-button" href="{{ site.Home.RelPermalink }}">{{ i18n "back_home" }}</a></p>
   </section>
 </main>
 <script>window.location.replace("{{ site.Home.RelPermalink }}");</script>

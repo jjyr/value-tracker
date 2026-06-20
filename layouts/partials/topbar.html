@@ -2,19 +2,20 @@
 {{ $siteBuiltAt := now.Format "2006-01-02T15:04:05Z07:00" }}
 <header class="topbar">
   <div class="topbar-primary">
-    <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="价值追踪 首页">
-      <span class="brand-mark">价</span>
+    <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="{{ i18n "brand_home_aria" }}">
+      <span class="brand-mark">{{ i18n "brand_mark" }}</span>
       <span>
-        <strong>价值追踪</strong>
+        <strong>{{ i18n "site_title" }}</strong>
       </span>
     </a>
-    <nav class="topbar-nav" aria-label="主导航">
-      <a class="topbar-nav-button" href="{{ site.Home.RelPermalink }}">首页</a>
-      <a class="topbar-nav-button" href="{{ "holdings/" | relURL }}">持仓统计</a>
+    <nav class="topbar-nav" aria-label="{{ i18n "nav_label" }}">
+      <a class="topbar-nav-button" href="{{ site.Home.RelPermalink }}">{{ i18n "nav_home" }}</a>
+      <a class="topbar-nav-button" href="{{ "holdings/" | relLangURL }}">{{ i18n "nav_holdings" }}</a>
     </nav>
   </div>
-  <div class="topbar-meta" aria-label="数据状态">
+  <div class="topbar-meta" aria-label="{{ i18n "data_status" }}">
     <span>13F {{ $build.latest_13f_report_period | default "--" }}</span>
-    <span>生成 {{ $siteBuiltAt }}</span>
+    <span>{{ i18n "generated" }} {{ $siteBuiltAt }}</span>
+    {{ partial "language-switcher.html" . }}
   </div>
 </header>

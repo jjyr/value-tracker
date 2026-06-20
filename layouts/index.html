@@ -37,12 +37,12 @@
 <main class="page-shell home-page">
   <section class="home-hero">
     <div>
-      <p class="eyebrow">Tracked Institutions</p>
-      <h1>机构收益追踪</h1>
-      <p>按 YTD 收益排序，查看重点机构 13F 持仓组合的涨跌、回撤、当前持仓和最近变动。</p>
+      <p class="eyebrow">{{ i18n "tracked_institutions" }}</p>
+      <h1>{{ i18n "home_title" }}</h1>
+      <p>{{ i18n "home_subtitle" }}</p>
     </div>
     <div class="directory-summary">
-      <span>追踪机构</span>
+      <span>{{ i18n "home_institution_count" }}</span>
       <strong>{{ len $institutionItems }}</strong>
     </div>
   </section>
@@ -50,19 +50,19 @@
   <section class="home-chart-row">
     {{ partial "equity-chart.html" (dict
       "className" "home-equity-panel"
-      "eyebrow" "Equity Curve"
-      "title" "重点机构 vs SPY / QQQ"
+      "eyebrow" (i18n "equity_curve")
+      "title" (i18n "home_chart_title")
       "points" $benchmarkPoints
       "series" $chartSeries
       "range" "ytd"
-      "ariaLabel" "重点机构收益曲线"
+      "ariaLabel" (i18n "home_chart_aria")
     ) }}
     <section class="panel home-note-panel">
-      <p>13F 数据有披露延迟；持仓效率自 {{ $curveStartDate | default "2024-01-02" }} 起计算，机构收益曲线按公开持仓和市场价格估算，不代表实时持仓或投资建议。</p>
+      <p>{{ i18n "home_risk_note_start" (dict "StartDate" ($curveStartDate | default "2024-01-02")) }}</p>
     </section>
   </section>
 
-  <section class="institution-rank-grid" id="institutions" aria-label="追踪机构涨跌情况">
+  <section class="institution-rank-grid" id="institutions" aria-label="{{ i18n "home_grid_aria" }}">
       {{ range $rank, $item := $institutionItems }}
         {{ $institution := $item.institution }}
         {{ $summary := $institution.summary }}
@@ -101,7 +101,7 @@
         {{ if gt $otherValue 0.0 }}
           {{ $pieRows = $pieRows | append (dict
             "symbol" "Others"
-            "company_name" (printf "%d 个 <1%% 持仓" $otherCount)
+            "company_name" (i18n "other_small_holdings" (dict "Count" $otherCount))
             "value" $otherValue
             "valueKind" "money"
             "weight" (div (mul $otherValue 100.0) (float ($summary.total_value_usd | default 1)))
@@ -110,10 +110,10 @@
         {{ end }}
         <article class="institution-card institution-performance-card">
           <div class="institution-card-header">
-            <a class="institution-card-main" href="{{ $institution.href | relURL }}">
+            <a class="institution-card-main" href="{{ $institution.href | relLangURL }}">
               <div class="institution-card-mark">{{ add $rank 1 }}</div>
               <div class="institution-card-title">
-                <h2>{{ $institution.display_name }}</h2>
+                <h2>{{ partial "display-name.html" $institution }}</h2>
                 <p>{{ $institution.name }}</p>
               </div>
             </a>
@@ -125,47 +125,47 @@
 
           <div class="institution-metric-grid">
             <div>
-              <span>持仓市值</span>
+              <span>{{ i18n "portfolio_value" }}</span>
               <strong data-money="{{ $summary.total_value_usd }}">--</strong>
             </div>
             <div>
-              <span>今日</span>
+              <span>{{ i18n "today" }}</span>
               <strong class="{{ if lt $daily 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $daily }}</strong>
             </div>
             <div>
-              <span>本月</span>
+              <span>{{ i18n "this_month" }}</span>
               <strong class="{{ if lt $monthly 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $monthly }}</strong>
             </div>
             <div>
-              <span>最大回撤</span>
+              <span>{{ i18n "max_drawdown" }}</span>
               <strong class="negative">{{ printf "%.1f%%" $maxDrawdown }}</strong>
             </div>
           </div>
 
           <div class="institution-card-section">
             <div class="section-title-row">
-              <h3>持仓分布</h3>
-              <span>{{ $summary.holdings_count }} 个持仓</span>
+              <h3>{{ i18n "allocation" }}</h3>
+              <span>{{ i18n "holdings_count" (dict "Count" $summary.holdings_count) }}</span>
             </div>
-            <div class="holding-pie institution-allocation-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ $institution.display_name }}持仓分布"></div>
+            <div class="holding-pie institution-allocation-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ i18n "holding_distribution_aria" (dict "Name" (partial "display-name.html" $institution)) }}"></div>
           </div>
 
           <div class="institution-card-section">
             <div class="section-title-row">
-              <h3>最近变动</h3>
-              <span>Latest 5</span>
+              <h3>{{ i18n "latest_changes" }}</h3>
+              <span>{{ i18n "latest_5" }}</span>
             </div>
             <div class="institution-activity-list compact">
               {{ range first 5 $institution.recent_changes }}
                 {{ $badgeTone := "holding" }}
                 {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
-                <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relURL }}">
-                  <span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span>
+                <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relLangURL }}">
+                  <span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" . }}</span>
                   <strong>{{ .symbol }}</strong>
                   <em data-money="{{ .change_value_usd }}">--</em>
                 </a>
               {{ else }}
-                <span class="muted">本期没有明显变动。</span>
+                <span class="muted">{{ i18n "no_period_changes" }}</span>
               {{ end }}
             </div>
           </div>

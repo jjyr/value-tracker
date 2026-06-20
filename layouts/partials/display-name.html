@@ -1,0 +1,6 @@
+{{- $item := . -}}
+{{- if eq site.Language.Lang "zh" -}}
+  {{- $item.display_name_zh | default $item.display_name | default $item.name | default $item.cik -}}
+{{- else -}}
+  {{- $item.display_name_en | default $item.name | default $item.display_name | default $item.cik -}}
+{{- end -}}

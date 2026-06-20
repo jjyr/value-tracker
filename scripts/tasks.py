@@ -126,7 +126,7 @@ def fetch_pipeline(args: argparse.Namespace, full: bool, allow_rebalance: bool) 
 
 def build() -> None:
     argparse.ArgumentParser(description="Build the Hugo static site from existing data.").parse_args()
-    run(["hugo", "--minify"])
+    run(["hugo", "--minify", "--cleanDestinationDir"])
 
 
 def fetch() -> None:
@@ -154,7 +154,7 @@ def schedule() -> None:
         run_export()
     else:
         fetch_pipeline(args, full=False, allow_rebalance=True)
-    run(["hugo", "--minify"])
+    run(["hugo", "--minify", "--cleanDestinationDir"])
 
 
 def check() -> None:
@@ -175,4 +175,4 @@ def check() -> None:
         ]
     )
     if not args.skip_hugo:
-        run(["hugo", "--minify"])
+        run(["hugo", "--minify", "--cleanDestinationDir"])

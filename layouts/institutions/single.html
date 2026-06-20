@@ -6,16 +6,16 @@
   <main class="page-shell">
     <section class="panel">
       <h1>{{ .Title }}</h1>
-      <p>暂无该机构的数据。</p>
+      <p>{{ i18n "no_institution_data" }}</p>
     </section>
   </main>
 {{ else }}
   <main class="page-shell detail-shell">
-    <a class="back-link" href="{{ site.Home.RelPermalink }}">← 返回首页</a>
+    <a class="back-link" href="{{ site.Home.RelPermalink }}">← {{ i18n "back_home" }}</a>
     <section class="detail-hero">
       <div>
         <p class="eyebrow">Institution · {{ $institution.cik }}</p>
-        <h1>{{ $institution.display_name }}</h1>
+        <h1>{{ partial "display-name.html" $institution }}</h1>
         <p>{{ $institution.name }}</p>
       </div>
     </section>
@@ -24,27 +24,27 @@
       <div class="panel">
         <div class="panel-heading compact">
           <div>
-            <p class="eyebrow">Holdings</p>
-            <h2>当前持仓概览</h2>
+            <p class="eyebrow">{{ i18n "holdings" }}</p>
+            <h2>{{ i18n "current_holdings_overview" }}</h2>
           </div>
         </div>
         <div class="stat-list">
-          <div><span>持仓数量</span><strong>{{ $institution.summary.holdings_count }}</strong></div>
-          <div><span>本期变动</span><strong>{{ $institution.summary.changes_count }}</strong></div>
-          <div><span>持有市值</span><strong data-money="{{ $institution.summary.total_value_usd }}">--</strong></div>
-          <div><span>买入金额</span><strong data-money="{{ $institution.summary.bought_value_usd }}">--</strong></div>
-          <div><span>卖出金额</span><strong data-money="{{ $institution.summary.sold_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "holdings_number" }}</span><strong>{{ $institution.summary.holdings_count }}</strong></div>
+          <div><span>{{ i18n "period_changes" }}</span><strong>{{ $institution.summary.changes_count }}</strong></div>
+          <div><span>{{ i18n "portfolio_value" }}</span><strong data-money="{{ $institution.summary.total_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "bought_value" }}</span><strong data-money="{{ $institution.summary.bought_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "sold_value" }}</span><strong data-money="{{ $institution.summary.sold_value_usd }}">--</strong></div>
         </div>
       </div>
 
       {{ with $historicalCurve }}
         {{ partial "equity-chart.html" (dict
           "eyebrow" "13F Curve"
-          "title" (printf "%s vs SPY / QQQ" $institution.display_name)
+          "title" (printf "%s vs SPY / QQQ" (partial "display-name.html" $institution))
           "points" .benchmark_curve
           "series" .chart_series
           "range" "all"
-          "ariaLabel" (printf "%s 13F 持仓收益曲线" $institution.display_name)
+          "ariaLabel" (printf "%s 13F" (partial "display-name.html" $institution))
         ) }}
       {{ end }}
     </section>
@@ -52,21 +52,21 @@
     <section class="panel">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow">Portfolio</p>
-          <h2>当前持仓</h2>
+          <p class="eyebrow">{{ i18n "portfolio" }}</p>
+          <h2>{{ i18n "current_holdings" }}</h2>
         </div>
       </div>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
             <tr>
-              <th>股票</th>
-              <th>状态</th>
-              <th>当前持有</th>
-              <th>组合权重</th>
-              <th>价格</th>
-              <th>估值</th>
-              <th>披露日期</th>
+              <th>{{ i18n "stock" }}</th>
+              <th>{{ i18n "status" }}</th>
+              <th>{{ i18n "current_holding" }}</th>
+              <th>{{ i18n "portfolio_weight" }}</th>
+              <th>{{ i18n "price" }}</th>
+              <th>{{ i18n "valuation" }}</th>
+              <th>{{ i18n "filing_date" }}</th>
             </tr>
           </thead>
           <tbody>
@@ -75,12 +75,12 @@
               {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
               <tr>
                 <td>
-                  <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relURL }}">
+                  <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relLangURL }}">
                     <strong>{{ .symbol }}</strong>
                     <span>{{ .company_name }}</span>
                   </a>
                 </td>
-                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span></td>
+                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" . }}</span></td>
                 <td><span data-money="{{ .current_value_usd }}">--</span></td>
                 <td>{{ printf "%.2f%%" .portfolio_weight_pct }}</td>
                 <td>
@@ -104,21 +104,21 @@
     <section class="panel">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow">Changes</p>
-          <h2>最近变动明细</h2>
+          <p class="eyebrow">{{ i18n "latest_changes" }}</p>
+          <h2>{{ i18n "recent_change_details" }}</h2>
         </div>
       </div>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
             <tr>
-              <th>股票</th>
-              <th>状态</th>
-              <th>变动金额</th>
-              <th>报告价</th>
-              <th>变动股数</th>
-              <th>当前持有</th>
-              <th>披露日期</th>
+              <th>{{ i18n "stock" }}</th>
+              <th>{{ i18n "status" }}</th>
+              <th>{{ i18n "change_value" }}</th>
+              <th>{{ i18n "report_price" }}</th>
+              <th>{{ i18n "change_shares" }}</th>
+              <th>{{ i18n "current_holding" }}</th>
+              <th>{{ i18n "filing_date" }}</th>
             </tr>
           </thead>
           <tbody>
@@ -127,12 +127,12 @@
               {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
               <tr>
                 <td>
-                  <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relURL }}">
+                  <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relLangURL }}">
                     <strong>{{ .symbol }}</strong>
                     <span>{{ .company_name }}</span>
                   </a>
                 </td>
-                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span></td>
+                <td><span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" . }}</span></td>
                 <td><span data-money="{{ .change_value_usd }}">--</span></td>
                 <td>{{ if gt .trade_report_price 0.0 }}${{ printf "%.2f" .trade_report_price }}{{ else }}--{{ end }}</td>
                 <td>{{ printf "%+.0f" .change_shares }}</td>
@@ -146,7 +146,7 @@
     </section>
 
     <footer class="risk-note">
-      本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。
+      {{ i18n "risk_note_short" }}
     </footer>
   </main>
 {{ end }}

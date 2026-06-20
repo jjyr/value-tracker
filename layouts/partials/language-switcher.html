@@ -1,0 +1,9 @@
+{{- $basePath := (urls.Parse site.BaseURL).Path | default "/" -}}
+{{- if not (hasPrefix $basePath "/") -}}{{- $basePath = printf "/%s" $basePath -}}{{- end -}}
+{{- if not (hasSuffix $basePath "/") -}}{{- $basePath = printf "%s/" $basePath -}}{{- end -}}
+{{- $pathWithoutBase := replaceRE (printf "^%s" $basePath) "" .RelPermalink -}}
+{{- $pathWithoutLang := replaceRE "^zh/?" "" $pathWithoutBase -}}
+<div class="language-switcher" aria-label="Language">
+  <a class="language-option {{ if eq site.Language.Lang "en" }}is-active{{ end }}" href="{{ printf "%s%s" $basePath $pathWithoutLang }}" data-language-option="en" hreflang="en" aria-label="English"{{ if eq site.Language.Lang "en" }} aria-current="true"{{ end }}>EN</a>
+  <a class="language-option {{ if eq site.Language.Lang "zh" }}is-active{{ end }}" href="{{ printf "%szh/%s" $basePath $pathWithoutLang }}" data-language-option="zh" hreflang="zh-CN" aria-label="中文"{{ if eq site.Language.Lang "zh" }} aria-current="true"{{ end }}>中</a>
+</div>

@@ -1,0 +1,419 @@
+[site_title]
+other = "Value Tracker"
+
+[site_description]
+other = "Value Tracker tracks the trades of value investors, helping you see what they buy, sell, and hold over time."
+
+[brand_mark]
+other = "V"
+
+[brand_home_aria]
+other = "Value Tracker home"
+
+[nav_label]
+other = "Primary navigation"
+
+[nav_home]
+other = "Home"
+
+[nav_holdings]
+other = "Position Stats"
+
+[data_status]
+other = "Data status"
+
+[snapshot]
+other = "Snapshot"
+
+[generated]
+other = "Generated"
+
+[back_home]
+other = "Back home"
+
+[about]
+other = "About"
+
+[stocks]
+other = "Stocks"
+
+[tracked_institutions]
+other = "Tracked Institutions"
+
+[home_title]
+other = "Institution Return Tracker"
+
+[home_subtitle]
+other = "Ranked by YTD return. See key institutions' 13F portfolio performance, drawdowns, current holdings, and latest changes."
+
+[home_institution_count]
+other = "Tracked institutions"
+
+[equity_curve]
+other = "Equity Curve"
+
+[home_chart_title]
+other = "Key Institutions vs SPY / QQQ"
+
+[home_chart_aria]
+other = "Key institution return curve"
+
+[home_risk_note]
+other = "13F disclosures are delayed. Institution return curves are estimates based on public holdings and market prices; they are not real-time holdings or investment advice."
+
+[home_risk_note_start]
+other = "13F disclosures are delayed. Holding efficiency is calculated from {{ .StartDate }}; institution return curves are estimates based on public holdings and market prices, not real-time holdings or investment advice."
+
+[home_grid_aria]
+other = "Tracked institution performance"
+
+[portfolio_value]
+other = "Portfolio value"
+
+[today]
+other = "Today"
+
+[this_month]
+other = "This month"
+
+[max_drawdown]
+other = "Max drawdown"
+
+[allocation]
+other = "Allocation"
+
+[holdings_count]
+other = "{{ .Count }} holdings"
+
+[other_small_holdings]
+other = "{{ .Count }} holdings under 1%"
+
+[latest_changes]
+other = "Latest changes"
+
+[latest_5]
+other = "Latest 5"
+
+[no_period_changes]
+other = "No material changes this period."
+
+[holding_distribution_aria]
+other = "{{ .Name }} allocation"
+
+[institution_positions]
+other = "Institution Positions"
+
+[holdings_hero_text]
+other = "Top 10 by institutional buys, sells, and current shares held, with each stock's share of the group total."
+
+[report_period]
+other = "Report Period"
+
+[stats_period]
+other = "Stats period"
+
+[report_change_period]
+other = "13F change period"
+
+[covered_period]
+other = "Covered period:"
+
+[holdings_risk_note]
+other = "13F disclosures are delayed. These stats only reflect whitelisted institutions' public report-period changes and do not represent real-time holdings."
+
+[ranking_buying_title]
+other = "Most Bought"
+
+[ranking_buying_description]
+other = "Ranked by shares newly opened or added by whitelisted institutions in this period"
+
+[ranking_buying_sort_label]
+other = "Bought shares"
+
+[ranking_selling_title]
+other = "Most Sold"
+
+[ranking_selling_description]
+other = "Ranked by shares reduced or exited by whitelisted institutions in this period"
+
+[ranking_selling_sort_label]
+other = "Sold shares"
+
+[ranking_holding_title]
+other = "Most Held"
+
+[ranking_holding_description]
+other = "Ranked by current shares held by whitelisted institutions"
+
+[ranking_holding_sort_label]
+other = "Held shares"
+
+[holding_period_quarter]
+other = "Latest quarter"
+
+[holding_period_half_year]
+other = "Latest half year"
+
+[holding_period_one_year]
+other = "Latest year"
+
+[holding_period_ytd]
+other = "YTD"
+
+[holding_period_all]
+other = "All"
+
+[chart_range_aria]
+other = "Chart range"
+
+[chart_series_aria]
+other = "Chart series toggles"
+
+[holding_share_chart_aria]
+other = "{{ .Title }} share chart"
+
+[buy]
+other = "Buy"
+
+[sell]
+other = "Sell"
+
+[change]
+other = "Change"
+
+[shares]
+other = "shares"
+
+[status_new_position]
+other = "New"
+
+[status_added]
+other = "Added"
+
+[status_reduced]
+other = "Reduced"
+
+[status_exited]
+other = "Exited"
+
+[status_unchanged]
+other = "Held"
+
+[status_unknown]
+other = "--"
+
+[badge_tip_signal]
+other = "{{ .Name }}: institutional signal tag."
+
+[badge_tip_buying]
+other = "{{ .Name }}: buying signal ranked by new-position and added dollar value this period."
+
+[badge_tip_selling]
+other = "{{ .Name }}: selling signal ranked by reduced and exited dollar value this period."
+
+[badge_tip_new]
+other = "{{ .Name }}: new-position signal ranked by new-position dollar value this period."
+
+[badge_tip_exit]
+other = "{{ .Name }}: exit signal ranked by exited dollar value this period."
+
+[badge_tip_cleared]
+other = "Exited: tracked institutions currently hold $0, but the stock remains listed because of the exit signal."
+
+[badge_tip_key_new_position]
+other = "{{ .Name }}: key institution opened a new position this period."
+
+[badge_tip_key_added]
+other = "{{ .Name }}: key institution added this stock this period."
+
+[badge_tip_key_reduced]
+other = "{{ .Name }}: key institution reduced this stock this period."
+
+[badge_tip_key_exited]
+other = "{{ .Name }}: key institution exited this stock this period."
+
+[badge_tip_key_holding]
+other = "{{ .Name }}: key institution currently holds this stock."
+
+[badge_tip_key_related]
+other = "{{ .Name }}: key institution has a signal related to this stock."
+
+[manager_tip_holding]
+other = "{{ .Name }}: institution holds this stock."
+
+[manager_tip_current_holding]
+other = "{{ .Name }}: currently holds this stock."
+
+[manager_tip_buying]
+other = "{{ .Name }}: bought or added this stock this period."
+
+[manager_tip_selling]
+other = "{{ .Name }}: sold or exited this stock this period."
+
+[tag_tip_default]
+other = "{{ .Name }} tag."
+
+[tag_tip_sp500]
+other = "S&P 500 constituent tag."
+
+[tag_tip_nasdaq100]
+other = "Nasdaq 100 constituent tag."
+
+[tag_tip_russell1000]
+other = "Russell 1000 constituent tag."
+
+[tag_tip_russell2000]
+other = "Russell 2000 constituent tag."
+
+[tag_tip_russell3000]
+other = "Russell 3000 constituent tag."
+
+[tag_tip_mag7]
+other = "Magnificent Seven mega-cap tech tag."
+
+[redirect_institutions]
+other = "The tracked institution list has moved to the home page."
+
+[current_price]
+other = "Current price"
+
+[five_signals]
+other = "Five Signals"
+
+[five_signal_title]
+other = "Five Institutional Signals"
+
+[valuation]
+other = "Valuation"
+
+[market_cap]
+other = "Market cap"
+
+[basic_info]
+other = "Basic Info"
+
+[institutional_avg_holding_price]
+other = "Institution avg holding price"
+
+[key_institutions]
+other = "Key institutions"
+
+[institutions]
+other = "Institutions"
+
+[institution_detail]
+other = "Institution details"
+
+[institution]
+other = "Institution"
+
+[status]
+other = "Status"
+
+[report_price]
+other = "Report price"
+
+[change_value]
+other = "Change value"
+
+[current_holding]
+other = "Current holding"
+
+[portfolio_weight]
+other = "Portfolio weight"
+
+[filing_date]
+other = "Filing date"
+
+[no_stock_data]
+other = "No data for this stock."
+
+[no_institution_data]
+other = "No data for this institution."
+
+[open_google_finance]
+other = "Open {{ .Symbol }} in Google Finance"
+
+[open_yahoo_finance]
+other = "Open {{ .Symbol }} in Yahoo Finance"
+
+[holdings]
+other = "Holdings"
+
+[current_holdings_overview]
+other = "Current holdings overview"
+
+[holdings_number]
+other = "Holdings"
+
+[period_changes]
+other = "Period changes"
+
+[bought_value]
+other = "Bought value"
+
+[sold_value]
+other = "Sold value"
+
+[portfolio]
+other = "Portfolio"
+
+[current_holdings]
+other = "Current holdings"
+
+[stock]
+other = "Stock"
+
+[price]
+other = "Price"
+
+[recent_change_details]
+other = "Latest change details"
+
+[change_shares]
+other = "Changed shares"
+
+[risk_note_short]
+other = "This page is for research and information only and is not investment advice. 13F disclosures are delayed; institutional changes do not mean the institution still holds the position now."
+
+[source_institutional_buying]
+other = "Buying Top 10"
+
+[source_institutional_holding]
+other = "Holding Top 10"
+
+[source_institutional_selling]
+other = "Selling Top 10"
+
+[source_key_new_position]
+other = "Key institution new position"
+
+[source_key_added]
+other = "Key institution added"
+
+[source_key_holding]
+other = "Key institution holding"
+
+[source_key_buy_intensity]
+other = "Key institution buy intensity"
+
+[source_below_key_latest_buy]
+other = "Below key institution latest buy price"
+
+[source_key_reduced]
+other = "Key institution reduced"
+
+[source_key_exit]
+other = "Key institution exited"
+
+[source_key_signal]
+other = "Key institution signal"
+
+[rebalance_reason_target_zero]
+other = "Target weight fell to 0"
+
+[rebalance_reason_target_down]
+other = "Target weight decreased"
+
+[rebalance_reason_not_target]
+other = "Not in target holdings this period"

@@ -1,11 +1,30 @@
 baseURL = "https://jjylab.com/value-tracker/"
-locale = "zh-CN"
-title = "价值追踪"
+defaultContentLanguage = "en"
+title = "Value Tracker"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap", "robotsTXT"]
 
 [params]
   description = "Value Tracker tracks the trades of value investors, helping you see what they buy, sell, and hold over time."
   buildStatus = "MVP"
+
+[languages]
+  [languages.en]
+    locale = "en-US"
+    label = "English"
+    contentDir = "content/en"
+    weight = 1
+    title = "Value Tracker"
+    [languages.en.params]
+      description = "Value Tracker tracks the trades of value investors, helping you see what they buy, sell, and hold over time."
+
+  [languages.zh]
+    locale = "zh-CN"
+    label = "中文"
+    contentDir = "content/zh"
+    weight = 2
+    title = "价值追踪"
+    [languages.zh.params]
+      description = "价值追踪追踪价值投资机构的 13F 交易和持仓，帮助你观察它们买入、卖出和长期持有的股票。"
 
 [markup.goldmark.renderer]
   unsafe = true
