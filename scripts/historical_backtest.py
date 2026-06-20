@@ -1053,6 +1053,7 @@ def build_key_institution_curves(
                 "latest_value": points[-1]["value"],
                 "latest_return_pct": points[-1]["return_pct"],
                 "latest_total_value_usd": points[-1]["total_value_usd"],
+                **hugo_data.curve_return_performance_summary(points),
             },
         }
     return curves
@@ -1416,7 +1417,7 @@ def run_simulation(
         final_date,
         initial_value,
     )
-    equity_chart_series = base_chart_series() + [curve_data["series"] for curve_data in key_institution_curves.values()]
+    equity_chart_series = [curve_data["series"] for curve_data in key_institution_curves.values()] + base_chart_series()[1:]
 
     current_positions = []
     for symbol, position in sorted(

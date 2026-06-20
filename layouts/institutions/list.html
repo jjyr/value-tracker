@@ -1,92 +1,11 @@
 {{ define "main" }}
 {{ partial "topbar.html" . }}
-{{ $institutions := hugo.Data.stockhunt.institutions }}
-{{ $order := hugo.Data.stockhunt.tracked_institution_order }}
 <main class="page-shell">
-  <section class="directory-hero">
-    <div>
-      <p class="eyebrow">Tracked Institutions</p>
-      <h1>{{ .Title }}</h1>
-      <p>当前白名单机构及其最新 13F 持仓概览。点击机构可以查看持仓明细与最近变动。</p>
-    </div>
-    <div class="directory-summary">
-      <span>机构数量</span>
-      <strong>{{ len $institutions }}</strong>
-    </div>
-  </section>
-
-  <section class="institution-directory" aria-label="追踪机构列表">
-    {{ range $order }}
-      {{ $institution := index $institutions .cik }}
-      {{ with $institution }}
-      {{ $summary := .summary }}
-      <article class="institution-card">
-        <a class="institution-card-main" href="{{ .href | relURL }}">
-          <div class="institution-card-mark">{{ .display_name }}</div>
-          <div class="institution-card-title">
-            <h2>{{ .display_name }}</h2>
-            <p>{{ .name }}</p>
-          </div>
-        </a>
-        <div class="institution-card-stats">
-          <div class="institution-stat-primary">
-            <span>持有市值</span>
-            <strong data-money="{{ $summary.total_value_usd }}">--</strong>
-          </div>
-          <div class="institution-stat-meta">
-            <span>持仓 <strong>{{ $summary.holdings_count }}</strong></span>
-            <span>本期变动 <strong>{{ $summary.changes_count }}</strong></span>
-          </div>
-          <div class="institution-stat-flow">
-            <span class="positive">买入 <strong data-money="{{ $summary.bought_value_usd }}">--</strong></span>
-            <span class="negative">卖出 <strong data-money="{{ $summary.sold_value_usd }}">--</strong></span>
-          </div>
-        </div>
-        <div class="institution-card-section">
-          <h3>Top 10 持仓</h3>
-          <div class="institution-holding-list">
-            {{ range first 10 .holdings }}
-              <a class="institution-holding" href="{{ printf "stocks/%s/" .slug | relURL }}">
-                <div class="institution-holding-main">
-                  <div class="institution-holding-name">
-                    <strong>{{ .symbol }}</strong>
-                    <span>{{ .company_name }}</span>
-                  </div>
-                  <div class="institution-holding-sub">
-                    <span><strong data-shares="{{ .current_shares }}">--</strong> 股</span>
-                    <span>均价 <strong>${{ printf "%.2f" .avg_holding_price }}</strong></span>
-                  </div>
-                </div>
-                <div class="institution-holding-weight">
-                  <strong>{{ printf "%.1f%%" .portfolio_weight_pct }}</strong>
-                  <em data-money="{{ .current_value_usd }}">--</em>
-                  <span>持有市值</span>
-                </div>
-              </a>
-            {{ else }}
-              <span class="muted">暂无持仓。</span>
-            {{ end }}
-          </div>
-        </div>
-        <div class="institution-card-section">
-          <h3>最近变动</h3>
-          <div class="institution-activity-list">
-            {{ range first 50 .recent_changes }}
-              {{ $badgeTone := "holding" }}
-              {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
-              <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relURL }}">
-                <span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span>
-                <strong>{{ .symbol }}</strong>
-                <em data-money="{{ .change_value_usd }}">--</em>
-              </a>
-            {{ else }}
-              <span class="muted">本期没有明显变动。</span>
-            {{ end }}
-          </div>
-        </div>
-      </article>
-      {{ end }}
-    {{ end }}
+  <section class="panel redirect-panel">
+    <meta http-equiv="refresh" content="0; url={{ site.Home.RelPermalink }}">
+    <p>追踪机构列表已合并到首页。</p>
+    <p><a class="ghost-button" href="{{ site.Home.RelPermalink }}">返回首页</a></p>
   </section>
 </main>
+<script>window.location.replace("{{ site.Home.RelPermalink }}");</script>
 {{ end }}

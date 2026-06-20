@@ -1,7 +1,4 @@
 {{ $build := hugo.Data.stockhunt.build }}
-{{ $sim := hugo.Data.stockhunt.simulation }}
-{{ $snapshotDate := $build.market_data_date | default $build.data_date | default "--" }}
-{{ $simulationDate := $sim.meta.end_date | default $snapshotDate }}
 {{ $siteBuiltAt := now.Format "2006-01-02T15:04:05Z07:00" }}
 <header class="topbar">
   <div class="topbar-primary">
@@ -12,16 +9,12 @@
       </span>
     </a>
     <nav class="topbar-nav" aria-label="主导航">
-      <a class="topbar-nav-button" href="{{ printf "%s#simulation" site.Home.RelPermalink }}">模拟盘</a>
+      <a class="topbar-nav-button" href="{{ site.Home.RelPermalink }}">首页</a>
       <a class="topbar-nav-button" href="{{ "holdings/" | relURL }}">持仓统计</a>
-      <a class="topbar-nav-button" href="{{ "institutions/" | relURL }}">追踪机构</a>
     </nav>
   </div>
   <div class="topbar-meta" aria-label="数据状态">
-    <span class="status-pill status-{{ lower ($build.status | default "unknown") }}">{{ $build.status | default "--" }}</span>
     <span>13F {{ $build.latest_13f_report_period | default "--" }}</span>
-    <span>快照 {{ $snapshotDate }}</span>
-    <span>模拟截至 {{ $simulationDate }}</span>
     <span>生成 {{ $siteBuiltAt }}</span>
   </div>
 </header>

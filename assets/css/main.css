@@ -201,47 +201,6 @@ button {
   height: 100%;
 }
 
-.panel.simulation-rule-panel {
-  padding: 0;
-}
-
-.simulation-rule-panel + .dashboard-grid {
-  margin-top: var(--section-gap);
-}
-
-.simulation-rule-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 58px;
-  padding: 13px var(--panel-pad);
-}
-
-.simulation-rule-heading > span:first-child {
-  display: grid;
-  gap: 3px;
-}
-
-.simulation-rule-heading strong {
-  color: var(--text);
-  font-size: 17px;
-}
-
-.rule-copy {
-  display: grid;
-  max-width: 960px;
-  gap: 6px;
-  padding: 0 var(--panel-pad) 16px;
-}
-
-.rule-copy p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.55;
-}
-
 .panel {
   overflow: hidden;
   border: 1px solid var(--line);
@@ -484,10 +443,6 @@ h3 {
   stroke-linejoin: round;
 }
 
-.line-portfolio {
-  stroke: var(--green);
-}
-
 .line-spy {
   stroke: var(--cyan);
 }
@@ -521,11 +476,6 @@ h3 {
   opacity: 0.95;
   stroke: var(--bg);
   stroke-width: 1.8;
-}
-
-.point-portfolio {
-  fill: var(--green);
-  color: var(--green);
 }
 
 .point-spy {
@@ -651,10 +601,6 @@ h3 {
   height: 8px;
   border-radius: 50%;
   background: var(--legend-color, var(--green));
-}
-
-.legend-dot.portfolio {
-  background: var(--green);
 }
 
 .legend-dot.spy {
@@ -1273,11 +1219,13 @@ button.tip-trigger,
 }
 
 .holding-pie-slice {
-  stroke: rgba(9, 11, 15, 0.92);
-  stroke-width: 2;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 0.7;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
   outline: none;
   cursor: pointer;
-  transition: filter 140ms ease, opacity 140ms ease, transform 140ms ease;
+  transition: filter 140ms ease, opacity 140ms ease, stroke 140ms ease, transform 140ms ease;
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -1285,6 +1233,7 @@ button.tip-trigger,
 .holding-pie-slice:hover,
 .holding-pie-slice:focus-visible {
   filter: brightness(1.16);
+  stroke: rgba(255, 255, 255, 0.38);
   transform: scale(1.012);
 }
 
@@ -1598,6 +1547,64 @@ button.tip-trigger,
   line-height: 1.7;
 }
 
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 18px;
+  align-items: end;
+  margin-bottom: var(--section-gap);
+  padding: clamp(22px, 2vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(103, 212, 255, 0.08), rgba(84, 214, 144, 0.05)),
+    var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.home-hero h1 {
+  margin-bottom: 10px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1;
+}
+
+.home-hero p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.home-chart-row {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.institution-rank-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.home-equity-panel {
+  min-height: 460px;
+}
+
+.home-equity-panel .equity-chart {
+  min-height: 300px;
+}
+
+.home-note-panel {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.home-note-panel p {
+  margin: 0;
+}
+
 .directory-summary {
   display: grid;
   gap: 6px;
@@ -1642,6 +1649,18 @@ button.tip-trigger,
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)), var(--surface);
 }
 
+.institution-performance-card {
+  gap: 18px;
+}
+
+.institution-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+}
+
 .institution-card-main {
   display: flex;
   align-items: flex-start;
@@ -1677,6 +1696,57 @@ button.tip-trigger,
   color: var(--muted);
   font-size: 12px;
   line-height: 1.55;
+}
+
+.institution-ytd {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  min-width: 92px;
+  padding-top: 6px;
+}
+
+.institution-ytd span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.institution-ytd strong {
+  font-size: 26px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.institution-metric-grid {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(3, minmax(92px, 1fr));
+  gap: 10px;
+}
+
+.institution-metric-grid > div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.institution-metric-grid span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 740;
+}
+
+.institution-metric-grid strong {
+  display: block;
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 890;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .institution-card-stats {
@@ -1755,6 +1825,59 @@ button.tip-trigger,
 
 .institution-card-section h3 {
   margin: 0;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-title-row span {
+  color: var(--muted-2);
+  font-size: 11px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.institution-allocation-pie {
+  grid-template-columns: 188px minmax(0, 1fr);
+  min-height: 214px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.institution-allocation-pie .holding-pie-svg {
+  width: 100%;
+  max-width: 188px;
+}
+
+.institution-allocation-pie .holding-pie-legend {
+  max-height: 190px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.institution-activity-list.compact {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.institution-activity-list.compact .institution-activity {
+  grid-template-columns: 1fr;
+  gap: 5px;
+  align-content: start;
+  min-height: 82px;
+}
+
+.institution-activity-list.compact .activity-badge {
+  width: max-content;
+}
+
+.institution-activity-list.compact em {
+  text-align: left;
 }
 
 .institution-holding-list {
@@ -2116,8 +2239,13 @@ button.tip-trigger,
 @media (max-width: 1180px) {
   .dashboard-grid,
   .detail-grid,
-  .holding-stat-section {
+  .holding-stat-section,
+  .institution-rank-grid {
     grid-template-columns: 1fr;
+  }
+
+  .home-equity-panel {
+    min-height: 420px;
   }
 
   .institution-directory {
@@ -2170,11 +2298,37 @@ button.tip-trigger,
     grid-template-columns: 1fr;
   }
 
-  .simulation-rule-heading,
+  .home-hero,
   .holding-period-panel,
   .holdings-page .holdings-hero {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .institution-card-header,
+  .institution-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .institution-card-header {
+    flex-direction: column;
+  }
+
+  .institution-ytd {
+    justify-items: start;
+    min-width: 0;
+  }
+
+  .institution-allocation-pie {
+    grid-template-columns: 1fr;
+  }
+
+  .institution-activity-list.compact {
+    grid-template-columns: 1fr;
   }
 
   .holding-period-field,

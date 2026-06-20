@@ -125,9 +125,55 @@ def simulation_performance_summary(curve: List[Dict[str, Any]]) -> Dict[str, flo
     return summary
 
 
+def curve_return_performance_summary(curve: List[Dict[str, Any]], return_key: str = "return_pct") -> Dict[str, float]:
+    if not curve:
+        return {}
+    current = curve[-1]
+    final_date = parse_date(current["date"])
+    periods = {
+        "daily": final_date - dt.timedelta(days=1),
+        "monthly": dt.date(final_date.year, final_date.month, 1),
+        "three_month": subtract_months(final_date, 3),
+        "six_month": subtract_months(final_date, 6),
+        "ytd": dt.date(final_date.year, 1, 1),
+    }
+
+    def return_index(point: Optional[Dict[str, Any]]) -> Optional[float]:
+        value = point_value(point, return_key)
+        return None if value is None else 1 + value / 100
+
+    summary: Dict[str, float] = {}
+    for key, start_date in periods.items():
+        previous = curve_point_on_or_before(curve, start_date)
+        summary[f"{key}_return_pct"] = round(percent_change(return_index(current), return_index(previous)), 2)
+    values = [1 + float(point[return_key]) / 100 for point in curve if point.get(return_key) is not None]
+    summary["max_drawdown_pct"] = round(max_drawdown_pct(values), 2)
+    return summary
+
+
+def enrich_key_institution_curve_summaries(simulation: Dict[str, Any]) -> None:
+    for curve in (simulation.get("key_institution_curves") or {}).values():
+        points = curve.get("points") or (curve.get("series") or {}).get("points") or []
+        if not points:
+            continue
+        summary = curve.setdefault("summary", {})
+        summary.update(curve_return_performance_summary(points))
+        summary.update(
+            {
+                "start_date": points[0]["date"],
+                "end_date": points[-1]["date"],
+                "points_count": len(points),
+                "latest_value": points[-1].get("value"),
+                "latest_return_pct": points[-1].get("return_pct"),
+                "latest_total_value_usd": points[-1].get("total_value_usd"),
+            }
+        )
+
+
 def enrich_simulation_summary(simulation: Dict[str, Any]) -> Dict[str, Any]:
     summary = simulation.setdefault("summary", {})
     summary.update(simulation_performance_summary(simulation.get("equity_curve") or []))
+    enrich_key_institution_curve_summaries(simulation)
     return simulation
 
 
@@ -1522,7 +1568,7 @@ def build_hugo_data(
     )
     payload = {
         "build": build_metadata(config, snapshot),
-        "simulation": simulation,
+        "institution_curves": simulation.get("key_institution_curves") or {},
         "rankings": current_rankings,
         "holding_periods": holding_periods,
         "stocks": stocks,

@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ partial "topbar.html" . }}
 {{ $institution := index hugo.Data.stockhunt.institutions .Params.cik }}
-{{ $historicalCurve := index hugo.Data.stockhunt.simulation.key_institution_curves .Params.cik }}
+{{ $historicalCurve := index hugo.Data.stockhunt.institution_curves .Params.cik }}
 {{ if not $institution }}
   <main class="page-shell">
     <section class="panel">

@@ -21,7 +21,6 @@ const shareFormatter = new Intl.NumberFormat("en-US", {
 });
 
 const defaultChartSeries = [
-  { key: "value", valueKey: "return_pct", amountKey: "value", label: "Value Tracker", className: "line-portfolio", pointClass: "point-portfolio", color: "#54d690" },
   { key: "spy_value", valueKey: "spy_return_pct", amountKey: "spy_value", label: "SPY", className: "line-spy", pointClass: "point-spy", color: "#67d4ff" },
   { key: "qqq_value", valueKey: "qqq_return_pct", amountKey: "qqq_value", label: "QQQ", className: "line-qqq", pointClass: "point-qqq", color: "#b69cff" }
 ];
@@ -113,6 +112,24 @@ function pieSlicePath(cx, cy, radius, startAngle, endAngle) {
   ].join(" ");
 }
 
+function formatPieValue(row) {
+  const value = Number(row.value);
+  if (!Number.isFinite(value)) return "--";
+  if (row.valueKind === "money") return moneyFormatter.format(value);
+  return `${shareFormatter.format(value)} 股`;
+}
+
+function pieDetailText(row) {
+  const details = [];
+  if (row.company_name) details.push(row.company_name);
+  const weight = Number(row.weight);
+  if (Number.isFinite(weight) && weight > 0) details.push(`组合 ${formatRatio(weight)}`);
+  const shares = Number(row.shares);
+  if (Number.isFinite(shares) && shares > 0) details.push(`${shareFormatter.format(shares)} 股`);
+  if (Array.isArray(row.managers) && row.managers.length) details.push(row.managers.join(" / "));
+  return details.join(" · ") || "--";
+}
+
 function setupHoldingPies() {
   const pies = Array.from(document.querySelectorAll("[data-holding-pie]"));
   if (!pies.length) return;
@@ -176,8 +193,7 @@ function setupHoldingPies() {
       svg.appendChild(slice);
 
       const showTooltip = (event) => {
-        const managers = Array.isArray(row.managers) && row.managers.length ? row.managers.join(" / ") : "--";
-        tooltip.innerHTML = `<strong>${escapeHtml(row.symbol)}</strong><span>${formatRatio(share * 100)} · ${shareFormatter.format(row.value)} 股</span><em>${escapeHtml(managers)}</em>`;
+        tooltip.innerHTML = `<strong>${escapeHtml(row.symbol)}</strong><span>${formatRatio(share * 100)} · ${escapeHtml(formatPieValue(row))}</span><em>${escapeHtml(pieDetailText(row))}</em>`;
         tooltip.classList.add("is-visible");
         positionTooltip(event);
       };

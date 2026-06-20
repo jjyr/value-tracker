@@ -6,8 +6,8 @@
 
 1. 原始接入：Longbridge 当前 13F / 行情、SEC 历史 13F、Longbridge 日 K 线等 provider 生成原始事实或更新缓存。
 2. 规范化：`scripts/stockhunt_backend.py` 在内存中比较最近两个 13F 报告期，生成 `raw/generated/snapshot.yaml`。
-3. 回测：`scripts/historical_backtest.py` 基于 SEC cache 和 Longbridge K 线 cache 生成 2024 至今的周度模拟盘。
-4. 静态导出：`scripts/generate_stockhunt_data.py` 合并 snapshot 和模拟盘，输出 Hugo 读取的 `data/stockhunt.yaml`。
+3. 历史曲线：`scripts/historical_backtest.py` 基于 SEC cache 和 Longbridge K 线 cache 生成重点机构 13F 持仓收益曲线。
+4. 静态导出：`scripts/generate_stockhunt_data.py` 合并 snapshot 和机构曲线，输出 Hugo 读取的 `data/stockhunt.yaml`。
 
 流水线不再维护中间数据库，也不把 live raw input 作为标准产物落盘。可持久化的是最终 YAML 和外部数据 cache。
 
@@ -22,9 +22,9 @@ raw/generated/cache/           SEC / Longbridge K 线 cache
 data/stockhunt.yaml            Hugo 当前消费的数据
 scripts/build_live_input.py    Longbridge live data 调试入口
 scripts/stockhunt_backend.py   raw input -> normalized snapshot
-scripts/historical_backtest.py SEC 历史 13F + Longbridge K 线 -> 周度回测
+scripts/historical_backtest.py SEC 历史 13F + Longbridge K 线 -> 机构收益曲线
 scripts/generate_stockhunt_data.py
-                               snapshot + simulation -> Hugo data
+                               snapshot + institution curves -> Hugo data
 ```
 
 ## 依赖
@@ -74,7 +74,7 @@ uv run fetch
 uv run fetch-all
 ```
 
-定时任务入口。`daily` 只更新价格、净值和收益，不产生新调仓；`weekly` 会增量更新 13F，并允许按规则调仓。两者执行完都会自动 build：
+定时任务入口。`daily` 更新价格和机构曲线；`weekly` 增量更新 13F 并重算机构曲线。两者执行完都会自动 build：
 
 ```bash
 uv run schedule daily
@@ -188,7 +188,7 @@ content/institutions/*.md
 - 当前 snapshot 每次都从 raw input 和配置纯内存重算，不保留中间状态。
 - SEC submissions index 会刷新，用于发现新 13F；已有 filing index / information table XML 继续复用 cache。
 - Longbridge 日 K 线按 symbol 追加缺失日期，不再按每个 `start/end` 重新抓整段。
-- 历史回测会按当前配置重新模拟，但底层 SEC 和 K 线抓取是增量的。
+- 历史曲线会按当前配置重算，但底层 SEC 和 K 线抓取是增量的。
 - `data/stockhunt.yaml` 会重新导出，供后续 `build` 使用。
 - `content/institutions/*.md` 会按白名单机构自动补齐，用于机构详情页。
 
@@ -205,18 +205,14 @@ uv run fetch-all
 - 重新生成当前 Longbridge raw input。
 - 刷新 SEC submissions、filing index、information table XML。
 - 刷新 Longbridge 历史 K 线。
-- 重新计算 snapshot、历史回测和 `data/stockhunt.yaml`。
+- 重新计算 snapshot、机构历史曲线和 `data/stockhunt.yaml`。
 
-### 3. 历史回测规则
+### 3. 机构曲线规则
 
-- 只使用 `filing_date <= rebalance_date` 的 13F，避免提前使用尚未披露的报告期数据。
-- 每周一再平衡；如果周一休市，则顺延到下一个交易日。
-- 每期候选池由“当前模拟盘持仓 + 本期重点机构新建仓或增持股票”组成，普通白名单机构只用于榜单、标签和辅助信息。
-- 目标权重按重点机构信号分线性分配；当前价低于重点机构最近买入价会提高权重，重点机构减持或清仓会降低权重。
-- 买卖按当前仓位到目标仓位的权重缺口分步成交：买入缺口 `< 5%` 时不买，买入缺口 `5%~20%` 时补齐到目标，买入缺口 `> 20%` 时本次买入 `20%` 组合权重；卖出不设 5% 最小缺口，每周最多卖出 `20%` 组合权重，尾仓可直接卖到目标。
+- 只使用当时已经公开披露的 13F 持仓，避免提前使用未来报告。
+- 曲线以重点机构公开持仓的收益指数计算，不把 13F 总持仓规模变化计入收益。
+- 今日、本月、YTD 和最大回撤都基于收益指数口径；持仓市值单独展示为当前公开持仓规模。
 - 价格使用 Longbridge 日 K 线，默认 `period=day`、`adjust=forward`。
-- `schedule daily` 会把 `rebalance_until` 固定在上次调仓日，只追加 Longbridge 价格、更新模拟盘净值和收益，不改目标仓位。
-- `schedule weekly` 不冻结 `rebalance_until`，因此会在新的周度调仓日产生调仓记录和新仓位。
 
 ### 4. 构建静态站点
 
@@ -231,19 +227,19 @@ uv run build
 推荐用两个 schedule：
 
 ```bash
-# 每周调仓：美股周一收盘后，香港时间周二早上执行
+# 每周更新：美股周一收盘后，香港时间周二早上执行
 uv run schedule weekly
 
 # 每日价格和收益更新：美股其他交易日收盘后执行
 uv run schedule daily
 ```
 
-第一次部署先跑一次 `uv run schedule weekly` 或 `uv run fetch-all && uv run build`，生成带有 `last_rebalance_date` 的历史模拟文件；之后 daily 才能冻结上次调仓日，只更新价格和收益。
+第一次部署先跑一次 `uv run schedule weekly` 或 `uv run fetch-all && uv run build`，生成历史机构曲线文件；之后 daily 只更新价格和收益。
 
 cron 示例：
 
 ```cron
-# 周度调仓。周二跑；周三再跑一次用于覆盖周一美股休市顺延的情况。
+# 周度更新。周二跑；周三再跑一次用于覆盖周一美股休市顺延的情况。
 30 8 * * 2,3 cd /Users/jjy/Workspace/stockhunt && uv run schedule weekly >> /tmp/schedule-weekly.log 2>&1
 
 # 日常价格更新。避开周二/周三，防止和 weekly 重复。
@@ -362,8 +358,8 @@ key_institutions:
 修改重点机构会影响：
 
 - 重点机构姓名标签
-- 模拟盘候选池和目标权重
-- 历史周度回测每一期的目标持仓和权重
+- 首页机构收益曲线
+- 机构详情页曲线和图例
 
 如果只改重点机构配置，推荐重新增量计算并 build：
 
@@ -403,7 +399,7 @@ strategy:
     key_exit_penalty: -50
 ```
 
-当前模拟盘默认由历史周度回测生成：每个再平衡日只使用当时已经披露的 13F 和当时价格。候选池只由当前模拟盘持仓和本期重点机构新建仓或增持股票组成。目标权重按重点机构信号分计算，分数使用 `score_weight_exponent` 做幂次归一化，默认 `1.0` 即按分数线性分配。重点机构买入金额占该机构 13F 组合比例越高，`key_buy_intensity_score_per_pct` 贡献的力度分越高，并由 `key_buy_intensity_max_score` 封顶。买卖节奏由 `rebalance_step_weight_pct` 和 `min_buy_gap_weight_pct` 控制：买卖每周最多按 `rebalance_step_weight_pct` 的组合权重执行，买入缺口低于 `min_buy_gap_weight_pct` 时跳过，卖出不设最小缺口以避免尾仓残留。
+当前前端不展示规则化组合回测；策略参数主要保留给历史数据管线中的机构信号计算。首页排序和机构详情曲线使用公开 13F 持仓收益指数。
 
 修改策略参数后，推荐重新抓取并 build：
 

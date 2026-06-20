@@ -1,174 +1,176 @@
 {{ define "main" }}
 {{ $data := hugo.Data.stockhunt }}
-{{ $sim := $data.simulation }}
-{{ $isHistorical := eq $sim.meta.mode "historical_weekly_rebalance" }}
-{{ $metricItems := slice
-  (dict "label" "今日" "value" (default 0 $sim.summary.daily_return_pct) "spy" (default 0 $sim.summary.daily_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.daily_excess_vs_qqq_pct) "drawdown" false)
-  (dict "label" "本月" "value" (default 0 $sim.summary.monthly_return_pct) "spy" (default 0 $sim.summary.monthly_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.monthly_excess_vs_qqq_pct) "drawdown" false)
-  (dict "label" "3 个月" "value" (default 0 $sim.summary.three_month_return_pct) "spy" (default 0 $sim.summary.three_month_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.three_month_excess_vs_qqq_pct) "drawdown" false)
-  (dict "label" "6 个月" "value" (default 0 $sim.summary.six_month_return_pct) "spy" (default 0 $sim.summary.six_month_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.six_month_excess_vs_qqq_pct) "drawdown" false)
-  (dict "label" "YTD" "value" (default 0 $sim.summary.ytd_return_pct) "spy" (default 0 $sim.summary.ytd_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.ytd_excess_vs_qqq_pct) "drawdown" false)
-  (dict "label" "最大回撤" "value" (default 0 $sim.summary.max_drawdown_pct) "spy" (default 0 $sim.summary.max_drawdown_excess_vs_spy_pct) "qqq" (default 0 $sim.summary.max_drawdown_excess_vs_qqq_pct) "drawdown" true)
-}}
+{{ $institutions := $data.institutions }}
+{{ $order := $data.tracked_institution_order }}
+{{ $institutionCurves := $data.institution_curves }}
+{{ $institutionItems := slice }}
+{{ range $order }}
+  {{ $institution := index $institutions .cik }}
+  {{ $curve := index $institutionCurves .cik }}
+  {{ with $institution }}
+    {{ $curveSummary := dict }}
+    {{ with $curve }}{{ $curveSummary = .summary | default (dict) }}{{ end }}
+    {{ $institutionItems = $institutionItems | append (dict
+      "institution" .
+      "curve" $curve
+      "ytd" (float ($curveSummary.ytd_return_pct | default 0))
+    ) }}
+  {{ end }}
+{{ end }}
+{{ $institutionItems = sort $institutionItems "ytd" "desc" }}
+{{ $chartSeries := slice }}
+{{ $benchmarkPoints := slice }}
+{{ $curveStartDate := "" }}
+{{ range $institutionItems }}
+  {{ with .curve }}
+    {{ if not $curveStartDate }}{{ $curveStartDate = .summary.start_date | default "" }}{{ end }}
+    {{ if not $benchmarkPoints }}{{ $benchmarkPoints = .benchmark_curve | default (slice) }}{{ end }}
+    {{ with .series }}{{ $chartSeries = $chartSeries | append . }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ if $benchmarkPoints }}
+  {{ $chartSeries = $chartSeries | append (dict "key" "spy_value" "valueKey" "spy_return_pct" "amountKey" "spy_value" "label" "SPY" "className" "line-spy" "pointClass" "point-spy" "color" "#67d4ff") }}
+  {{ $chartSeries = $chartSeries | append (dict "key" "qqq_value" "valueKey" "qqq_return_pct" "amountKey" "qqq_value" "label" "QQQ" "className" "line-qqq" "pointClass" "point-qqq" "color" "#b69cff") }}
+{{ end }}
 {{ partial "topbar.html" . }}
 
-<main class="page-shell">
-  <section class="panel simulation-rule-panel">
-    <div class="simulation-rule-heading">
-      <span>
-        <span class="eyebrow">Simulation Rules</span>
-        <strong>模拟盘规则</strong>
-      </span>
+<main class="page-shell home-page">
+  <section class="home-hero">
+    <div>
+      <p class="eyebrow">Tracked Institutions</p>
+      <h1>机构收益追踪</h1>
+      <p>按 YTD 收益排序，查看重点机构 13F 持仓组合的涨跌、回撤、当前持仓和最近变动。</p>
     </div>
-    <div class="rule-copy">
-      <p>每周一次调仓，候选来自当前持仓和重点机构本期新建仓、增持股票。</p>
-      <p>目标仓位按重点机构信号分配，最多保留 {{ $sim.meta.max_positions }} 个持仓。</p>
-      <p>买卖每周最多 {{ $sim.meta.rebalance_step.rebalance_step_weight_pct }}% 组合权重；买入缺口低于 {{ $sim.meta.rebalance_step.min_buy_gap_weight_pct }}% 跳过，卖出可清尾仓。</p>
-      <p>历史回测只使用当时已披露 13F 和当日价格，结果仅用于研究观察。</p>
+    <div class="directory-summary">
+      <span>追踪机构</span>
+      <strong>{{ len $institutionItems }}</strong>
     </div>
   </section>
 
-  <section class="dashboard-grid" id="simulation">
-    <div class="panel hero-panel">
-      <p class="eyebrow">模拟盘净值</p>
-      <div class="hero-value" data-money="{{ $sim.summary.current_value }}">--</div>
-      <div class="hero-change {{ if lt $sim.summary.total_return_pct 0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $sim.summary.total_return_pct }} 累计</div>
-      <div class="metric-grid">
-        {{ range $metricItems }}
-          {{ $value := float .value }}
-          {{ $spy := float .spy }}
-          {{ $qqq := float .qqq }}
-          <div class="metric-card">
-            <span class="metric-label">{{ .label }}</span>
-            <strong class="{{ if lt $value 0.0 }}negative{{ else }}positive{{ end }}">{{ if .drawdown }}{{ printf "%.1f%%" $value }}{{ else }}{{ printf "%+.1f%%" $value }}{{ end }}</strong>
-            <small class="metric-benchmark">vs SPY <b class="{{ if lt $spy 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $spy }}</b></small>
-            <small class="metric-benchmark">vs QQQ <b class="{{ if lt $qqq 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $qqq }}</b></small>
-          </div>
-        {{ end }}
-      </div>
-    </div>
-
+  <section class="home-chart-row">
     {{ partial "equity-chart.html" (dict
+      "className" "home-equity-panel"
       "eyebrow" "Equity Curve"
-      "title" "模拟盘 / 重点机构 vs SPY / QQQ"
-      "points" $sim.equity_curve
-      "series" $sim.equity_chart_series
+      "title" "重点机构 vs SPY / QQQ"
+      "points" $benchmarkPoints
+      "series" $chartSeries
       "range" "ytd"
-      "ariaLabel" "模拟盘与重点机构收益曲线"
+      "ariaLabel" "重点机构收益曲线"
     ) }}
+    <section class="panel home-note-panel">
+      <p>13F 数据有披露延迟；持仓效率自 {{ $curveStartDate | default "2024-01-02" }} 起计算，机构收益曲线按公开持仓和市场价格估算，不代表实时持仓或投资建议。</p>
+    </section>
   </section>
 
-  <section class="panel">
-    <div class="panel-heading">
-      <div>
-        <p class="eyebrow">Portfolio</p>
-        <h2>当前模拟盘持仓</h2>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>股票</th>
-            <th title="当前持仓市值占模拟盘净值的比例">占比</th>
-            <th>价格</th>
-            <th>买入均价</th>
-            <th>模拟盈利</th>
-            <th>信号</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{ range $sim.current_positions }}
-            {{ $institutionalAvg := float (.institutional_avg_holding_price | default 0) }}
-            <tr>
-              <td>
-                <a class="stock-link" href="{{ printf "stocks/%s/" .slug | relURL }}">
-                  <strong>{{ .symbol }}</strong>
-                  <span>{{ .company_name }}</span>
-                </a>
-              </td>
-              <td>
-                <div class="weight-bar" style="--weight: {{ .actual_weight_pct }}%">
-                  <span>{{ printf "%.1f%%" .actual_weight_pct }}</span>
-                </div>
-              </td>
-              <td>${{ printf "%.2f" .current_price }}</td>
-              <td>
-                {{ if gt $institutionalAvg 0.0 }}
-                  {{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .entry_price "caption" (printf "机构均价 $%.2f" $institutionalAvg)) }}
-                {{ else }}
-                  {{ partial "price-basis-cell.html" (dict "current" .current_price "basis" .entry_price "caption" "机构均价 --") }}
-                {{ end }}
-              </td>
-              <td>{{ partial "profit-basis-cell.html" (dict "current" .current_price "basis" .entry_price "shares" .shares) }}</td>
-              <td>
-                {{ partial "badges.html" (where .badges "tone" "key") }}
-              </td>
-            </tr>
+  <section class="institution-rank-grid" id="institutions" aria-label="追踪机构涨跌情况">
+      {{ range $rank, $item := $institutionItems }}
+        {{ $institution := $item.institution }}
+        {{ $summary := $institution.summary }}
+        {{ $curveSummary := dict }}
+        {{ with $item.curve }}{{ $curveSummary = .summary | default (dict) }}{{ end }}
+        {{ $ytd := float ($curveSummary.ytd_return_pct | default 0) }}
+        {{ $daily := float ($curveSummary.daily_return_pct | default 0) }}
+        {{ $monthly := float ($curveSummary.monthly_return_pct | default 0) }}
+        {{ $maxDrawdown := float ($curveSummary.max_drawdown_pct | default 0) }}
+        {{ $pieRows := slice }}
+        {{ $otherValue := 0.0 }}
+        {{ $otherShares := 0.0 }}
+        {{ $otherCount := 0 }}
+        {{ range $institution.holdings }}
+          {{ $value := float (.current_value_usd | default 0) }}
+          {{ $weight := float (.portfolio_weight_pct | default 0) }}
+          {{ $shares := float (.current_shares | default 0) }}
+          {{ if gt $value 0.0 }}
+            {{ if lt $weight 1.0 }}
+              {{ $otherValue = add $otherValue $value }}
+              {{ $otherShares = add $otherShares $shares }}
+              {{ $otherCount = add $otherCount 1 }}
+            {{ else }}
+              {{ $pieRows = $pieRows | append (dict
+                "symbol" .symbol
+                "company_name" .company_name
+                "slug" .slug
+                "value" $value
+                "valueKind" "money"
+                "weight" $weight
+                "shares" $shares
+              ) }}
+            {{ end }}
           {{ end }}
-        </tbody>
-      </table>
-    </div>
-  </section>
+        {{ end }}
+        {{ if gt $otherValue 0.0 }}
+          {{ $pieRows = $pieRows | append (dict
+            "symbol" "Others"
+            "company_name" (printf "%d 个 <1%% 持仓" $otherCount)
+            "value" $otherValue
+            "valueKind" "money"
+            "weight" (div (mul $otherValue 100.0) (float ($summary.total_value_usd | default 1)))
+            "shares" $otherShares
+          ) }}
+        {{ end }}
+        <article class="institution-card institution-performance-card">
+          <div class="institution-card-header">
+            <a class="institution-card-main" href="{{ $institution.href | relURL }}">
+              <div class="institution-card-mark">{{ add $rank 1 }}</div>
+              <div class="institution-card-title">
+                <h2>{{ $institution.display_name }}</h2>
+                <p>{{ $institution.name }}</p>
+              </div>
+            </a>
+            <div class="institution-ytd {{ if lt $ytd 0.0 }}negative{{ else }}positive{{ end }}">
+              <span>YTD</span>
+              <strong>{{ printf "%+.1f%%" $ytd }}</strong>
+            </div>
+          </div>
 
-  <section class="panel rebalance-log-panel">
-    <div class="panel-heading">
-      <div>
-        <p class="eyebrow">Rebalance Log</p>
-        <h2>调仓记录</h2>
-      </div>
-      <div class="pagination-controls" aria-label="调仓记录分页">
-        <button class="ghost-button" type="button" data-rebalance-prev>上一页</button>
-        <span class="timeline-page-indicator" data-rebalance-page>1 / 1</span>
-        <button class="ghost-button" type="button" data-rebalance-next>下一页</button>
-      </div>
-    </div>
-    <div class="timeline" data-rebalance-list data-page-size="10">
-      {{ range $sim.rebalance_history }}
-        <article class="timeline-item" data-rebalance-item>
-          <time>{{ .date }}</time>
-          <div class="timeline-body">
-            {{ range .buys }}
-              {{ $isInitial := eq .action "initial-buy" }}
-              <div class="timeline-row buy {{ if $isInitial }}initial-buy{{ end }}">
-                <div>
-                  <strong>{{ if $isInitial }}首次买入{{ else }}买入{{ end }} {{ .symbol }}</strong>
-                  <span>{{ .reason }} · 目标 {{ printf "%.1f%%" .target_weight_pct }}</span>
-                </div>
-                <div class="trade-meta">
-                  <strong data-money="{{ .buy_value_usd }}">--</strong>
-                  <span>${{ printf "%.2f" .buy_price }} · <em class="trade-pct buy">买入 {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
-                </div>
-              </div>
-            {{ end }}
-            {{ range .sells }}
-              {{ $isExit := eq .action "exit" }}
-              <div class="timeline-row sell {{ if $isExit }}exit{{ end }}">
-                <div>
-                  <strong>{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ .symbol }}</strong>
-                  <span>
-                    {{ .reason }} ·
-                    {{ if isset . "to_weight_pct" }}
-                      {{ printf "%.1f%%" .from_weight_pct }} → {{ printf "%.1f%%" .to_weight_pct }}
-                    {{ else }}
-                      原权重 {{ printf "%.1f%%" .from_weight_pct }}
-                    {{ end }}
-                  </span>
-                </div>
-                <div class="trade-meta">
-                  <strong data-money="{{ .sell_value_usd }}">--</strong>
-                  <span>${{ printf "%.2f" .sell_price }} · <em class="trade-pct sell">{{ if $isExit }}清仓{{ else }}卖出{{ end }} {{ printf "%.1f%%" (default 0 .trade_weight_pct) }}</em> · {{ printf "%d" (int .shares) }} 股</span>
-                </div>
-              </div>
-            {{ end }}
+          <div class="institution-metric-grid">
+            <div>
+              <span>持仓市值</span>
+              <strong data-money="{{ $summary.total_value_usd }}">--</strong>
+            </div>
+            <div>
+              <span>今日</span>
+              <strong class="{{ if lt $daily 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $daily }}</strong>
+            </div>
+            <div>
+              <span>本月</span>
+              <strong class="{{ if lt $monthly 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $monthly }}</strong>
+            </div>
+            <div>
+              <span>最大回撤</span>
+              <strong class="negative">{{ printf "%.1f%%" $maxDrawdown }}</strong>
+            </div>
+          </div>
+
+          <div class="institution-card-section">
+            <div class="section-title-row">
+              <h3>持仓分布</h3>
+              <span>{{ $summary.holdings_count }} 个持仓</span>
+            </div>
+            <div class="holding-pie institution-allocation-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ $institution.display_name }}持仓分布"></div>
+          </div>
+
+          <div class="institution-card-section">
+            <div class="section-title-row">
+              <h3>最近变动</h3>
+              <span>Latest 5</span>
+            </div>
+            <div class="institution-activity-list compact">
+              {{ range first 5 $institution.recent_changes }}
+                {{ $badgeTone := "holding" }}
+                {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+                <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relURL }}">
+                  <span class="activity-badge badge-{{ $badgeTone }}">{{ .status_label }}</span>
+                  <strong>{{ .symbol }}</strong>
+                  <em data-money="{{ .change_value_usd }}">--</em>
+                </a>
+              {{ else }}
+                <span class="muted">本期没有明显变动。</span>
+              {{ end }}
+            </div>
           </div>
         </article>
       {{ end }}
-    </div>
   </section>
-
-  <footer class="risk-note">
-    本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。{{ if $isHistorical }}模拟盘为 2024 至今的规则化历史回测，不代表未来收益。{{ else }}模拟盘为规则化当前快照模拟，不代表未来收益。{{ end }}
-  </footer>
 </main>
 {{ end }}
