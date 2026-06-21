@@ -519,12 +519,6 @@ h3 {
   stroke-width: 2;
 }
 
-.chart-event-dot {
-  opacity: 0.95;
-  stroke: var(--bg);
-  stroke-width: 1.8;
-}
-
 .point-spy {
   fill: var(--cyan);
   color: var(--cyan);
@@ -577,13 +571,6 @@ h3 {
   gap: 10px;
   align-items: baseline;
   min-width: 0;
-}
-
-.chart-hover-tooltip .chart-tooltip-event {
-  display: block;
-  margin: 2px 0 7px 15px;
-  color: var(--muted);
-  white-space: normal;
 }
 
 .chart-tooltip-name {
@@ -1013,6 +1000,11 @@ button.tip-trigger,
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
+}
+
+.change-tooltip-row strong em {
+  margin-left: 4px;
+  font-style: normal;
 }
 
 .change-tooltip-value-buy {

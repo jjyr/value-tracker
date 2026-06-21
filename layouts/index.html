@@ -157,8 +157,19 @@
               {{ range first 5 $institution.recent_changes }}
                 {{ $badgeTone := "holding" }}
                 {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+                {{ $reportPriceValue := float (.trade_report_price | default 0) }}
+                {{ $currentPriceValue := float (.price | default 0) }}
                 {{ $reportPrice := "--" }}
-                {{ if gt (float (.trade_report_price | default 0)) 0.0 }}{{ $reportPrice = printf "$%.2f" (float .trade_report_price) }}{{ end }}
+                {{ if gt $reportPriceValue 0.0 }}{{ $reportPrice = printf "$%.2f" $reportPriceValue }}{{ end }}
+                {{ $currentPrice := "--" }}
+                {{ if gt $currentPriceValue 0.0 }}{{ $currentPrice = printf "$%.2f" $currentPriceValue }}{{ end }}
+                {{ $priceDelta := "" }}
+                {{ $priceDeltaTone := "" }}
+                {{ if and (gt $reportPriceValue 0.0) (gt $currentPriceValue 0.0) }}
+                  {{ $priceDeltaPct := mul (div (sub $currentPriceValue $reportPriceValue) $reportPriceValue) 100.0 }}
+                  {{ $priceDelta = printf "(%+.1f%%)" $priceDeltaPct }}
+                  {{ if gt $priceDeltaPct 0.0 }}{{ $priceDeltaTone = "buy" }}{{ else if lt $priceDeltaPct 0.0 }}{{ $priceDeltaTone = "sell" }}{{ end }}
+                {{ end }}
                 {{ $previousShares := float (.previous_shares | default 0) }}
                 {{ $currentShares := float (.current_shares | default 0) }}
                 {{ $changeShares := float (.change_shares | default 0) }}
@@ -176,6 +187,7 @@
                 {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "change_percent") "value" $changePercent "tone" .status_tone) }}
                 {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "current_shares") "value" (printf "%.0f" $currentShares)) }}
                 {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "report_price") "value" $reportPrice "tone" "price") }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "current_price") "value" $currentPrice "suffix" $priceDelta "suffix_tone" $priceDeltaTone) }}
                 {{ $changeTooltip := dict "title" (printf "%s · %s" .symbol .company_name) "rows" $changeTooltipRows }}
                 <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relLangURL }}" data-change-tooltip='{{ $changeTooltip | jsonify }}'>
                   <span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" . }}</span>

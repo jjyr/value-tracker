@@ -8,9 +8,7 @@ const text = {
     disclosed: "Disclosed {date}",
     emptyPie: "No data available.",
     expand: "Expand",
-    newPositions: "New",
     portfolioWeight: "Portfolio {value}",
-    reportPeriod: "Report period {period}",
     sharesValue: "{value} shares",
     site_title: "Value Tracker"
   },
@@ -19,9 +17,7 @@ const text = {
     disclosed: "披露 {date}",
     emptyPie: "暂无可统计数据。",
     expand: "展开",
-    newPositions: "新建",
     portfolioWeight: "组合 {value}",
-    reportPeriod: "报告期 {period}",
     sharesValue: "{value} 股",
     site_title: "价值追踪"
   }
@@ -334,10 +330,6 @@ function pointOnOrBefore(points, targetMs) {
   return points.reduce((latest, point) => (point.dateMs <= targetMs ? point : latest), null);
 }
 
-function hasNewPositionEvents(point) {
-  return Array.isArray(point.new_positions) && point.new_positions.length > 0;
-}
-
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -431,18 +423,6 @@ function drawEquityChart(svg) {
     svg.appendChild(path);
   });
 
-  drawableSeries.forEach(({ item, points: seriesPoints }) => {
-    seriesPoints.filter(hasNewPositionEvents).forEach((point) => {
-      const circle = document.createElementNS(namespace, "circle");
-      circle.setAttribute("r", "3.4");
-      circle.setAttribute("cx", x(point.dateMs));
-      circle.setAttribute("cy", y(point.value));
-      circle.setAttribute("class", "chart-event-dot");
-      circle.style.fill = item.color;
-      svg.appendChild(circle);
-    });
-  });
-
   const firstLabel = document.createElementNS(namespace, "text");
   firstLabel.setAttribute("x", left);
   firstLabel.setAttribute("y", height - 8);
@@ -509,15 +489,10 @@ function drawEquityChart(svg) {
       const pct = point.value;
       const amount = Number.isFinite(point.amount) ? moneyFormatter.format(point.amount) : "";
       const disclosure = point.dateMs === hoverDateMs ? "" : t("disclosed", { date: point.date.slice(5) });
-      const newPositions = point.dateMs === hoverDateMs && hasNewPositionEvents(point) ? point.new_positions : [];
-      const eventPeriod = point.event_report_period ? ` · ${escapeHtml(t("reportPeriod", { period: point.event_report_period }))}` : "";
-      const newPositionText = newPositions.length
-        ? `<div class="chart-tooltip-event">${escapeHtml(t("newPositions"))} ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}${eventPeriod}</div>`
-        : "";
       return {
         performance: pct,
         originalIndex: index,
-        html: `<div class="chart-tooltip-row"><span class="chart-tooltip-name" title="${escapeHtml(item.label)}" style="color:${item.color}">${escapeHtml(item.label)}</span><strong class="chart-tooltip-return">${formatPercent(pct)}</strong><span class="chart-tooltip-amount"><span>${escapeHtml(amount || "--")}</span>${disclosure ? `<em>${escapeHtml(disclosure)}</em>` : ""}</span></div>${newPositionText}`
+        html: `<div class="chart-tooltip-row"><span class="chart-tooltip-name" title="${escapeHtml(item.label)}" style="color:${item.color}">${escapeHtml(item.label)}</span><strong class="chart-tooltip-return">${formatPercent(pct)}</strong><span class="chart-tooltip-amount"><span>${escapeHtml(amount || "--")}</span>${disclosure ? `<em>${escapeHtml(disclosure)}</em>` : ""}</span></div>`
       };
     }).filter(Boolean).sort((a, b) => (b.performance - a.performance) || (a.originalIndex - b.originalIndex));
     hoverGroup.setAttribute("visibility", "visible");
@@ -811,8 +786,11 @@ function setupChangeTooltips() {
       .filter((row) => row && row.label)
       .map((row) => {
         const tone = ["buy", "sell", "price"].includes(row.tone) ? row.tone : "";
+        const suffixTone = ["buy", "sell", "price"].includes(row.suffix_tone) ? row.suffix_tone : "";
         const className = tone ? ` class="change-tooltip-value-${tone}"` : "";
-        return `<div class="change-tooltip-row"><span>${escapeHtml(row.label)}</span><strong${className}>${escapeHtml(row.value || "--")}</strong></div>`;
+        const suffixClassName = suffixTone ? ` class="change-tooltip-value-${suffixTone}"` : "";
+        const suffix = row.suffix ? `<em${suffixClassName}>${escapeHtml(row.suffix)}</em>` : "";
+        return `<div class="change-tooltip-row"><span>${escapeHtml(row.label)}</span><strong${className}>${escapeHtml(row.value || "--")}${suffix}</strong></div>`;
       })
       .join("");
     tooltip.innerHTML = `<div class="change-tooltip-title">${escapeHtml(payload.title || "")}</div>${rows}`;
