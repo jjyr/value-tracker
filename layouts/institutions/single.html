@@ -12,6 +12,7 @@
 {{ else }}
   {{ $summary := $institution.summary }}
   {{ $cashDisclosed := $summary.cash_disclosure_available | default false }}
+  {{ $securitiesValue := float ($summary.securities_value_usd | default ($summary.total_value_usd | default 0)) }}
   {{ $cashValue := float ($summary.cash_value_usd | default 0) }}
   {{ $cashWeight := float ($summary.cash_weight_pct | default 0) }}
   <main class="page-shell detail-shell">
@@ -35,7 +36,7 @@
         <div class="stat-list">
           <div><span>{{ i18n "holdings_number" }}</span><strong>{{ $summary.holdings_count }}</strong></div>
           <div><span>{{ i18n "period_changes" }}</span><strong>{{ $summary.changes_count }}</strong></div>
-          <div><span>{{ i18n "portfolio_value" }}</span><strong data-money="{{ $summary.total_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "portfolio_value" }}</span><strong data-money="{{ $securitiesValue }}">--</strong></div>
           <div><span>{{ i18n "cash_position" }}</span>{{ if $cashDisclosed }}<strong data-money="{{ $cashValue }}">--</strong>{{ else }}<strong>{{ i18n "not_disclosed" }}</strong>{{ end }}</div>
           <div><span>{{ i18n "cash_weight" }}</span><strong>{{ if $cashDisclosed }}{{ printf "%.2f%%" $cashWeight }}{{ else }}--{{ end }}</strong></div>
           <div><span>{{ i18n "bought_value" }}</span><strong data-money="{{ $summary.bought_value_usd }}">--</strong></div>
