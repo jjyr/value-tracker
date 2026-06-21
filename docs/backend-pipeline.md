@@ -46,9 +46,27 @@ uv run build
 
 - `market`：候选股票的价格、市值、估值、指数标签。
 - `filings`：每个 13F filing 的基础信息和 holdings 明细。
+- `cash_disclosures`：可选。独立披露的机构现金或现金等价物，不从 13F 推导。
 - `latest_13f_report_period` / `previous_13f_report_period`：用于计算增持、减持、新建仓、清仓。
 
 真实 provider 只要生成同样结构，后面的指标计算和 Hugo 导出可以复用。
+
+`cash_disclosures` 示例：
+
+```yaml
+cash_disclosures:
+  - cik: "0001067983"
+    report_period: "2026-03-31"
+    as_of_date: "2026-03-31"
+    filing_date: "2026-05-03"
+    cash_value_usd: 334000000000
+    cash_label: "Cash, cash equivalents and short-term Treasury Bills"
+    source_type: "10-Q"
+    source_url: "https://www.sec.gov/Archives/..."
+    confidence: "reported"
+```
+
+现有定时任务在 live raw input 阶段默认合并 `config/institution-cash.yaml`。没有对应报告期现金披露时，前端显示“未披露”，不会把 13F 之外的资产假设为现金。
 
 ## 产物
 
@@ -64,6 +82,7 @@ content/en/**, content/zh/**               机构和股票详情页内容入口
 ## 增量策略
 
 - 当前 Longbridge live raw input 在任务进程内生成，不作为标准产物落盘。
+- live raw input 会合并 `config/institution-cash.yaml` 中的现金披露；`schedule weekly` / `fetch` / `fetch-all` 重建 snapshot 时生效。
 - 当前 snapshot 每次从 raw input 和配置纯内存重算。
 - SEC submissions index 会刷新，用于发现新增 13F。
 - 已有 SEC filing index / information table XML 继续复用 cache。

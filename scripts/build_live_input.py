@@ -15,6 +15,7 @@ from collections import Counter
 from typing import Any, Dict, Iterable, List, Optional
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+DEFAULT_CASH_DISCLOSURES = ROOT / "config/institution-cash.yaml"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -34,6 +35,12 @@ def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError(f"{path} must contain a YAML object")
     return data
+
+
+def optional_yaml(path: Optional[pathlib.Path]) -> Dict[str, Any]:
+    if not path or not path.exists():
+        return {}
+    return load_yaml(path)
 
 
 def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
@@ -67,6 +74,16 @@ def enabled_managers(config: Dict[str, Any], manager_limit: Optional[int]) -> Li
             row["cik"] = normalize_cik(row["cik"])
             rows.append(row)
     return rows[:manager_limit] if manager_limit else rows
+
+
+def configured_cash_disclosures(config: Dict[str, Any], path: Optional[pathlib.Path]) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    for disclosure in config.get("cash_disclosures") or []:
+        rows.append(dict(disclosure))
+    payload = optional_yaml(path)
+    for disclosure in payload.get("cash_disclosures") or payload.get("disclosures") or []:
+        rows.append(dict(disclosure))
+    return rows
 
 
 def load_cusip_map(path: pathlib.Path) -> Dict[str, Dict[str, Any]]:
@@ -390,6 +407,7 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
 
     latest_period = most_common(filing.get("report_period") for filing in filings if filing.get("source") != "longbridge_investors_synthetic_previous")
     previous_period = most_common(filing.get("report_period") for filing in filings if filing.get("source") == "longbridge_investors_synthetic_previous")
+    cash_disclosures = configured_cash_disclosures(config, getattr(args, "cash_disclosures", DEFAULT_CASH_DISCLOSURES))
     symbols = sorted(
         {
             holding["symbol"]
@@ -418,6 +436,7 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
             "warnings": warnings,
         },
         "market": market,
+        "cash_disclosures": cash_disclosures,
         "filings": filings,
     }
 
@@ -426,6 +445,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=pathlib.Path, default=ROOT / "config/stockhunt.yaml")
     parser.add_argument("--cusip-map", type=pathlib.Path, default=ROOT / "config/cusip-symbols.yaml")
+    parser.add_argument("--cash-disclosures", type=pathlib.Path, default=DEFAULT_CASH_DISCLOSURES)
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "raw/generated/live_13f_holdings.yaml")
     parser.add_argument("--top", type=int, default=50, help="Top current holdings to fetch per manager from Longbridge.")
     parser.add_argument("--manager-limit", type=int, default=None, help="Limit enabled managers for smoke tests.")

@@ -163,6 +163,27 @@ build:
   export_json: true
 ```
 
+可选现金披露文件：
+
+```text
+config/institution-cash.yaml
+```
+
+```yaml
+cash_disclosures:
+  - cik: "0001067983"
+    report_period: "2026-03-31"
+    as_of_date: "2026-03-31"
+    filing_date: "2026-05-03"
+    cash_value_usd: 334000000000
+    cash_label: "Cash, cash equivalents and short-term Treasury Bills"
+    source_type: "10-Q"
+    source_url: "https://www.sec.gov/Archives/..."
+    confidence: "reported"
+```
+
+该文件会在 `fetch` / `fetch-all` / `schedule weekly` 的 live raw input 阶段自动合并。现金只展示已披露值；缺失时显示“未披露”。
+
 ## 3. 修改配置后的重跑规则
 
 ### 3.1 修改白名单

@@ -81,6 +81,24 @@ YYYY-MM-DD
 - 美元金额使用 number，单位为 USD。
 - 百分比使用 number，`12.5` 表示 `12.5%`。
 - 缺失值使用 `null`，不使用字符串 `N/A`。
+- 机构现金字段只代表已披露现金或现金等价物；缺失时前端展示“未披露”，不推断为 0。
+
+机构详情 summary 可包含：
+
+```json
+{
+  "securities_value_usd": 263095703570,
+  "total_value_usd": 597095703570,
+  "cash_disclosure_available": true,
+  "cash_value_usd": 334000000000,
+  "cash_weight_pct": 55.94,
+  "cash_label": "Cash, cash equivalents and short-term Treasury Bills",
+  "cash_source_type": "10-Q",
+  "cash_source_url": "https://www.sec.gov/Archives/...",
+  "cash_as_of_date": "2026-03-31",
+  "cash_confidence": "reported"
+}
+```
 
 ## 4. Build Metadata
 

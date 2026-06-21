@@ -11,6 +11,17 @@ build:
   warnings:
     - "Sample raw 13F fixture for backend pipeline validation"
 
+cash_disclosures:
+  - cik: "0001067983"
+    report_period: "2026-03-31"
+    as_of_date: "2026-03-31"
+    filing_date: "2026-05-03"
+    cash_value_usd: 334000000000
+    cash_label: "Cash, cash equivalents and short-term Treasury Bills"
+    source_type: "10-Q"
+    source_url: "https://www.sec.gov/Archives/sample/0001067983-26-000010"
+    confidence: "reported"
+
 market:
   - symbol: "AAPL.US"
     company_name: "Apple Inc."

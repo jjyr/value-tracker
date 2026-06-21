@@ -61,6 +61,15 @@ def config_hash(config: Dict[str, Any]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 
+def snapshot_input_hash(config: Dict[str, Any], raw: Dict[str, Any]) -> str:
+    return config_hash(
+        {
+            "config": config,
+            "cash_disclosures": raw.get("cash_disclosures") or [],
+        }
+    )
+
+
 def enabled_managers(config: Dict[str, Any]) -> List[Dict[str, Any]]:
     managers = []
     for manager in config.get("institutions", {}).get("managers", []):
@@ -130,6 +139,7 @@ def filing_index(raw: Dict[str, Any], report_period: Optional[str]) -> Dict[str,
 
 
 HoldingMap = Dict[Tuple[str, str], Dict[str, Any]]
+CashDisclosureMap = Dict[str, Dict[str, Any]]
 
 
 def holding_map(
@@ -163,16 +173,82 @@ def current_report_prices(current: HoldingMap, markets: Dict[str, Dict[str, Any]
     return prices
 
 
-def portfolio_weights(current: HoldingMap) -> Dict[Tuple[str, str], float]:
+def cash_disclosure_sort_key(disclosure: Dict[str, Any]) -> Tuple[str, str, str]:
+    return (
+        str(disclosure.get("report_period") or ""),
+        str(disclosure.get("filing_date") or disclosure.get("as_of_date") or ""),
+        str(disclosure.get("source_url") or ""),
+    )
+
+
+def cash_disclosure_index(
+    raw: Dict[str, Any],
+    report_period: Optional[str],
+    allowed_ciks: Iterable[str],
+) -> CashDisclosureMap:
+    if not report_period:
+        return {}
+    allowed = set(allowed_ciks)
+    output: CashDisclosureMap = {}
+    for disclosure in sorted(raw.get("cash_disclosures") or [], key=cash_disclosure_sort_key):
+        if disclosure.get("report_period") != report_period:
+            continue
+        cik = normalize_cik(disclosure.get("cik"))
+        if cik not in allowed:
+            continue
+        cash_value = float(disclosure.get("cash_value_usd") or disclosure.get("value_usd") or 0)
+        row = dict(disclosure)
+        row.update(
+            {
+                "cik": cik,
+                "report_period": report_period,
+                "cash_value_usd": max(cash_value, 0.0),
+                "cash_label": disclosure.get("cash_label") or disclosure.get("label") or "Cash",
+                "cash_disclosure_available": True,
+            }
+        )
+        output[cik] = row
+    return output
+
+
+def security_totals_by_cik(current: HoldingMap) -> Dict[str, float]:
     totals: Dict[str, float] = {}
     for (cik, _), row in current.items():
         totals[cik] = totals.get(cik, 0.0) + float(row.get("value_usd") or 0)
+    return totals
+
+
+def portfolio_weights(current: HoldingMap, cash_disclosures: Optional[CashDisclosureMap] = None) -> Dict[Tuple[str, str], float]:
+    totals = security_totals_by_cik(current)
+    cash_disclosures = cash_disclosures or {}
     weights = {}
     for key, row in current.items():
-        total = totals.get(key[0]) or 0.0
+        securities_total = totals.get(key[0]) or 0.0
+        cash_value = float((cash_disclosures.get(key[0]) or {}).get("cash_value_usd") or 0)
+        total = securities_total + cash_value if key[0] in cash_disclosures else securities_total
         value = float(row.get("value_usd") or 0)
         weights[key] = value / total * 100 if total > 0 else 0.0
     return weights
+
+
+def snapshot_cash_disclosures(current: HoldingMap, cash_disclosures: CashDisclosureMap) -> List[Dict[str, Any]]:
+    security_totals = security_totals_by_cik(current)
+    rows = []
+    for cik, disclosure in sorted(cash_disclosures.items()):
+        securities_value = float(security_totals.get(cik) or 0)
+        cash_value = float(disclosure.get("cash_value_usd") or 0)
+        total_value = securities_value + cash_value
+        row = dict(disclosure)
+        row.update(
+            {
+                "cik": cik,
+                "securities_value_usd": round(securities_value, 2),
+                "portfolio_total_value_usd": round(total_value, 2),
+                "cash_weight_pct": round(cash_value / total_value * 100, 4) if total_value > 0 else 0.0,
+            }
+        )
+        rows.append(row)
+    return rows
 
 
 def status_for_change(previous: Optional[Dict[str, Any]], current: Optional[Dict[str, Any]], previous_known: bool) -> str:
@@ -250,7 +326,8 @@ def compute_metrics(config: Dict[str, Any], raw: Dict[str, Any]) -> Dict[str, Di
     previous_filings = filing_index(raw, previous_period)
     markets = market_by_symbol(raw)
     report_prices = current_report_prices(current, markets)
-    weights = portfolio_weights(current)
+    cash_disclosures = cash_disclosure_index(raw, current_period, allowed_ciks)
+    weights = portfolio_weights(current, cash_disclosures)
     symbols = sorted({symbol for (_, symbol) in current} | {symbol for (_, symbol) in previous})
     metrics = {symbol: metric_seed(symbol, manager_count) for symbol in symbols}
 
@@ -384,6 +461,11 @@ def snapshot_security(symbol: str, metric: Dict[str, Any], market: Dict[str, Any
 
 def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, metrics: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
     markets = market_by_symbol(raw)
+    managers = enabled_managers(config)
+    allowed_ciks = [manager["cik"] for manager in managers]
+    grouped = holdings_by_period_and_cik(raw)
+    current = holding_map(grouped, raw["latest_13f_report_period"], allowed_ciks)
+    cash_disclosures = cash_disclosure_index(raw, raw["latest_13f_report_period"], allowed_ciks)
     sorted_symbols = sorted(
         metrics,
         key=lambda symbol: (
@@ -404,7 +486,7 @@ def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, m
         "latest_13f_report_period": raw["latest_13f_report_period"],
         "previous_13f_report_period": raw.get("previous_13f_report_period"),
         "latest_13f_fingerprint": raw.get("latest_13f_fingerprint") or [],
-        "manager_count": len(enabled_managers(config)),
+        "manager_count": len(managers),
         "build": {
             "build_id": build.get("build_id") or f"snapshot-{raw['data_date']}",
             "built_at": build.get("built_at") or now_iso(),
@@ -413,6 +495,7 @@ def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, m
             "config_hash": cfg_hash,
             "warnings": warnings,
         },
+        "cash_disclosures": snapshot_cash_disclosures(current, cash_disclosures),
         "securities": securities,
     }
 
@@ -439,7 +522,7 @@ def main() -> None:
     args = parse_args()
     config = load_yaml(args.config)
     raw = load_yaml(args.raw)
-    cfg_hash = config_hash(config)
+    cfg_hash = snapshot_input_hash(config, raw)
     metrics = compute_metrics(config, raw)
     snapshot = build_snapshot(config, raw, cfg_hash, metrics)
     write_yaml(args.snapshot_output, snapshot)

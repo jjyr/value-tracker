@@ -70,6 +70,33 @@ other = "追踪机构涨跌情况"
 [portfolio_value]
 other = "持仓市值"
 
+[capital_allocation]
+other = "资产配置"
+
+[performance]
+other = "收益表现"
+
+[securities_value]
+other = "13F 证券"
+
+[cash]
+other = "现金"
+
+[cash_position]
+other = "空仓现金"
+
+[cash_weight]
+other = "现金比例"
+
+[cash_not_disclosed_short]
+other = "无现金披露"
+
+[not_disclosed]
+other = "未披露"
+
+[source]
+other = "来源"
+
 [today]
 other = "今日"
 

@@ -19,6 +19,7 @@ import yaml
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+DEFAULT_CASH_DISCLOSURES = ROOT / "config/institution-cash.yaml"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -44,6 +45,12 @@ def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError(f"{path} must contain a YAML object")
     return data
+
+
+def optional_yaml(path: Optional[pathlib.Path]) -> Dict[str, Any]:
+    if not path or not path.exists():
+        return {}
+    return load_yaml(path)
 
 
 def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
@@ -368,6 +375,62 @@ def manager_slug(cik: Any) -> str:
 
 def manager_href(cik: Any) -> str:
     return f"institutions/{manager_slug(cik)}/"
+
+
+def cash_disclosures_by_cik(disclosures: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    output: Dict[str, Dict[str, Any]] = {}
+    for disclosure in disclosures:
+        cik = normalize_cik(disclosure.get("cik"))
+        if cik:
+            output[cik] = dict(disclosure)
+    return output
+
+
+def configured_cash_disclosures(config: Dict[str, Any], path: Optional[pathlib.Path]) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    for disclosure in config.get("cash_disclosures") or []:
+        rows.append(dict(disclosure))
+    payload = optional_yaml(path)
+    for disclosure in payload.get("cash_disclosures") or payload.get("disclosures") or []:
+        rows.append(dict(disclosure))
+    return rows
+
+
+def merge_cash_disclosures(snapshot: Dict[str, Any], disclosures: Iterable[Dict[str, Any]]) -> None:
+    merged = cash_disclosures_by_cik(snapshot.get("cash_disclosures") or [])
+    for disclosure in disclosures:
+        cik = normalize_cik(disclosure.get("cik"))
+        if cik:
+            merged[cik] = dict(disclosure)
+    snapshot["cash_disclosures"] = list(merged.values())
+
+
+def apply_cash_adjusted_weights(rows: List[Dict[str, Any]], cash_disclosures: Iterable[Dict[str, Any]]) -> None:
+    cash_by_cik = cash_disclosures_by_cik(cash_disclosures)
+    if not cash_by_cik:
+        return
+    securities_value_by_cik: Dict[str, float] = {}
+    for row in rows:
+        institution = row.get("institution") or {}
+        for manager in institution.get("managers") or []:
+            cik = normalize_cik(manager.get("cik"))
+            if cik in cash_by_cik:
+                securities_value_by_cik[cik] = securities_value_by_cik.get(cik, 0.0) + float(
+                    manager.get("current_value_usd") or 0
+                )
+    total_value_by_cik = {
+        cik: securities_value_by_cik.get(cik, 0.0) + float(disclosure.get("cash_value_usd") or 0)
+        for cik, disclosure in cash_by_cik.items()
+    }
+    for row in rows:
+        institution = row.get("institution") or {}
+        for manager in institution.get("managers") or []:
+            cik = normalize_cik(manager.get("cik"))
+            total_value = total_value_by_cik.get(cik) or 0.0
+            if total_value <= 0:
+                continue
+            current_value = float(manager.get("current_value_usd") or 0)
+            manager["portfolio_weight_pct"] = current_value / total_value * 100
 
 
 def normalize_internal_hrefs(value: Any) -> Any:
@@ -1005,9 +1068,14 @@ def manager_stock_row(raw: Dict[str, Any], manager: Dict[str, Any]) -> Dict[str,
     return row
 
 
-def build_institutions(config: Dict[str, Any], rows: List[Dict[str, Any]]) -> Dict[str, Any]:
+def build_institutions(
+    config: Dict[str, Any],
+    rows: List[Dict[str, Any]],
+    cash_disclosures: Optional[Iterable[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     output: Dict[str, Any] = {}
     rows_by_symbol = {row["symbol"]: row for row in rows}
+    cash_by_cik = cash_disclosures_by_cik(cash_disclosures or [])
     for manager in enabled_managers(config):
         cik = normalize_cik(manager.get("cik"))
         slug = manager_slug(cik)
@@ -1036,7 +1104,12 @@ def build_institutions(config: Dict[str, Any], rows: List[Dict[str, Any]]) -> Di
                 row["symbol"],
             )
         )
-        total_value = sum(float(row.get("current_value_usd") or 0) for row in holdings)
+        securities_value = sum(float(row.get("current_value_usd") or 0) for row in holdings)
+        cash_disclosure = cash_by_cik.get(cik) or {}
+        cash_disclosure_available = bool(cash_disclosure.get("cash_disclosure_available") or cash_disclosure)
+        cash_value = float(cash_disclosure.get("cash_value_usd") or 0)
+        total_value = securities_value + cash_value if cash_disclosure_available else securities_value
+        cash_weight_pct = cash_value / total_value * 100 if total_value > 0 and cash_disclosure_available else 0.0
         bought_value = sum(
             max(float(row.get("change_value_usd") or 0), 0.0)
             for row in changes
@@ -1057,9 +1130,19 @@ def build_institutions(config: Dict[str, Any], rows: List[Dict[str, Any]]) -> Di
             "summary": {
                 "holdings_count": len(holdings),
                 "changes_count": len(changes),
+                "securities_value_usd": securities_value,
                 "total_value_usd": total_value,
                 "bought_value_usd": bought_value,
                 "sold_value_usd": sold_value,
+                "cash_disclosure_available": cash_disclosure_available,
+                "cash_value_usd": cash_value,
+                "cash_weight_pct": cash_weight_pct,
+                "cash_label": cash_disclosure.get("cash_label") or "Cash",
+                "cash_source_type": cash_disclosure.get("source_type"),
+                "cash_source_url": cash_disclosure.get("source_url"),
+                "cash_as_of_date": cash_disclosure.get("as_of_date") or cash_disclosure.get("report_period"),
+                "cash_filing_date": cash_disclosure.get("filing_date"),
+                "cash_confidence": cash_disclosure.get("confidence"),
             },
             "holdings": holdings,
             "recent_changes": changes,
@@ -1617,6 +1700,8 @@ def build_hugo_data(
     if not rows:
         raise ValueError("snapshot must include at least one security")
 
+    apply_cash_adjusted_weights(rows, snapshot.get("cash_disclosures") or [])
+
     default_manager_count = snapshot.get("manager_count") or enabled_manager_count(config)
     for row in rows:
         institution = row.setdefault("institution", {})
@@ -1645,7 +1730,7 @@ def build_hugo_data(
     ranking_rows = [ranking_row(row, badge_by_symbol[row["symbol"]]) for row in rows]
     combined_rows = sort_combined_rows(ranking_rows)
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
-    institutions = build_institutions(config, rows)
+    institutions = build_institutions(config, rows, snapshot.get("cash_disclosures") or [])
     period_label = activity_period_label(
         snapshot.get("previous_13f_report_period"),
         snapshot.get("latest_13f_report_period"),
@@ -1699,6 +1784,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--snapshot", type=pathlib.Path, default=ROOT / "raw/sample/snapshot.yaml")
     parser.add_argument("--simulation", type=pathlib.Path, default=None)
     parser.add_argument("--historical-holdings", type=pathlib.Path, default=ROOT / "raw/generated/historical_13f_holdings.yaml")
+    parser.add_argument("--cash-disclosures", type=pathlib.Path, default=DEFAULT_CASH_DISCLOSURES)
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.json")
     parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/en/stocks")
     parser.add_argument("--institution-content-dir", type=pathlib.Path, default=ROOT / "content/en/institutions")
@@ -1712,6 +1798,7 @@ def main() -> None:
     args = parse_args()
     config = load_yaml(args.config)
     snapshot = load_yaml(args.snapshot)
+    merge_cash_disclosures(snapshot, configured_cash_disclosures(config, args.cash_disclosures))
     if args.simulation and args.simulation.exists():
         simulation_payload = historical_store.load_store(args.simulation)
         snapshot["simulation"] = simulation_payload.get("simulation") or simulation_payload

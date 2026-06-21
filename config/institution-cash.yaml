@@ -1,0 +1,11 @@
+# Cash is not available in 13F. Add rows only when a separate filing discloses it.
+cash_disclosures:
+  - cik: "0001067983"
+    report_period: "2026-03-31"
+    as_of_date: "2026-03-31"
+    filing_date: "2026-05-04"
+    cash_value_usd: 390739000000
+    cash_label: "Cash and cash equivalents plus short-term investments in U.S. Treasury Bills"
+    source_type: "10-Q"
+    source_url: "https://www.sec.gov/Archives/edgar/data/1067983/000119312526202243/brka-20260331.htm"
+    confidence: "reported"

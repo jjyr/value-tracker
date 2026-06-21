@@ -64,6 +64,10 @@
       {{ range $rank, $item := $institutionItems }}
         {{ $institution := $item.institution }}
         {{ $summary := $institution.summary }}
+        {{ $cashDisclosed := $summary.cash_disclosure_available | default false }}
+        {{ $securitiesValue := float ($summary.securities_value_usd | default ($summary.total_value_usd | default 0)) }}
+        {{ $cashValue := float ($summary.cash_value_usd | default 0) }}
+        {{ $cashWeight := float ($summary.cash_weight_pct | default 0) }}
         {{ $curveSummary := dict }}
         {{ with $item.curve }}{{ $curveSummary = .summary | default (dict) }}{{ end }}
         {{ $ytd := float ($curveSummary.ytd_return_pct | default 0) }}
@@ -106,6 +110,15 @@
             "shares" $otherShares
           ) }}
         {{ end }}
+        {{ if and $cashDisclosed (gt $cashValue 0.0) }}
+          {{ $pieRows = $pieRows | append (dict
+            "symbol" (i18n "cash")
+            "company_name" ($summary.cash_label | default (i18n "cash_position"))
+            "value" $cashValue
+            "valueKind" "money"
+            "weight" $cashWeight
+          ) }}
+        {{ end }}
         <article class="institution-card institution-performance-card">
           <div class="institution-card-header">
             <a class="institution-card-main" href="{{ $institution.href | relLangURL }}">
@@ -122,21 +135,41 @@
           </div>
 
           <div class="institution-metric-grid">
-            <div>
-              <span>{{ i18n "portfolio_value" }}</span>
-              <strong data-money="{{ $summary.total_value_usd }}">--</strong>
+            <div class="institution-metric-group">
+              <span class="institution-metric-group-label">{{ i18n "capital_allocation" }}</span>
+              <div class="institution-metric-items asset-metrics">
+                <div class="institution-metric-item">
+                  <span>{{ i18n "portfolio_value" }}</span>
+                  <strong data-money="{{ $securitiesValue }}">--</strong>
+                </div>
+                <div class="institution-metric-item">
+                  <span>{{ i18n "cash_position" }}</span>
+                  {{ if $cashDisclosed }}
+                    <strong data-money="{{ $cashValue }}">--</strong>
+                    <small>{{ printf "%.1f%%" $cashWeight }}</small>
+                  {{ else }}
+                    <strong>{{ i18n "not_disclosed" }}</strong>
+                    <small>{{ i18n "cash_not_disclosed_short" }}</small>
+                  {{ end }}
+                </div>
+              </div>
             </div>
-            <div>
-              <span>{{ i18n "today" }}</span>
-              <strong class="{{ if lt $daily 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $daily }}</strong>
-            </div>
-            <div>
-              <span>{{ i18n "this_month" }}</span>
-              <strong class="{{ if lt $monthly 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $monthly }}</strong>
-            </div>
-            <div>
-              <span>{{ i18n "max_drawdown" }}</span>
-              <strong class="negative">{{ printf "%.1f%%" $maxDrawdown }}</strong>
+            <div class="institution-metric-group">
+              <span class="institution-metric-group-label">{{ i18n "performance" }}</span>
+              <div class="institution-metric-items performance-metrics">
+                <div class="institution-metric-item">
+                  <span>{{ i18n "today" }}</span>
+                  <strong class="{{ if lt $daily 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $daily }}</strong>
+                </div>
+                <div class="institution-metric-item">
+                  <span>{{ i18n "this_month" }}</span>
+                  <strong class="{{ if lt $monthly 0.0 }}negative{{ else }}positive{{ end }}">{{ printf "%+.1f%%" $monthly }}</strong>
+                </div>
+                <div class="institution-metric-item">
+                  <span>{{ i18n "max_drawdown" }}</span>
+                  <strong class="negative">{{ printf "%.1f%%" $maxDrawdown }}</strong>
+                </div>
+              </div>
             </div>
           </div>
 

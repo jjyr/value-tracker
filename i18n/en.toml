@@ -70,6 +70,33 @@ other = "Tracked institution performance"
 [portfolio_value]
 other = "Portfolio value"
 
+[capital_allocation]
+other = "Capital allocation"
+
+[performance]
+other = "Performance"
+
+[securities_value]
+other = "13F securities"
+
+[cash]
+other = "Cash"
+
+[cash_position]
+other = "Cash position"
+
+[cash_weight]
+other = "Cash weight"
+
+[cash_not_disclosed_short]
+other = "No cash filing"
+
+[not_disclosed]
+other = "Not disclosed"
+
+[source]
+other = "Source"
+
 [today]
 other = "Today"
 

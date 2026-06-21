@@ -53,6 +53,12 @@ def add_fetch_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--live-batch-size", type=int, default=30, help="Symbols per Longbridge live market-data command.")
     parser.add_argument("--live-sleep", type=float, default=0.0, help="Seconds to sleep after each Longbridge live command.")
     parser.add_argument("--sec-user-agent", default="ValueTracker/0.1 contact@example.com", help="User-Agent for SEC early-update checks.")
+    parser.add_argument(
+        "--cash-disclosures",
+        type=pathlib.Path,
+        default=ROOT / "config/institution-cash.yaml",
+        help="Optional cash-disclosure YAML merged into live raw input.",
+    )
     parser.add_argument("--disable-auto-map", action="store_true", help="Only use explicit CUSIP mappings.")
     parser.add_argument("--no-persist-auto-map", action="store_true", help="Do not append successful auto-maps to the CUSIP map.")
 
@@ -87,9 +93,17 @@ def config_hash(config: Dict[str, Any]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 
-def current_config_hash() -> Optional[str]:
+def current_config_hash(cash_disclosures_path: Optional[pathlib.Path] = None) -> Optional[str]:
     config = load_yaml_file(ROOT / "config/stockhunt.yaml")
-    return config_hash(config) if config else None
+    if not config:
+        return None
+    cash_rows = []
+    for disclosure in config.get("cash_disclosures") or []:
+        cash_rows.append(dict(disclosure))
+    cash_payload = load_yaml_file(cash_disclosures_path or ROOT / "config/institution-cash.yaml")
+    for disclosure in cash_payload.get("cash_disclosures") or cash_payload.get("disclosures") or []:
+        cash_rows.append(dict(disclosure))
+    return config_hash({"config": config, "cash_disclosures": cash_rows})
 
 
 def current_13f_state() -> Tuple[Optional[str], List[Dict[str, Any]], Optional[str]]:
@@ -157,7 +171,7 @@ def weekly_13f_unchanged(args: argparse.Namespace) -> bool:
         print("no local 13F state found; continuing weekly pipeline", file=sys.stderr)
         return False
 
-    active_config_hash = current_config_hash()
+    active_config_hash = current_config_hash(args.cash_disclosures)
     if not saved_config_hash or saved_config_hash != active_config_hash:
         print(
             f"config changed or missing hash (local={saved_config_hash}, current={active_config_hash}); continuing weekly pipeline",
@@ -202,6 +216,7 @@ def run_live_input(args: argparse.Namespace) -> Dict[str, Any]:
         manager_limit=args.manager_limit,
         batch_size=args.live_batch_size,
         sleep=args.live_sleep,
+        cash_disclosures=args.cash_disclosures,
         disable_auto_map=args.disable_auto_map,
         no_persist_auto_map=args.no_persist_auto_map,
         data_date=None,
@@ -218,7 +233,7 @@ def run_backend(raw: Dict[str, Any]) -> None:
 
     config_path = ROOT / "config/stockhunt.yaml"
     config = stockhunt_backend.load_yaml(config_path)
-    cfg_hash = stockhunt_backend.config_hash(config)
+    cfg_hash = stockhunt_backend.snapshot_input_hash(config, raw)
     metrics = stockhunt_backend.compute_metrics(config, raw)
     snapshot = stockhunt_backend.build_snapshot(config, raw, cfg_hash, metrics)
     stockhunt_backend.write_yaml(SNAPSHOT, snapshot)
@@ -264,7 +279,7 @@ def run_backtest(
     run(backtest_command)
 
 
-def run_export() -> None:
+def run_export(args: argparse.Namespace) -> None:
     export_command = [
         sys.executable,
         "scripts/generate_stockhunt_data.py",
@@ -272,6 +287,8 @@ def run_export() -> None:
         str(SNAPSHOT),
         "--simulation",
         str(SIMULATION),
+        "--cash-disclosures",
+        str(args.cash_disclosures),
     ]
     run(export_command)
 
@@ -280,7 +297,7 @@ def fetch_pipeline(args: argparse.Namespace, full: bool, allow_rebalance: bool) 
     raw = run_live_input(args)
     run_backend(raw)
     run_backtest(args, full=full, allow_rebalance=allow_rebalance)
-    run_export()
+    run_export(args)
 
 
 def build() -> None:
@@ -316,7 +333,7 @@ def schedule() -> None:
         return
     if args.mode == "daily":
         run_backtest(args, full=False, allow_rebalance=False, refresh_submissions=False)
-        run_export()
+        run_export(args)
     else:
         if not args.force and weekly_13f_unchanged(args):
             write_schedule_state(args.state_output, {"mode": args.mode, "skipped": True, "reason": "13f_unchanged"})

@@ -111,6 +111,21 @@ change_value_usd
 portfolio_weight_pct
 ```
 
+如果当前报告期存在该机构的独立现金披露：
+
+```text
+portfolio_weight_pct = current_value_usd / (13F 证券总市值 + cash_value_usd) * 100
+cash_weight_pct = cash_value_usd / (13F 证券总市值 + cash_value_usd) * 100
+```
+
+如果没有现金披露，`portfolio_weight_pct` 继续使用旧口径：
+
+```text
+portfolio_weight_pct = current_value_usd / 13F 证券总市值 * 100
+```
+
+注意：13F 不披露现金。`cash_value_usd` 只能来自 10-Q/10-K、N-PORT 或其他明确披露文件；不能用“未出现在 13F 的部分”倒推。
+
 股票聚合字段：
 
 ```text

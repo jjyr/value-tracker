@@ -10,6 +10,10 @@
     </section>
   </main>
 {{ else }}
+  {{ $summary := $institution.summary }}
+  {{ $cashDisclosed := $summary.cash_disclosure_available | default false }}
+  {{ $cashValue := float ($summary.cash_value_usd | default 0) }}
+  {{ $cashWeight := float ($summary.cash_weight_pct | default 0) }}
   <main class="page-shell detail-shell">
     <a class="back-link" href="{{ site.Home.RelPermalink }}">← {{ i18n "back_home" }}</a>
     <section class="detail-hero">
@@ -29,11 +33,13 @@
           </div>
         </div>
         <div class="stat-list">
-          <div><span>{{ i18n "holdings_number" }}</span><strong>{{ $institution.summary.holdings_count }}</strong></div>
-          <div><span>{{ i18n "period_changes" }}</span><strong>{{ $institution.summary.changes_count }}</strong></div>
-          <div><span>{{ i18n "portfolio_value" }}</span><strong data-money="{{ $institution.summary.total_value_usd }}">--</strong></div>
-          <div><span>{{ i18n "bought_value" }}</span><strong data-money="{{ $institution.summary.bought_value_usd }}">--</strong></div>
-          <div><span>{{ i18n "sold_value" }}</span><strong data-money="{{ $institution.summary.sold_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "holdings_number" }}</span><strong>{{ $summary.holdings_count }}</strong></div>
+          <div><span>{{ i18n "period_changes" }}</span><strong>{{ $summary.changes_count }}</strong></div>
+          <div><span>{{ i18n "portfolio_value" }}</span><strong data-money="{{ $summary.total_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "cash_position" }}</span>{{ if $cashDisclosed }}<strong data-money="{{ $cashValue }}">--</strong>{{ else }}<strong>{{ i18n "not_disclosed" }}</strong>{{ end }}</div>
+          <div><span>{{ i18n "cash_weight" }}</span><strong>{{ if $cashDisclosed }}{{ printf "%.2f%%" $cashWeight }}{{ else }}--{{ end }}</strong></div>
+          <div><span>{{ i18n "bought_value" }}</span><strong data-money="{{ $summary.bought_value_usd }}">--</strong></div>
+          <div><span>{{ i18n "sold_value" }}</span><strong data-money="{{ $summary.sold_value_usd }}">--</strong></div>
         </div>
       </div>
 
@@ -94,6 +100,28 @@
                   <span class="muted block">Fwd {{ .forward_pe | default "--" }} / PS {{ .ps | default "--" }}</span>
                 </td>
                 <td>{{ .filing_date }}</td>
+              </tr>
+            {{ end }}
+            {{ if $cashDisclosed }}
+              <tr class="cash-allocation-row">
+                <td>
+                  <div class="stock-link">
+                    <strong>{{ i18n "cash" }}</strong>
+                    <span>{{ $summary.cash_label | default (i18n "cash_position") }}</span>
+                  </div>
+                </td>
+                <td><span class="activity-badge badge-holding">{{ i18n "cash" }}</span></td>
+                <td><span data-money="{{ $cashValue }}">--</span></td>
+                <td>{{ printf "%.2f%%" $cashWeight }}</td>
+                <td>--</td>
+                <td>
+                  {{ with $summary.cash_source_url }}
+                    <a href="{{ . }}" target="_blank" rel="noopener">{{ $summary.cash_source_type | default (i18n "source") }}</a>
+                  {{ else }}
+                    {{ $summary.cash_source_type | default "--" }}
+                  {{ end }}
+                </td>
+                <td>{{ $summary.cash_as_of_date | default "--" }}</td>
               </tr>
             {{ end }}
           </tbody>

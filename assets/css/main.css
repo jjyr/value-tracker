@@ -1824,11 +1824,11 @@ button.tip-trigger,
 
 .institution-metric-grid {
   display: grid;
-  grid-template-columns: 1.35fr repeat(3, minmax(92px, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
+  gap: 12px;
 }
 
-.institution-metric-grid > div {
+.institution-metric-group {
   min-width: 0;
   padding: 12px;
   border: 1px solid var(--line);
@@ -1836,21 +1836,66 @@ button.tip-trigger,
   background: rgba(255, 255, 255, 0.03);
 }
 
-.institution-metric-grid span {
+.institution-metric-group-label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   color: var(--muted);
+  font-size: 11px;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.institution-metric-items {
+  display: grid;
+  gap: 8px;
+}
+
+.asset-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.performance-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.institution-metric-item {
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.institution-metric-item span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted-2);
   font-size: 11px;
   font-weight: 740;
 }
 
-.institution-metric-grid strong {
+.institution-metric-item strong {
   display: block;
-  overflow: hidden;
   font-size: 17px;
   font-weight: 890;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.institution-metric-item small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted-2);
+  font-size: 11px;
+  font-weight: 740;
+}
+
+.cash-allocation-row {
+  background: rgba(243, 201, 105, 0.045);
+}
+
+.cash-allocation-row td {
+  border-top-color: rgba(243, 201, 105, 0.22);
 }
 
 .institution-card-stats {
