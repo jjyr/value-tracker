@@ -1,0 +1,56 @@
+{{ $data := hugo.Data.stockhunt }}
+{{ $periods := $data.holding_periods }}
+{{ if not $periods }}
+  {{ $periods = slice (dict "key" "current" "period_label" "" "rankings" $data.rankings) }}
+{{ end }}
+{{ $defaultPeriod := index $periods 0 }}
+{{ partial "topbar.html" . }}
+<main class="page-shell holdings-page">
+  <section class="panel holdings-hero">
+    <div>
+      <p class="eyebrow">{{ i18n "institution_positions" }}</p>
+      <h1>{{ i18n "nav_holdings" }}</h1>
+    </div>
+    <p>{{ i18n "holdings_hero_text" }}</p>
+  </section>
+
+  <section class="panel holding-period-panel" data-holding-period-control>
+    <div>
+      <p class="eyebrow">{{ i18n "report_period" }}</p>
+      <h2>{{ i18n "stats_period" }}</h2>
+    </div>
+    <div class="holding-period-field" role="group" aria-label="{{ i18n "stats_period" }}">
+      <span>{{ i18n "report_change_period" }}</span>
+      <div class="holding-period-options" data-holding-period-options>
+        {{ range $idx, $period := $periods }}
+          <button
+            class="holding-period-button {{ if eq $idx 0 }}is-active{{ end }}"
+            type="button"
+            data-holding-period-option="{{ $period.key }}"
+            data-period-label="{{ $period.period_label }}"
+            aria-pressed="{{ if eq $idx 0 }}true{{ else }}false{{ end }}"
+          >
+            {{ with $period.label_key }}{{ i18n . }}{{ else }}{{ $period.period_label }}{{ end }}
+          </button>
+        {{ end }}
+      </div>
+    </div>
+    <p class="holding-period-summary">{{ i18n "covered_period" }}<strong data-holding-period-summary>{{ $defaultPeriod.period_label }}</strong></p>
+  </section>
+
+  <div class="holding-period-groups">
+    {{ range $idx, $period := $periods }}
+      <div class="holding-period-group" data-holding-period-panel="{{ $period.key }}" {{ if ne $idx 0 }}hidden{{ end }}>
+        <div class="holding-stat-stack">
+          {{ range $period.rankings }}
+            {{ partial "holding-stat-panel.html" (dict "ranking" .) }}
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+  </div>
+
+  <footer class="risk-note">
+    {{ i18n "holdings_risk_note" }}
+  </footer>
+</main>
