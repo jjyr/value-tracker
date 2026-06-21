@@ -23,6 +23,7 @@ from scripts import historical_store
 
 SNAPSHOT = ROOT / "raw/generated/snapshot.yaml"
 SIMULATION = ROOT / "raw/generated/historical"
+LEGACY_SIMULATION = ROOT / "raw/generated/historical_simulation.yaml"
 DATA = ROOT / "data/stockhunt.json"
 DEFAULT_BACKTEST_START = "2024-01-01"
 
@@ -65,6 +66,16 @@ def add_fetch_args(parser: argparse.ArgumentParser) -> None:
 
 def last_rebalance_date(path: pathlib.Path = SIMULATION) -> Optional[str]:
     return historical_store.last_rebalance_date(path) if path.exists() else None
+
+
+def migrate_legacy_simulation_store(path: pathlib.Path = SIMULATION) -> None:
+    if path.exists() or not LEGACY_SIMULATION.exists():
+        return
+    payload = historical_store.load_store(LEGACY_SIMULATION)
+    if not payload:
+        return
+    historical_store.write_store(path, payload)
+    print(f"migrated {LEGACY_SIMULATION} to {path}", file=sys.stderr)
 
 
 def load_yaml_file(path: pathlib.Path) -> Dict[str, Any]:
@@ -246,6 +257,7 @@ def run_backtest(
     allow_rebalance: bool,
     refresh_submissions: bool = True,
 ) -> None:
+    migrate_legacy_simulation_store()
     backtest_command = [
         sys.executable,
         "scripts/historical_backtest.py",
@@ -357,6 +369,7 @@ def check() -> None:
             "-m",
             "py_compile",
             "scripts/build_live_input.py",
+            "scripts/historical_store.py",
             "scripts/historical_backtest.py",
             "scripts/stockhunt_backend.py",
             "scripts/generate_stockhunt_data.py",
