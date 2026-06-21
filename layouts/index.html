@@ -52,14 +52,12 @@
       "className" "home-equity-panel"
       "eyebrow" (i18n "equity_curve")
       "title" (i18n "home_chart_title")
+      "description" (i18n "home_risk_note_start" (dict "StartDate" ($curveStartDate | default "2024-01-02")))
       "points" $benchmarkPoints
       "series" $chartSeries
       "range" "ytd"
       "ariaLabel" (i18n "home_chart_aria")
     ) }}
-    <section class="panel home-note-panel">
-      <p>{{ i18n "home_risk_note_start" (dict "StartDate" ($curveStartDate | default "2024-01-02")) }}</p>
-    </section>
   </section>
 
   <section class="institution-rank-grid" id="institutions" aria-label="{{ i18n "home_grid_aria" }}">
@@ -159,7 +157,27 @@
               {{ range first 5 $institution.recent_changes }}
                 {{ $badgeTone := "holding" }}
                 {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
-                <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relLangURL }}">
+                {{ $reportPrice := "--" }}
+                {{ if gt (float (.trade_report_price | default 0)) 0.0 }}{{ $reportPrice = printf "$%.2f" (float .trade_report_price) }}{{ end }}
+                {{ $previousShares := float (.previous_shares | default 0) }}
+                {{ $currentShares := float (.current_shares | default 0) }}
+                {{ $changeShares := float (.change_shares | default 0) }}
+                {{ $changePercent := "--" }}
+                {{ if gt $previousShares 0.0 }}
+                  {{ $changePercent = printf "%+.1f%%" (mul (div $changeShares $previousShares) 100.0) }}
+                {{ else if gt $currentShares 0.0 }}
+                  {{ $changePercent = "+100.0%" }}
+                {{ end }}
+                {{ $changeTooltipRows := slice }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "status") "value" (partial "status-label.html" .) "tone" .status_tone) }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "filing_date") "value" (.filing_date | default "--")) }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "report_period") "value" (.report_period | default "--")) }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "change_shares") "value" (printf "%+.0f" $changeShares)) }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "change_percent") "value" $changePercent "tone" .status_tone) }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "current_shares") "value" (printf "%.0f" $currentShares)) }}
+                {{ $changeTooltipRows = $changeTooltipRows | append (dict "label" (i18n "report_price") "value" $reportPrice "tone" "price") }}
+                {{ $changeTooltip := dict "title" (printf "%s · %s" .symbol .company_name) "rows" $changeTooltipRows }}
+                <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relLangURL }}" data-change-tooltip='{{ $changeTooltip | jsonify }}'>
                   <span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" . }}</span>
                   <strong>{{ .symbol }}</strong>
                   <em data-money="{{ .change_value_usd }}">--</em>

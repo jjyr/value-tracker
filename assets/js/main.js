@@ -378,8 +378,8 @@ function drawEquityChart(svg) {
   const pad = Math.max((max - min) * 0.14, 1);
   const low = min - pad;
   const high = max + pad;
-  const width = 760;
-  const height = 260;
+  const width = 940;
+  const height = 280;
   const left = 58;
   const right = 22;
   const top = 18;
@@ -501,7 +501,7 @@ function drawEquityChart(svg) {
       const circle = hoverDots[index].circle;
       if (!point) {
         circle.setAttribute("visibility", "hidden");
-        return "";
+        return null;
       }
       circle.setAttribute("visibility", "visible");
       circle.setAttribute("cx", x(point.dateMs));
@@ -509,17 +509,20 @@ function drawEquityChart(svg) {
       const pct = point.value;
       const amount = Number.isFinite(point.amount) ? moneyFormatter.format(point.amount) : "";
       const disclosure = point.dateMs === hoverDateMs ? "" : t("disclosed", { date: point.date.slice(5) });
-      const details = [amount, disclosure].filter(Boolean).join(" · ");
       const newPositions = point.dateMs === hoverDateMs && hasNewPositionEvents(point) ? point.new_positions : [];
       const eventPeriod = point.event_report_period ? ` · ${escapeHtml(t("reportPeriod", { period: point.event_report_period }))}` : "";
       const newPositionText = newPositions.length
         ? `<div class="chart-tooltip-event">${escapeHtml(t("newPositions"))} ${newPositions.slice(0, 4).map((event) => escapeHtml(event.symbol)).join(" / ")}${eventPeriod}</div>`
         : "";
-      return `<div><span class="chart-tooltip-name" style="color:${item.color}">${escapeHtml(item.label)}</span><strong>${formatPercent(pct)}</strong><span>${details}</span></div>${newPositionText}`;
-    });
+      return {
+        performance: pct,
+        originalIndex: index,
+        html: `<div class="chart-tooltip-row"><span class="chart-tooltip-name" title="${escapeHtml(item.label)}" style="color:${item.color}">${escapeHtml(item.label)}</span><strong class="chart-tooltip-return">${formatPercent(pct)}</strong><span class="chart-tooltip-amount"><span>${escapeHtml(amount || "--")}</span>${disclosure ? `<em>${escapeHtml(disclosure)}</em>` : ""}</span></div>${newPositionText}`
+      };
+    }).filter(Boolean).sort((a, b) => (b.performance - a.performance) || (a.originalIndex - b.originalIndex));
     hoverGroup.setAttribute("visibility", "visible");
 
-    tooltip.innerHTML = `<time>${formatChartDate(hoverDateMs)}</time>${rows.join("")}`;
+    tooltip.innerHTML = `<time>${formatChartDate(hoverDateMs)}</time>${rows.map((row) => row.html).join("")}`;
     tooltip.classList.add("is-visible");
 
     const tooltipRect = tooltip.getBoundingClientRect();
@@ -762,6 +765,78 @@ function setupTooltips() {
   window.addEventListener("resize", positionTooltip);
 }
 
+function setupChangeTooltips() {
+  const triggers = Array.from(document.querySelectorAll("[data-change-tooltip]"));
+  if (!triggers.length) return;
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "floating-tooltip change-tooltip";
+  tooltip.setAttribute("role", "tooltip");
+  document.body.appendChild(tooltip);
+
+  let activeTrigger = null;
+
+  const positionTooltip = () => {
+    if (!activeTrigger) return;
+    const rect = activeTrigger.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const gap = 10;
+    const margin = 12;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+    left = Math.max(margin, Math.min(left, viewportWidth - tooltipRect.width - margin));
+
+    let placement = "top";
+    let top = rect.top - tooltipRect.height - gap;
+    if (top < margin) {
+      placement = "bottom";
+      top = rect.bottom + gap;
+    }
+    top = Math.max(margin, Math.min(top, viewportHeight - tooltipRect.height - margin));
+
+    const arrowLeft = rect.left + rect.width / 2 - left;
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+    tooltip.style.setProperty("--arrow-left", `${Math.round(arrowLeft)}px`);
+    tooltip.dataset.placement = placement;
+  };
+
+  const showTooltip = (trigger) => {
+    const payload = parseJsonData(trigger.dataset.changeTooltip, null);
+    if (!payload || !Array.isArray(payload.rows)) return;
+    activeTrigger = trigger;
+    const rows = payload.rows
+      .filter((row) => row && row.label)
+      .map((row) => {
+        const tone = ["buy", "sell", "price"].includes(row.tone) ? row.tone : "";
+        const className = tone ? ` class="change-tooltip-value-${tone}"` : "";
+        return `<div class="change-tooltip-row"><span>${escapeHtml(row.label)}</span><strong${className}>${escapeHtml(row.value || "--")}</strong></div>`;
+      })
+      .join("");
+    tooltip.innerHTML = `<div class="change-tooltip-title">${escapeHtml(payload.title || "")}</div>${rows}`;
+    tooltip.classList.add("is-visible");
+    requestAnimationFrame(positionTooltip);
+  };
+
+  const hideTooltip = () => {
+    activeTrigger = null;
+    tooltip.classList.remove("is-visible");
+  };
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("mouseenter", () => showTooltip(trigger));
+    trigger.addEventListener("focus", () => showTooltip(trigger));
+    trigger.addEventListener("mousemove", positionTooltip);
+    trigger.addEventListener("mouseleave", hideTooltip);
+    trigger.addEventListener("blur", hideTooltip);
+  });
+
+  window.addEventListener("scroll", positionTooltip, true);
+  window.addEventListener("resize", positionTooltip);
+}
+
 function setupLanguageSwitcher() {
   const options = Array.from(document.querySelectorAll("[data-language-option]"));
   if (!options.length) return;
@@ -798,4 +873,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupRebalancePagination();
   setupHoldingPies();
   setupTooltips();
+  setupChangeTooltips();
 });

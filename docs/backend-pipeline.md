@@ -6,7 +6,7 @@
 
 1. 原始接入层：SEC 13F、Longbridge、指数成分等 provider 只负责生成原始事实或更新 cache。
 2. 规范化层：比较最近两个 13F 报告期，生成当前机构变化和股票指标快照。
-3. 静态导出层：把 snapshot 和历史模拟盘转成 Hugo 使用的 `data/stockhunt.yaml`。
+3. 静态导出层：把 snapshot 和历史模拟盘转成 Hugo 使用的 `data/stockhunt.json`。
 
 当前实现不维护中间数据库。修改白名单、重点机构或策略后，直接重跑规范化、回测和静态导出即可；SEC 原始文件和 Longbridge K 线通过 cache 增量复用。
 
@@ -26,7 +26,7 @@ uv run python scripts/stockhunt_backend.py \
 uv run python scripts/stockhunt_backend.py \
   --raw raw/sample/13f_holdings.yaml \
   --snapshot-output /private/tmp/stockhunt-snapshot.yaml \
-  --hugo-output /private/tmp/stockhunt.yaml
+  --hugo-output /private/tmp/stockhunt.json
 ```
 
 完整项目命令：
@@ -36,6 +36,7 @@ uv run fetch
 uv run fetch-all
 uv run schedule daily
 uv run schedule weekly
+uv run schedule weekly --force
 uv run build
 ```
 
@@ -53,11 +54,11 @@ uv run build
 
 ```text
 raw/generated/snapshot.yaml                当前机构变化和股票指标快照
-raw/generated/historical_simulation.yaml   2024 至今模拟盘
+raw/generated/historical/                  2024 至今模拟盘 JSONL store
 raw/generated/cache/sec/                   SEC submissions / filing cache
 raw/generated/cache/longbridge-kline/      Longbridge 日 K 线 cache
-data/stockhunt.yaml                        Hugo 消费的站点数据
-content/institutions/*.md                  机构详情页内容入口
+data/stockhunt.json                        Hugo 消费的站点数据
+content/en/**, content/zh/**               机构和股票详情页内容入口
 ```
 
 ## 增量策略
@@ -66,11 +67,14 @@ content/institutions/*.md                  机构详情页内容入口
 - 当前 snapshot 每次从 raw input 和配置纯内存重算。
 - SEC submissions index 会刷新，用于发现新增 13F。
 - 已有 SEC filing index / information table XML 继续复用 cache。
+- 未在 `config/cusip-symbols.yaml` 映射的 CUSIP，会用 Longbridge US security-list 按 issuer name 自动匹配 symbol；成功匹配会追加写回本地映射表，后续直接复用。
 - Longbridge 日 K 线按 symbol 追加缺失日期。
-- 历史回测每次按当前配置重算，但底层 SEC 和 K 线读取增量 cache。
+- 历史回测写入 `raw/generated/historical/`：元数据用 JSON，大数组用 JSONL。
+- `fetch` / `schedule daily|weekly` 会尝试从 checkpoint 增量续算；配置或 CUSIP 映射 hash 变化时自动全量重算。
+- 13F 指纹变化时，`dirty_from` 取最早变动 13F 的 `filing_date`；没有 13F 变化时，只重算最新 equity point 之后的尾部。
 
 ## 下一步接入
 
 1. Index tag adapter：维护 S&P 500、Nasdaq 100、Russell 1000/2000/3000、Mag7 标签。
-2. 数据质量报告：展示未映射 CUSIP、缺失价格、退市股票和 13F value 单位修正。
+2. 数据质量报告：展示未映射 CUSIP、自动映射 CUSIP、缺失价格、退市股票和 13F value 单位修正。
 3. 机构详情页历史变动图表。

@@ -5,21 +5,29 @@ from __future__ import annotations
 
 import argparse
 import bisect
+import copy
 import datetime as dt
+import hashlib
 import json
 import math
 import pathlib
 import subprocess
+import sys
 import time
 import urllib.request
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
-from scripts import generate_stockhunt_data as hugo_data
-from scripts.build_live_input import extract_json, load_cusip_map, normalize_cik
-
-
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import generate_stockhunt_data as hugo_data
+from scripts import historical_store
+from scripts.build_live_input import extract_json, load_cusip_map, normalize_cik
+from scripts.symbol_resolver import LongbridgeSymbolResolver
+
+
 DEFAULT_START_DATE = "2024-01-01"
 BENCHMARKS = {"spy": "SPY.US", "qqq": "QQQ.US"}
 CHART_COLORS = {
@@ -42,6 +50,11 @@ def today() -> str:
 
 def now_iso() -> str:
     return dt.datetime.now().astimezone().replace(microsecond=0).isoformat()
+
+
+def stable_hash(data: Any) -> str:
+    payload = json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 
 def number(value: Any) -> Optional[float]:
@@ -290,7 +303,12 @@ def child_text(node: ET.Element, local_name: str) -> Optional[str]:
     return None
 
 
-def parse_info_table(xml_text: str, cusip_map: Dict[str, Dict[str, Any]], warnings: List[str], manager_name: str) -> List[Dict[str, Any]]:
+def parse_info_table(
+    xml_text: str,
+    symbol_resolver: LongbridgeSymbolResolver,
+    warnings: List[str],
+    manager_name: str,
+) -> List[Dict[str, Any]]:
     root = ET.fromstring(xml_text.encode("utf-8"))
     holdings = []
     for info in root.iter():
@@ -301,9 +319,13 @@ def parse_info_table(xml_text: str, cusip_map: Dict[str, Dict[str, Any]], warnin
         if put_call or share_type.upper() != "SH":
             continue
         cusip = (child_text(info, "cusip") or "").strip().upper()
-        mapped = cusip_map.get(cusip)
+        issuer = child_text(info, "nameOfIssuer") or "unknown issuer"
+        try:
+            mapped = symbol_resolver.resolve(cusip, issuer)
+        except Exception as exc:  # noqa: BLE001 - keep backtest partial.
+            warnings.append(f"symbol auto-map unavailable for {cusip} ({issuer}) from {manager_name}: {exc}")
+            mapped = symbol_resolver.mappings.get(cusip)
         if not mapped:
-            issuer = child_text(info, "nameOfIssuer") or "unknown issuer"
             warnings.append(f"unmapped CUSIP {cusip} ({issuer}) from {manager_name}; skipped")
             continue
         holdings.append(
@@ -321,7 +343,7 @@ def parse_info_table(xml_text: str, cusip_map: Dict[str, Dict[str, Any]], warnin
 
 def fetch_historical_filings(
     config: Dict[str, Any],
-    cusip_map: Dict[str, Dict[str, Any]],
+    symbol_resolver: LongbridgeSymbolResolver,
     args: argparse.Namespace,
     warnings: List[str],
 ) -> List[Dict[str, Any]]:
@@ -345,12 +367,93 @@ def fetch_historical_filings(
                     f"https://www.sec.gov/Archives/edgar/data/{int(manager['cik'])}/"
                     f"{filing['accession_number'].replace('-', '')}/{table_name}"
                 )
-                filing["holdings"] = parse_info_table(xml_text, cusip_map, warnings, display_name)
+                filing["holdings"] = parse_info_table(xml_text, symbol_resolver, warnings, display_name)
                 filings.append(filing)
             except Exception as exc:  # noqa: BLE001 - keep backtest partial.
                 warnings.append(f"failed to parse {display_name} {filing['accession_number']}: {exc}")
     filings.sort(key=lambda row: (row["filing_date"], row["cik"], row["report_period"], row["accession_number"]))
     return filings
+
+
+def filing_fingerprint_rows(filings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    rows = []
+    for filing in filings:
+        holdings = [
+            {
+                "cusip": holding.get("cusip"),
+                "symbol": holding.get("symbol"),
+                "shares": holding.get("shares"),
+                "value_usd": holding.get("value_usd"),
+            }
+            for holding in filing.get("holdings") or []
+        ]
+        rows.append(
+            {
+                "cik": normalize_cik(filing.get("cik")),
+                "accession_number": filing.get("accession_number"),
+                "filing_date": filing.get("filing_date"),
+                "report_period": filing.get("report_period"),
+                "holdings_hash": stable_hash(sorted(holdings, key=lambda row: (str(row.get("symbol")), str(row.get("cusip"))))),
+            }
+        )
+    return sorted(rows, key=lambda row: (str(row.get("cik")), str(row.get("accession_number"))))
+
+
+def changed_filing_dates(old_rows: List[Dict[str, Any]], new_rows: List[Dict[str, Any]]) -> List[dt.date]:
+    def keyed(rows: List[Dict[str, Any]]) -> Dict[Tuple[str, str], Dict[str, Any]]:
+        return {
+            (normalize_cik(row.get("cik")), str(row.get("accession_number") or "")): row
+            for row in rows
+            if row.get("cik") and row.get("accession_number")
+        }
+
+    old_by_key = keyed(old_rows)
+    new_by_key = keyed(new_rows)
+    dates = []
+    for key, row in new_by_key.items():
+        if old_by_key.get(key) != row and row.get("filing_date"):
+            dates.append(parse_date(row["filing_date"]))
+    for key, row in old_by_key.items():
+        if key not in new_by_key and row.get("filing_date"):
+            dates.append(parse_date(row["filing_date"]))
+    return sorted(dates)
+
+
+def infer_dirty_from(
+    args: argparse.Namespace,
+    existing_payload: Dict[str, Any],
+    config_hash_value: str,
+    cusip_map_hash_value: str,
+    filing_fingerprint: List[Dict[str, Any]],
+) -> Optional[dt.date]:
+    if not args.incremental or not existing_payload:
+        return None
+    if args.manager_limit or args.symbol_limit:
+        print("incremental disabled: manager/symbol limit set", file=sys.stderr)
+        return None
+    if args.dirty_from:
+        return parse_date(args.dirty_from)
+
+    build = existing_payload.get("build") or {}
+    if build.get("config_hash") != config_hash_value:
+        print("incremental disabled: config hash changed or missing", file=sys.stderr)
+        return None
+    if build.get("cusip_map_hash") != cusip_map_hash_value:
+        print("incremental disabled: CUSIP map hash changed or missing", file=sys.stderr)
+        return None
+
+    changed_dates = changed_filing_dates(build.get("filing_fingerprint") or [], filing_fingerprint)
+    if changed_dates:
+        dirty_from = min(changed_dates)
+        print(f"incremental dirty_from from changed 13F filing_date: {dirty_from}", file=sys.stderr)
+        return dirty_from
+
+    last_date = historical_store.last_equity_date(existing_payload)
+    if last_date:
+        dirty_from = parse_date(last_date)
+        print(f"incremental dirty_from from latest equity point: {dirty_from}", file=sys.stderr)
+        return dirty_from
+    return None
 
 
 def aggregate_holdings(holdings: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
@@ -1137,18 +1240,19 @@ def run_simulation(
     start_date: dt.date,
     end_date: dt.date,
     rebalance_until: Optional[dt.date] = None,
+    existing_simulation: Optional[Dict[str, Any]] = None,
+    dirty_from: Optional[dt.date] = None,
 ) -> Dict[str, Any]:
     initial_value = float(config.get("strategy", {}).get("initial_value", 100000))
     min_trade_weight = 0.0
     filings_by_cik = group_filings_by_cik(filings)
     price_index = build_price_index(price_history)
-    trading_days = trading_dates(price_index, start_date, end_date)
-    if not trading_days:
+    all_trading_days = trading_dates(price_index, start_date, end_date)
+    if not all_trading_days:
         raise ValueError("no SPY trading days available for backtest range")
     rebalance_end = min(end_date, rebalance_until) if rebalance_until else end_date
-    rebalances = weekly_rebalance_dates(start_date, rebalance_end, trading_days) if rebalance_end >= start_date else []
-    rebalance_set = set(rebalances)
-    start_trade_date = trading_days[0]
+    start_trade_date = all_trading_days[0]
+    run_start_date = start_trade_date
     spy_start = price_at(price_index, BENCHMARKS["spy"], start_trade_date)
     qqq_start = price_at(price_index, BENCHMARKS["qqq"], start_trade_date)
     cash = initial_value
@@ -1156,8 +1260,52 @@ def run_simulation(
     history: List[Dict[str, Any]] = []
     last_candidates_count = 0
     last_rebalance_date = None
-    last_candidate_rows: Dict[str, Dict[str, Any]] = {}
-    curve = []
+    last_candidate_symbols: set = set()
+    curve: List[Dict[str, Any]] = []
+    checkpoints: List[Dict[str, Any]] = []
+
+    if existing_simulation and dirty_from and dirty_from > start_trade_date:
+        existing_checkpoints = existing_simulation.get("checkpoints") or []
+        eligible_checkpoints = [
+            checkpoint
+            for checkpoint in existing_checkpoints
+            if checkpoint.get("date") and parse_date(checkpoint["date"]) < dirty_from
+        ]
+        if eligible_checkpoints:
+            checkpoint = max(eligible_checkpoints, key=lambda row: parse_date(row["date"]))
+            checkpoint_date = parse_date(checkpoint["date"])
+            next_run_date = next_trading_day(checkpoint_date + dt.timedelta(days=1), all_trading_days)
+            if next_run_date and next_run_date <= end_date:
+                run_start_date = next_run_date
+                cash = float(checkpoint.get("cash") or 0)
+                positions = copy.deepcopy(checkpoint.get("positions") or {})
+                last_candidates_count = int(checkpoint.get("last_candidates_count") or 0)
+                last_candidate_symbols = set(checkpoint.get("last_candidate_symbols") or [])
+                last_rebalance = checkpoint.get("last_rebalance_date")
+                last_rebalance_date = parse_date(last_rebalance) if last_rebalance else None
+                curve = [
+                    point
+                    for point in existing_simulation.get("equity_curve") or []
+                    if point.get("date") and parse_date(point["date"]) <= checkpoint_date
+                ]
+                existing_history = [
+                    row
+                    for row in existing_simulation.get("rebalance_history") or []
+                    if row.get("date") and parse_date(row["date"]) <= checkpoint_date
+                ]
+                history = list(reversed(existing_history))
+                checkpoints = [
+                    row
+                    for row in existing_checkpoints
+                    if row.get("date") and parse_date(row["date"]) <= checkpoint_date
+                ]
+                print(f"resuming simulation from checkpoint {checkpoint_date}; recomputing from {run_start_date}", file=sys.stderr)
+
+    trading_days = [date for date in all_trading_days if run_start_date <= date <= end_date]
+    if not trading_days:
+        trading_days = [all_trading_days[-1]]
+    rebalances = weekly_rebalance_dates(start_date, rebalance_end, all_trading_days) if rebalance_end >= start_date else []
+    rebalance_set = {date for date in rebalances if run_start_date <= date <= end_date}
 
     for date in trading_days:
         if date in rebalance_set:
@@ -1167,12 +1315,12 @@ def run_simulation(
             selected = candidates_for_date(config, rows, ranks, set(positions))
             last_candidates_count = len(selected)
             last_rebalance_date = date
+            last_candidate_symbols = {row["symbol"] for row in selected}
             if selected:
                 key_name_set = key_names(config)
                 manager_links = hugo_data.manager_links_by_name(config)
                 activity_limit = int(config.get("rankings", {}).get("activity_tag_limit", 10))
                 target_by_symbol = {row["symbol"]: row for row in selected}
-                last_candidate_rows = target_by_symbol
                 buys = []
                 sells = []
                 new_positions: Dict[str, Dict[str, Any]] = {}
@@ -1404,6 +1552,16 @@ def run_simulation(
                 "qqq_return_pct": round(percent_change(qqq_value, initial_value), 2),
             }
         )
+        checkpoints.append(
+            {
+                "date": date.isoformat(),
+                "cash": round(cash, 6),
+                "positions": copy.deepcopy(positions),
+                "last_candidates_count": last_candidates_count,
+                "last_rebalance_date": last_rebalance_date.isoformat() if last_rebalance_date else None,
+                "last_candidate_symbols": sorted(last_candidate_symbols),
+            }
+        )
     current_value = curve[-1]["value"] if curve else initial_value
     final_date = parse_date(curve[-1]["date"]) if curve else end_date
     one_week_value = point_value_on_or_before(curve, final_date - dt.timedelta(days=7))
@@ -1416,7 +1574,7 @@ def run_simulation(
         filings_by_cik,
         price_index,
         cusip_map,
-        trading_days,
+        all_trading_days,
         start_trade_date,
         final_date,
         initial_value,
@@ -1492,7 +1650,8 @@ def run_simulation(
         "equity_chart_series": equity_chart_series,
         "key_institution_curves": key_institution_curves,
         "rebalance_history": list(reversed(history)),
-        "last_candidate_symbols": sorted(last_candidate_rows),
+        "last_candidate_symbols": sorted(last_candidate_symbols),
+        "checkpoints": checkpoints,
     }
 
 
@@ -1518,7 +1677,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cusip-map", type=pathlib.Path, default=ROOT / "config/cusip-symbols.yaml")
     parser.add_argument("--start-date", default=DEFAULT_START_DATE)
     parser.add_argument("--end-date", default=today())
-    parser.add_argument("--output", type=pathlib.Path, default=ROOT / "raw/generated/historical_simulation.yaml")
+    parser.add_argument("--output", type=pathlib.Path, default=ROOT / "raw/generated/historical")
     parser.add_argument("--cache-dir", type=pathlib.Path, default=ROOT / "raw/generated/cache")
     parser.add_argument("--manager-limit", type=int, default=None)
     parser.add_argument("--symbol-limit", type=int, default=None, help="Limit price symbols for smoke tests.")
@@ -1528,18 +1687,43 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--refresh-sec", action="store_true")
     parser.add_argument("--refresh-submissions", action="store_true", help="Refresh SEC submissions index but reuse cached filing XML.")
     parser.add_argument("--refresh-prices", action="store_true")
+    parser.add_argument("--disable-auto-map", action="store_true", help="Only use explicit CUSIP mappings.")
+    parser.add_argument("--no-persist-auto-map", action="store_true", help="Do not append successful auto-maps to the CUSIP map.")
     parser.add_argument("--cache-only-prices", action="store_true", help="Reuse cached Longbridge K-line data and never fetch missing ranges.")
     parser.add_argument("--rebalance-until", default=None, help="Only create weekly rebalance events through this date.")
+    parser.add_argument("--incremental", action="store_true", help="Resume from stored checkpoints when inputs allow it.")
+    parser.add_argument("--dirty-from", default=None, help="Recompute the simulation from this date when --incremental is set.")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     config = hugo_data.load_yaml(args.config)
+    config_hash_value = stable_hash(config)
     cusip_map = load_cusip_map(args.cusip_map)
+    symbol_resolver = LongbridgeSymbolResolver(
+        cusip_map,
+        mapping_path=args.cusip_map,
+        sleep_seconds=args.longbridge_sleep,
+        enabled=not args.disable_auto_map,
+        persist=not args.no_persist_auto_map,
+    )
     warnings: List[str] = []
-    filings = fetch_historical_filings(config, cusip_map, args, warnings)
+    existing_payload = historical_store.load_store(args.output) if args.output.exists() else {}
+    filings = fetch_historical_filings(config, symbol_resolver, args, warnings)
+    if symbol_resolver.auto_resolved_count:
+        warnings.append(f"auto-mapped {symbol_resolver.auto_resolved_count} CUSIPs via Longbridge security-list")
     warnings = list(dict.fromkeys(warnings))
+    runtime_cusip_map = symbol_resolver.mappings
+    cusip_map_hash_value = stable_hash(runtime_cusip_map)
+    filing_fingerprint = filing_fingerprint_rows(filings)
+    dirty_from = infer_dirty_from(
+        args,
+        existing_payload,
+        config_hash_value,
+        cusip_map_hash_value,
+        filing_fingerprint,
+    )
     symbols = sorted(
         {
             holding["symbol"]
@@ -1558,24 +1742,31 @@ def main() -> None:
         config,
         filings,
         price_history,
-        cusip_map,
+        runtime_cusip_map,
         parse_date(args.start_date),
         parse_date(args.end_date),
         parse_date(args.rebalance_until) if args.rebalance_until else None,
+        existing_payload.get("simulation") if dirty_from else None,
+        dirty_from,
     )
-    metadata = market_metadata(cusip_map)
+    metadata = market_metadata(runtime_cusip_map)
     holding_market_rows = [{"symbol": symbol, **row} for symbol, row in metadata.items()]
     payload = {
         "build": {
             "build_id": f"historical-simulation-{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
             "built_at": now_iso(),
             "status": "OK",
+            "config_hash": config_hash_value,
+            "cusip_map_hash": cusip_map_hash_value,
+            "filing_fingerprint": filing_fingerprint,
+            "incremental": bool(dirty_from),
+            "dirty_from": dirty_from.isoformat() if dirty_from else None,
             "warnings": list(dict.fromkeys(warnings)),
         },
         "simulation": simulation,
         "holding_intervals": hugo_data.build_holding_quarter_intervals(config, filings, holding_market_rows),
     }
-    hugo_data.write_yaml(args.output, payload)
+    historical_store.write_store(args.output, payload)
     print(f"wrote {args.output}")
 
 

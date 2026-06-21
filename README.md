@@ -7,19 +7,19 @@
 1. 原始接入：Longbridge 当前 13F / 行情、SEC 历史 13F、Longbridge 日 K 线等 provider 生成原始事实或更新缓存。
 2. 规范化：`scripts/stockhunt_backend.py` 在内存中比较最近两个 13F 报告期，生成 `raw/generated/snapshot.yaml`。
 3. 历史曲线：`scripts/historical_backtest.py` 基于 SEC cache 和 Longbridge K 线 cache 生成重点机构 13F 持仓收益曲线。
-4. 静态导出：`scripts/generate_stockhunt_data.py` 合并 snapshot 和机构曲线，输出 Hugo 读取的 `data/stockhunt.yaml`。
+4. 静态导出：`scripts/generate_stockhunt_data.py` 合并 snapshot 和机构曲线，输出 Hugo 读取的 `data/stockhunt.json`。
 
-流水线不再维护中间数据库，也不把 live raw input 作为标准产物落盘。可持久化的是最终 YAML 和外部数据 cache。
+流水线不再维护中间数据库，也不把 live raw input 作为标准产物落盘。可持久化的是最终 JSON/JSONL 产物和外部数据 cache。
 
 ## 目录
 
 ```text
 config/stockhunt.yaml          主配置：白名单、重点机构、策略参数
-config/cusip-symbols.yaml      13F CUSIP -> Longbridge symbol 显式映射
+config/cusip-symbols.yaml      13F CUSIP -> Longbridge symbol 显式覆盖映射
 raw/sample/13f_holdings.yaml   sample 原始 13F + 行情输入
 raw/generated/                 本地生成产物，已 gitignore
 raw/generated/cache/           SEC / Longbridge K 线 cache
-data/stockhunt.yaml            Hugo 当前消费的数据
+data/stockhunt.json            Hugo 当前消费的数据
 scripts/build_live_input.py    Longbridge live data 调试入口
 scripts/stockhunt_backend.py   raw input -> normalized snapshot
 scripts/historical_backtest.py SEC 历史 13F + Longbridge K 线 -> 机构收益曲线
@@ -74,11 +74,12 @@ uv run fetch
 uv run fetch-all
 ```
 
-定时任务入口。`daily` 更新价格和机构曲线；`weekly` 增量更新 13F 并重算机构曲线。两者执行完都会自动 build：
+定时任务入口。`daily` 更新价格和机构曲线；`weekly` 会先检查 SEC 最新 13F 元数据，若 13F 未更新则提前退出；若更新则增量抓取 13F 并重算机构曲线。实际跑数据的任务执行完都会自动 build：
 
 ```bash
 uv run schedule daily
 uv run schedule weekly
+uv run schedule weekly --force  # 跳过早停检查，强制跑完整 weekly
 ```
 
 本地预览：
@@ -113,7 +114,7 @@ Settings -> Pages -> Build and deployment -> Source: GitHub Actions
 `deploy.yml`：
 
 - `main` 分支 push 或手动触发。
-- 使用仓库当前 `data/stockhunt.yaml` 构建 Hugo。
+- 使用仓库当前 `data/stockhunt.json` 构建 Hugo。
 - 发布 `public/` 到 GitHub Pages。
 
 `schedule.yml`：
@@ -122,9 +123,9 @@ Settings -> Pages -> Build and deployment -> Source: GitHub Actions
 - 定时触发：
   - 周二/周三 09:30 Asia/Shanghai 跑 `weekly`。
   - 周四/周五/周六 09:30 Asia/Shanghai 跑 `daily`。
-- 恢复 `raw/generated/cache/`、`snapshot.yaml`、`historical_simulation.yaml` 的 Actions cache。
-- 数据变化时自动提交 `data/stockhunt.yaml` 和补齐的 `content/institutions/*.md`，让仓库快照与 Pages 数据保持一致。
-- 跑完数据任务后发布 GitHub Pages。
+- 恢复 `raw/generated/cache/`、`snapshot.yaml`、`raw/generated/historical/` 的 Actions cache。
+- 数据变化时自动提交 `data/stockhunt.json` 和补齐的 `content/en/**`、`content/zh/**`，让仓库快照与 Pages 数据保持一致。
+- 跑完数据任务后发布 GitHub Pages；weekly 若判定 13F 未更新，会跳过后续提交、cache 保存和 Pages 发布。
 
 ### Longbridge Secrets
 
@@ -175,11 +176,14 @@ uv run fetch
 
 ```text
 raw/generated/snapshot.yaml
-raw/generated/historical_simulation.yaml
+raw/generated/historical/
 raw/generated/cache/sec/
 raw/generated/cache/longbridge-kline/
-data/stockhunt.yaml
-content/institutions/*.md
+data/stockhunt.json
+content/en/institutions/*.md
+content/en/stocks/*.md
+content/zh/institutions/*.md
+content/zh/stocks/*.md
 ```
 
 增量语义：
@@ -187,12 +191,14 @@ content/institutions/*.md
 - Longbridge 当前 13F / 行情会在内存中生成 live raw input。
 - 当前 snapshot 每次都从 raw input 和配置纯内存重算，不保留中间状态。
 - SEC submissions index 会刷新，用于发现新 13F；已有 filing index / information table XML 继续复用 cache。
+- 未显式映射的 CUSIP 会用 Longbridge US security-list 按 issuer name 自动匹配 symbol；成功匹配会追加写回 `config/cusip-symbols.yaml`，后续直接复用本地表。
 - Longbridge 日 K 线按 symbol 追加缺失日期，不再按每个 `start/end` 重新抓整段。
-- 历史曲线会按当前配置重算，但底层 SEC 和 K 线抓取是增量的。
-- `data/stockhunt.yaml` 会重新导出，供后续 `build` 使用。
-- `content/institutions/*.md` 会按白名单机构自动补齐，用于机构详情页。
+- 历史曲线写入 `raw/generated/historical/` JSONL store；非全量任务会在配置和 CUSIP 映射未变时从 checkpoint 续算尾部。
+- 13F 指纹变化时，`dirty_from` 取最早变动 13F 的 `filing_date`；没有 13F 变化时，只重算最新 equity point 之后的尾部。
+- `data/stockhunt.json` 会重新导出，供后续 `build` 使用。
+- `content/en/**`、`content/zh/**` 会按白名单机构和股票自动补齐，用于详情页。
 
-13F 没有 ticker，只有 CUSIP。数据抓取只会导出能通过 `config/cusip-symbols.yaml` 明确映射到 symbol 的持仓。未映射持仓会进入 warnings，不会进入榜单。
+13F 没有 ticker，只有 CUSIP。数据抓取会先查 `config/cusip-symbols.yaml`；未命中时，用 Longbridge US security-list 按 issuer name 自动匹配 symbol，并把成功匹配追加到本地表。仍无法匹配的持仓会进入 warnings，不会进入榜单。
 
 ### 2. 全量抓取数据
 
@@ -205,7 +211,7 @@ uv run fetch-all
 - 重新生成当前 Longbridge raw input。
 - 刷新 SEC submissions、filing index、information table XML。
 - 刷新 Longbridge 历史 K 线。
-- 重新计算 snapshot、机构历史曲线和 `data/stockhunt.yaml`。
+- 重新计算 snapshot、机构历史曲线和 `data/stockhunt.json`。
 
 ### 3. 机构曲线规则
 
@@ -234,7 +240,7 @@ uv run schedule weekly
 uv run schedule daily
 ```
 
-第一次部署先跑一次 `uv run schedule weekly` 或 `uv run fetch-all && uv run build`，生成历史机构曲线文件；之后 daily 只更新价格和收益。
+第一次部署先跑一次 `uv run schedule weekly --force` 或 `uv run fetch-all && uv run build`，生成历史机构曲线文件；之后 daily 只更新价格和收益。weekly 默认会在 SEC 13F 报告期/filing 指纹未变化时提前退出，不重跑 Longbridge、回测、导出和 Hugo build。
 
 cron 示例：
 
@@ -255,7 +261,7 @@ uv run fetch-all
 uv run build
 ```
 
-`fetch-all` 会重新拉取当前 Longbridge live raw input、刷新 SEC / K 线 cache、重新计算 snapshot 和历史回测并导出 Hugo 数据。`build` 只把当前 `data/stockhunt.yaml` 构建成 `public/`。
+`fetch-all` 会重新拉取当前 Longbridge live raw input、刷新 SEC / K 线 cache、重新计算 snapshot 和历史回测并导出 Hugo 数据。`build` 只把当前 `data/stockhunt.json` 构建成 `public/`。
 
 ### 增量重跑
 
@@ -281,12 +287,12 @@ uv run build
 
 ### 只重导 Hugo 数据
 
-如果已经有 `raw/generated/snapshot.yaml` 和 `raw/generated/historical_simulation.yaml`，但改了 `scripts/generate_stockhunt_data.py` 或页面数据格式：
+如果已经有 `raw/generated/snapshot.yaml` 和 `raw/generated/historical/`，但改了 `scripts/generate_stockhunt_data.py` 或页面数据格式：
 
 ```bash
 uv run python scripts/generate_stockhunt_data.py \
   --snapshot raw/generated/snapshot.yaml \
-  --simulation raw/generated/historical_simulation.yaml
+  --simulation raw/generated/historical
 uv run build
 ```
 
@@ -319,11 +325,11 @@ uv run fetch-all
 uv run build
 ```
 
-如果新增机构的持仓里出现大量 unmapped CUSIP，先补 `config/cusip-symbols.yaml`，再全量重跑。
+如果新增机构的持仓里出现大量 unmapped CUSIP，优先检查 Longbridge security-list 是否能覆盖；无法稳定自动匹配的股类、ADR、改名证券，再手动补 `config/cusip-symbols.yaml`。
 
 ## 修改 CUSIP 映射
 
-映射在 `config/cusip-symbols.yaml`：
+本地映射在 `config/cusip-symbols.yaml`。自动匹配成功会追加到这里；手动条目也写这里，并优先于 Longbridge 自动映射。它适合股类、ADR、改名证券或名称匹配可能漂移的情况：
 
 ```yaml
 mappings:
@@ -333,14 +339,14 @@ mappings:
     tags: ["Nasdaq 100", "S&P 500", "Mag7"]
 ```
 
-修改后需要重新生成 live input，因为 raw input 里已经按映射过滤过持仓：
+修改映射或自动映射逻辑后，需要重新生成 live input，因为 raw input 里已经按映射过滤过持仓：
 
 ```bash
 uv run fetch-all
 uv run build
 ```
 
-历史回测也依赖同一份映射。补充 CUSIP 后重新运行完整 build，历史 SEC 13F 会按新映射重新解析；已缓存的 SEC 原始文件和 K 线会复用。
+历史回测也依赖同一套映射逻辑。补充 CUSIP 后重新运行完整 build，历史 SEC 13F 会按新映射重新解析；已缓存的 SEC 原始文件和 K 线会复用。
 
 ## 修改重点机构
 
@@ -413,14 +419,14 @@ uv run build
 验证脚本语法和 Hugo 构建：
 
 ```bash
-uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py
+uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/historical_store.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py
 uv run build
 ```
 
 检查关键产物：
 
 ```bash
-ls -lh raw/generated/snapshot.yaml raw/generated/historical_simulation.yaml data/stockhunt.yaml
+du -sh raw/generated/snapshot.yaml raw/generated/historical data/stockhunt.json
 ```
 
 日常只需要 `build`、`fetch`、`fetch-all`、`schedule`。底层拆步调试时，可以直接用 `uv run python scripts/*.py` 调用具体脚本。
@@ -428,5 +434,5 @@ ls -lh raw/generated/snapshot.yaml raw/generated/historical_simulation.yaml data
 ## 后续接入
 
 1. Index tag adapter：自动维护 S&P 500、Nasdaq 100、Russell 1000/2000/3000、Mag7 标签。
-2. 更完整的历史数据质量报告：展示未映射 CUSIP、退市股票、缺失价格和 13F value 单位修正。
+2. 更完整的历史数据质量报告：展示自动映射 CUSIP、未映射 CUSIP、退市股票、缺失价格和 13F value 单位修正。
 3. 为机构详情页补充更细的历史变动图表。

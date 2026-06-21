@@ -327,6 +327,14 @@ h3 {
   font-size: 13px;
 }
 
+.chart-description {
+  max-width: 900px;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .hero-value {
   margin-top: 8px;
   font-size: clamp(36px, 5vw, 58px);
@@ -477,7 +485,7 @@ h3 {
 
 .chart-line {
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1.65;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -535,7 +543,9 @@ h3 {
 .chart-hover-tooltip {
   position: fixed;
   z-index: 10000;
-  min-width: 210px;
+  width: min(430px, calc(100vw - 24px));
+  min-width: 0;
+  max-width: min(520px, calc(100vw - 24px));
   padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 8px;
@@ -561,12 +571,12 @@ h3 {
   font-size: 11px;
 }
 
-.chart-hover-tooltip div {
+.chart-hover-tooltip .chart-tooltip-row {
   display: grid;
-  grid-template-columns: 80px 58px 1fr;
-  gap: 8px;
-  align-items: center;
-  white-space: nowrap;
+  grid-template-columns: minmax(110px, 1fr) 68px minmax(82px, 104px);
+  gap: 10px;
+  align-items: baseline;
+  min-width: 0;
 }
 
 .chart-hover-tooltip .chart-tooltip-event {
@@ -580,7 +590,11 @@ h3 {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chart-tooltip-name::before {
@@ -589,6 +603,30 @@ h3 {
   border-radius: 999px;
   background: currentColor;
   content: "";
+  flex: 0 0 auto;
+}
+
+.chart-tooltip-return,
+.chart-tooltip-amount {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.chart-tooltip-return {
+  text-align: right;
+}
+
+.chart-tooltip-amount {
+  display: grid;
+  gap: 1px;
+  justify-items: end;
+  color: var(--text);
+}
+
+.chart-tooltip-amount em {
+  color: var(--muted-2);
+  font-style: normal;
+  font-size: 10px;
 }
 
 .holding-pie-tooltip {
@@ -942,6 +980,51 @@ button.tip-trigger,
 
 .floating-tooltip[data-placement="bottom"]::before {
   top: -5px;
+}
+
+.change-tooltip {
+  width: min(300px, calc(100vw - 24px));
+  max-width: min(300px, calc(100vw - 24px));
+  white-space: normal;
+}
+
+.change-tooltip-title {
+  margin-bottom: 8px;
+  overflow: hidden;
+  color: var(--text);
+  font-weight: 760;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-tooltip-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 14px;
+  align-items: baseline;
+  padding: 3px 0;
+}
+
+.change-tooltip-row span {
+  color: var(--muted);
+}
+
+.change-tooltip-row strong {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.change-tooltip-value-buy {
+  color: var(--green);
+}
+
+.change-tooltip-value-sell {
+  color: var(--red);
+}
+
+.change-tooltip-value-price {
+  color: var(--amber);
 }
 
 .badge-holding {
@@ -1627,21 +1710,11 @@ button.tip-trigger,
 }
 
 .home-equity-panel {
-  min-height: 460px;
+  min-height: 500px;
 }
 
 .home-equity-panel .equity-chart {
-  min-height: 300px;
-}
-
-.home-note-panel {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.home-note-panel p {
-  margin: 0;
+  min-height: 340px;
 }
 
 .directory-summary {

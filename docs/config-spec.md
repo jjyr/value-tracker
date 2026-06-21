@@ -209,10 +209,10 @@ build
 
 ## 4. 配置 hash
 
-构建时需要计算整个 `stockhunt.yaml` 的 hash，并写入：
+构建时需要计算整个 `stockhunt.json` 的 hash，并写入：
 
 - `raw/generated/snapshot.yaml`
-- `raw/generated/historical_simulation.yaml`
-- `data/stockhunt.yaml` metadata
+- `raw/generated/historical/`
+- `data/stockhunt.json` metadata
 
 这样同一份历史 13F 数据可以用不同配置重复回测。

@@ -66,12 +66,35 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
 
+      - name: Restore generated data cache
+        id: generated-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            raw/generated/cache
+            raw/generated/snapshot.yaml
+            raw/generated/historical
+          key: value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-
+            value-tracker-generated-${{ runner.os }}-
+
+      - name: Check scripts
+        run: uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/historical_store.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py scripts/ci_install_hugo.py scripts/ci_restore_longbridge_token.py scripts/ci_check_longbridge_auth.py scripts/ci_run_data_job.py
+
+      - name: Check weekly freshness
+        id: weekly-check
+        if: steps.job.outputs.mode == 'weekly'
+        run: uv run python scripts/ci_run_data_job.py weekly --check-only
+
       - name: Install Hugo
+        if: steps.weekly-check.outputs.skipped != 'true'
         run: |
           python scripts/ci_install_hugo.py --install-dir "$RUNNER_TEMP/hugo-bin"
           echo "$RUNNER_TEMP/hugo-bin" >> "$GITHUB_PATH"
 
       - name: Install Longbridge CLI
+        if: steps.weekly-check.outputs.skipped != 'true'
         run: |
           curl -fsSL https://open.longbridge.com/longbridge/longbridge-terminal/install | sh
           export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
@@ -80,39 +103,28 @@ jobs:
           longbridge --version
 
       - name: Restore Longbridge token
+        if: steps.weekly-check.outputs.skipped != 'true'
         env:
           LONGBRIDGE_CLIENT_ID: ${{ secrets.LONGBRIDGE_CLIENT_ID }}
           LONGBRIDGE_TOKEN_FILE_B64: ${{ secrets.LONGBRIDGE_TOKEN_FILE_B64 }}
         run: python scripts/ci_restore_longbridge_token.py
 
       - name: Check Longbridge auth
+        if: steps.weekly-check.outputs.skipped != 'true'
         run: longbridge check --format json | uv run python scripts/ci_check_longbridge_auth.py
 
-      - name: Restore generated data cache
-        id: generated-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            raw/generated/cache
-            raw/generated/snapshot.yaml
-            raw/generated/historical_simulation.yaml
-          key: value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
-          restore-keys: |
-            value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-
-            value-tracker-generated-${{ runner.os }}-
-
-      - name: Check scripts
-        run: uv run python -m py_compile scripts/build_live_input.py scripts/historical_backtest.py scripts/stockhunt_backend.py scripts/generate_stockhunt_data.py scripts/tasks.py scripts/ci_install_hugo.py scripts/ci_restore_longbridge_token.py scripts/ci_check_longbridge_auth.py scripts/ci_run_data_job.py
-
       - name: Run data job
+        id: data-job
+        if: steps.weekly-check.outputs.skipped != 'true'
         run: uv run python scripts/ci_run_data_job.py "${{ steps.job.outputs.mode }}"
 
       - name: Commit generated data
+        if: steps.weekly-check.outputs.skipped != 'true' && steps.data-job.outputs.skipped != 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/stockhunt.yaml content/institutions
+          git add data/stockhunt.json content/en/institutions content/en/stocks content/zh/institutions content/zh/stocks
           if git diff --cached --quiet; then
             echo "No generated data changes to commit."
             exit 0
@@ -121,22 +133,26 @@ jobs:
           git push
 
       - name: Save generated data cache
+        if: steps.weekly-check.outputs.skipped != 'true' && steps.data-job.outputs.skipped != 'true'
         uses: actions/cache/save@v4
         with:
           path: |
             raw/generated/cache
             raw/generated/snapshot.yaml
-            raw/generated/historical_simulation.yaml
+            raw/generated/historical
           key: value-tracker-generated-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Configure Pages
+        if: steps.weekly-check.outputs.skipped != 'true' && steps.data-job.outputs.skipped != 'true'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
+        if: steps.weekly-check.outputs.skipped != 'true' && steps.data-job.outputs.skipped != 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
       - name: Deploy Pages
+        if: steps.weekly-check.outputs.skipped != 'true' && steps.data-job.outputs.skipped != 'true'
         id: deployment
         uses: actions/deploy-pages@v4

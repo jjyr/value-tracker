@@ -319,6 +319,9 @@ other = "Change value"
 [current_holding]
 other = "Current holding"
 
+[current_shares]
+other = "Current shares"
+
 [portfolio_weight]
 other = "Portfolio weight"
 
@@ -372,6 +375,9 @@ other = "Latest change details"
 
 [change_shares]
 other = "Changed shares"
+
+[change_percent]
+other = "Change %"
 
 [risk_note_short]
 other = "This page is for research and information only and is not investment advice. 13F disclosures are delayed; institutional changes do not mean the institution still holds the position now."

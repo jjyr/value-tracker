@@ -1,7 +1,10 @@
 # Explicit 13F CUSIP -> Longbridge symbol mappings.
 #
-# SEC 13F information tables do not contain exchange tickers. Keep this file
-# conservative: only add mappings that are known enough to avoid symbol drift.
+# SEC 13F information tables do not contain exchange tickers. The pipeline
+# auto-maps many unmapped CUSIPs through the Longbridge US security list by
+# issuer name and appends successful matches here. Keep hand edits conservative
+# for share classes, ADRs, renamed securities, and cases where name matching
+# could drift.
 mappings:
   "01609W102":
     symbol: "BABA.US"
@@ -366,3 +369,2186 @@ mappings:
   "G85158106":
     symbol: "STNE.US"
     company_name: "StoneCo Ltd."
+  "007903107":
+    symbol: "AMD.US"
+    company_name: "Advanced Micro Devices Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "H17182108":
+    symbol: "CRSP.US"
+    company_name: "CRISPR Therapeutics AG"
+  "82509L107":
+    symbol: "SHOP.US"
+    company_name: "Shopify Inc."
+  "770700102":
+    symbol: "HOOD.US"
+    company_name: "Robinhood Markets Inc."
+  "19260Q107":
+    symbol: "COIN.US"
+    company_name: "Coinbase Global Inc."
+  "880770102":
+    symbol: "TER.US"
+    company_name: "Teradyne Inc."
+  "77543R102":
+    symbol: "ROKU.US"
+    company_name: "Roku Inc."
+  "771049103":
+    symbol: "RBLX.US"
+    company_name: "Roblox Corp."
+  "90184D100":
+    symbol: "TWST.US"
+    company_name: "Twist Bioscience Corp."
+  "07373V105":
+    symbol: "BEAM.US"
+    company_name: "Beam Therapeutics Inc."
+  "11271J107":
+    symbol: "BN.US"
+    company_name: "Brookfield Corp."
+  "90353T100":
+    symbol: "UBER.US"
+    company_name: "Uber Technologies Inc."
+    tags: ["S&P 500"]
+  "76131D103":
+    symbol: "QSR.US"
+    company_name: "Restaurant Brands International Inc."
+  "44267T102":
+    symbol: "HHH.US"
+    company_name: "Howard Hughes Holdings Inc."
+  "42806J700":
+    symbol: "HTZ.US"
+    company_name: "Hertz Global Holdings Inc."
+  "042068205":
+    symbol: "ARM.US"
+    company_name: "Arm Holdings plc ADR"
+  "05464C101":
+    symbol: "AXON.US"
+    company_name: "Axon Enterprise Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "11135F101":
+    symbol: "AVGO.US"
+    company_name: "Broadcom Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "G0370L116":
+    symbol: "GRAB.US"
+    company_name: "Grab Holdings Ltd."
+  "92840M102":
+    symbol: "VST.US"
+    company_name: "Vistra Corp."
+    tags: ["S&P 500"]
+  "629377508":
+    symbol: "NRG.US"
+    company_name: "NRG Energy Inc."
+    tags: ["S&P 500"]
+  "80004C200":
+    symbol: "SNDK.US"
+    company_name: "SanDisk Corp."
+  "219350105":
+    symbol: "GLW.US"
+    company_name: "Corning Inc."
+    tags: ["S&P 500"]
+  "963320106":
+    symbol: "WHR.US"
+    company_name: "Whirlpool Corp."
+  "512807306":
+    symbol: "LRCX.US"
+    company_name: "Lam Research Corp."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "056752108":
+    symbol: "BIDU.US"
+    company_name: "Baidu Inc. ADR"
+  "502431109":
+    symbol: "LHX.US"
+    company_name: "L3Harris Technologies Inc."
+    tags: ["S&P 500"]
+  "571903202":
+    symbol: "MAR.US"
+    company_name: "Marriott International Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "863667101":
+    symbol: "SYK.US"
+    company_name: "Stryker Corp."
+    tags: ["S&P 500"]
+  "941848103":
+    symbol: "WAT.US"
+    company_name: "Waters Corp."
+    tags: ["S&P 500"]
+  "718172109":
+    symbol: "PM.US"
+    company_name: "Philip Morris International Inc."
+    tags: ["S&P 500"]
+  "45168D104":
+    symbol: "IDXX.US"
+    company_name: "IDEXX Laboratories Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "053015103":
+    symbol: "ADP.US"
+    company_name: "Automatic Data Processing Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "592688105":
+    symbol: "MTD.US"
+    company_name: "Mettler-Toledo International Inc."
+    tags: ["S&P 500"]
+  "171340102":
+    symbol: "CHD.US"
+    company_name: "Church & Dwight Co. Inc."
+    tags: ["S&P 500"]
+  "882508104":
+    symbol: "TXN.US"
+    company_name: "Texas Instruments Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "34959E109":
+    symbol: "FTNT.US"
+    company_name: "Fortinet Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "N00985106":
+    symbol: "AER.US"
+    company_name: "AerCap Holdings N.V."
+  "03831W108":
+    symbol: "APP.US"
+    company_name: "AppLovin Corp."
+  "235851102":
+    symbol: "DHR.US"
+    company_name: "Danaher Corp."
+    tags: ["S&P 500"]
+  "G7709Q104":
+    symbol: "RPRX.US"
+    company_name: "Royalty Pharma plc"
+  "538034109":
+    symbol: "LYV.US"
+    company_name: "Live Nation Entertainment Inc."
+    tags: ["S&P 500"]
+  "09857L108":
+    symbol: "BKNG.US"
+    company_name: "Booking Holdings Inc."
+    tags: ["Nasdaq 100", "S&P 500"]
+  "632307104":
+    symbol: "NTRA.US"
+    company_name: "Natera Inc."
+  "457669307":
+    symbol: "INSM.US"
+    company_name: "Insmed Inc."
+  "984245100":
+    symbol: "YPF.US"
+    company_name: "YPF Sociedad Anonima ADR"
+  "013872106":
+    symbol: "AA.US"
+    company_name: "Alcoa Corp."
+  "G0896C103":
+    symbol: "TBBB.US"
+    company_name: "BBB Foods Inc."
+  "N62509109":
+    symbol: "NAMS.US"
+    company_name: "NewAmsterdam Pharma Co. N.V."
+  "81141R100":
+    symbol: "SE.US"
+    company_name: "Sea Ltd. ADR"
+  "861012102":
+    symbol: "STM.US"
+    company_name: "STMicroelectronics N.V. ADR"
+  "980745103":
+    symbol: "WWD.US"
+    company_name: "Woodward Inc."
+  "879433829":
+    symbol: "TDS.US"
+    company_name: "Telephone and Data Systems Inc."
+  "G25508105":
+    symbol: "CRH.US"
+    company_name: "CRH plc"
+  "88023U101":
+    symbol: "SGI.US"
+    company_name: "Somnigroup International Inc."
+  "144285103":
+    symbol: "CRS.US"
+    company_name: "Carpenter Technology Corp."
+  "576323109":
+    symbol: "MTZ.US"
+    company_name: "MasTec Inc."
+  "00187Y100":
+    symbol: "APG.US"
+    company_name: "API Group Corp."
+  "44812J104":
+    symbol: "HUT.US"
+    company_name: "Hut 8 Corp."
+  "88025U109":
+    symbol: "TXG.US"
+    company_name: "10x Genomics, Inc."
+    mapping_source: "longbridge_security_list"
+  "50077B207":
+    symbol: "KTOS.US"
+    company_name: "Kratos Defense & Security Solutions, Inc."
+    mapping_source: "longbridge_security_list"
+  "G16910120":
+    symbol: "BLSH.US"
+    company_name: "Bullish"
+    mapping_source: "longbridge_security_list"
+  "244199105":
+    symbol: "DE.US"
+    company_name: "Deere & Company"
+    mapping_source: "longbridge_security_list"
+  "03945R102":
+    symbol: "ACHR.US"
+    company_name: "Archer Aviation Inc."
+    mapping_source: "longbridge_security_list"
+  "09175A206":
+    symbol: "BMNR.US"
+    company_name: "Bitmine Immersion Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "45826J105":
+    symbol: "NTLA.US"
+    company_name: "Intellia Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "040919102":
+    symbol: "ARKB.US"
+    company_name: "ARK 21Shares Bitcoin ETF"
+    mapping_source: "longbridge_security_list"
+  "773121108":
+    symbol: "RKLB.US"
+    company_name: "Rocket Lab Corporation"
+    mapping_source: "longbridge_security_list"
+  "452327109":
+    symbol: "ILMN.US"
+    company_name: "Illumina, Inc."
+    mapping_source: "longbridge_security_list"
+  "05605H100":
+    symbol: "BWXT.US"
+    company_name: "BWX Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "75629V104":
+    symbol: "RXRX.US"
+    company_name: "Recursion Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "008073108":
+    symbol: "AVAV.US"
+    company_name: "AeroVironment, Inc."
+    mapping_source: "longbridge_security_list"
+  "92337F107":
+    symbol: "VCYT.US"
+    company_name: "Veracyte, Inc."
+    mapping_source: "longbridge_security_list"
+  "81663L200":
+    symbol: "WGS.US"
+    company_name: "GeneDx Holdings Corp."
+    mapping_source: "longbridge_security_list"
+  "896239100":
+    symbol: "TRMB.US"
+    company_name: "Trimble Inc."
+    mapping_source: "longbridge_security_list"
+  "316841105":
+    symbol: "FIG.US"
+    company_name: "Figma"
+    mapping_source: "longbridge_security_list"
+  "83406F102":
+    symbol: "SOFI.US"
+    company_name: "SoFi Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "25809K105":
+    symbol: "DASH.US"
+    company_name: "DoorDash, Inc."
+    mapping_source: "longbridge_security_list"
+  "M3760D101":
+    symbol: "ESLT.US"
+    company_name: "Elbit Systems Ltd."
+    mapping_source: "longbridge_security_list"
+  "G65163100":
+    symbol: "JOBY.US"
+    company_name: "Joby Aviation, Inc."
+    mapping_source: "longbridge_security_list"
+  "71535D106":
+    symbol: "PSNL.US"
+    company_name: "Personalis, Inc."
+    mapping_source: "longbridge_security_list"
+  "46125A100":
+    symbol: "LUNR.US"
+    company_name: "Intuitive Machines, Inc."
+    mapping_source: "longbridge_security_list"
+  "888787108":
+    symbol: "TOST.US"
+    company_name: "Toast, Inc."
+    mapping_source: "longbridge_security_list"
+  "532457108":
+    symbol: "LLY.US"
+    company_name: "Eli Lilly and Company"
+    mapping_source: "longbridge_security_list"
+  "09075V102":
+    symbol: "BNTX.US"
+    company_name: "BioNTech SE"
+    mapping_source: "longbridge_security_list"
+  "70450C101":
+    symbol: "PAYP.US"
+    company_name: "PayPay Corporation"
+    mapping_source: "longbridge_security_list"
+  "M25722105":
+    symbol: "CGEN.US"
+    company_name: "Compugen Ltd."
+    mapping_source: "longbridge_security_list"
+  "M6240T109":
+    symbol: "KMDA.US"
+    company_name: "Kamada Ltd."
+    mapping_source: "longbridge_security_list"
+  "M0740A108":
+    symbol: "DRTS.US"
+    company_name: "Alpha Tau Medical Ltd."
+    mapping_source: "longbridge_security_list"
+  "697435105":
+    symbol: "PANW.US"
+    company_name: "Palo Alto Networks, Inc."
+    mapping_source: "longbridge_security_list"
+  "92259N302":
+    symbol: "VELO.US"
+    company_name: "Velo3D, Inc."
+    mapping_source: "longbridge_security_list"
+  "024061103":
+    symbol: "AXL.US"
+    company_name: "Dauch Corporation"
+    mapping_source: "longbridge_security_list"
+  "87151X101":
+    symbol: "SYM.US"
+    company_name: "Symbotic Inc."
+    mapping_source: "longbridge_security_list"
+  "149123101":
+    symbol: "CAT.US"
+    company_name: "Caterpillar Inc."
+    mapping_source: "longbridge_security_list"
+  "13321L108":
+    symbol: "CCJ.US"
+    company_name: "Cameco Corporation"
+    mapping_source: "longbridge_security_list"
+  "46120E602":
+    symbol: "ISRG.US"
+    company_name: "Intuitive Surgical, Inc."
+    mapping_source: "longbridge_security_list"
+  "879360105":
+    symbol: "TDY.US"
+    company_name: "Teledyne Technologies Incorporated"
+    mapping_source: "longbridge_security_list"
+  "950915108":
+    symbol: "WRD.US"
+    company_name: "WeRide Inc."
+    mapping_source: "longbridge_security_list"
+  "051774107":
+    symbol: "AUR.US"
+    company_name: "Aurora Innovation, Inc."
+    mapping_source: "longbridge_security_list"
+  "74168J101":
+    symbol: "PRME.US"
+    company_name: "Prime Medicine, Inc."
+    mapping_source: "longbridge_security_list"
+  "03969T109":
+    symbol: "ARCT.US"
+    company_name: "Arcturus Therapeutics Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "64110L106":
+    symbol: "NFLX.US"
+    company_name: "Netflix, Inc."
+    mapping_source: "longbridge_security_list"
+  "20451W101":
+    symbol: "CMPS.US"
+    company_name: "COMPASS Pathways plc"
+    mapping_source: "longbridge_security_list"
+  "02156V109":
+    symbol: "OKLO.US"
+    company_name: "Oklo Inc."
+    mapping_source: "longbridge_security_list"
+  "H2906T109":
+    symbol: "GRMN.US"
+    company_name: "Garmin Ltd."
+    mapping_source: "longbridge_security_list"
+  "438516106":
+    symbol: "HON.US"
+    company_name: "Honeywell International Inc."
+    mapping_source: "longbridge_security_list"
+  "43300A203":
+    symbol: "HLT.US"
+    company_name: "Hilton Worldwide Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "22266T109":
+    symbol: "CPNG.US"
+    company_name: "Coupang, Inc."
+    mapping_source: "longbridge_security_list"
+  "20717M103":
+    symbol: "CFLT.US"
+    company_name: "Confluent, Inc."
+    mapping_source: "longbridge_security_list"
+  "58733R102":
+    symbol: "MELI.US"
+    company_name: "MercadoLibre, Inc."
+    mapping_source: "longbridge_security_list"
+  "093712107":
+    symbol: "BE.US"
+    company_name: "Bloom Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "75513E101":
+    symbol: "RTX.US"
+    company_name: "RTX Corporation"
+    mapping_source: "longbridge_security_list"
+  "747525103":
+    symbol: "QCOM.US"
+    company_name: "QUALCOMM Incorporated"
+    mapping_source: "longbridge_security_list"
+  "058498106":
+    symbol: "BALL.US"
+    company_name: "Ball Corporation"
+    mapping_source: "longbridge_security_list"
+  "47215P106":
+    symbol: "JD.US"
+    company_name: "JD.com, Inc."
+    mapping_source: "longbridge_security_list"
+  "55087P104":
+    symbol: "LYFT.US"
+    company_name: "Lyft, Inc."
+    mapping_source: "longbridge_security_list"
+  "55336V100":
+    symbol: "MPLX.US"
+    company_name: "MPLX LP"
+    mapping_source: "longbridge_security_list"
+  "690742101":
+    symbol: "OC.US"
+    company_name: "Owens Corning"
+    mapping_source: "longbridge_security_list"
+  "46266C105":
+    symbol: "IQV.US"
+    company_name: "IQVIA Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "98978V103":
+    symbol: "ZTS.US"
+    company_name: "Zoetis Inc."
+    mapping_source: "longbridge_security_list"
+  "68902V107":
+    symbol: "OTIS.US"
+    company_name: "Otis Worldwide Corporation"
+    mapping_source: "longbridge_security_list"
+  "775711104":
+    symbol: "ROL.US"
+    company_name: "Rollins, Inc."
+    mapping_source: "longbridge_security_list"
+  "58506Q109":
+    symbol: "MEDP.US"
+    company_name: "Medpace Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "70432V102":
+    symbol: "PAYC.US"
+    company_name: "Paycom Software, Inc."
+    mapping_source: "longbridge_security_list"
+  "189054109":
+    symbol: "CLX.US"
+    company_name: "The Clorox Company"
+    mapping_source: "longbridge_security_list"
+  "92537N108":
+    symbol: "VRT.US"
+    company_name: "Vertiv Holdings Co"
+    mapping_source: "longbridge_security_list"
+  "67059N108":
+    symbol: "NTNX.US"
+    company_name: "Nutanix, Inc."
+    mapping_source: "longbridge_security_list"
+  "056525108":
+    symbol: "BMI.US"
+    company_name: "Badger Meter, Inc."
+    mapping_source: "longbridge_security_list"
+  "14888U101":
+    symbol: "CPRX.US"
+    company_name: "Catalyst Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "74758T303":
+    symbol: "QLYS.US"
+    company_name: "Qualys, Inc."
+    mapping_source: "longbridge_security_list"
+  "26622P107":
+    symbol: "DOCS.US"
+    company_name: "Doximity, Inc."
+    mapping_source: "longbridge_security_list"
+  "562750109":
+    symbol: "MANH.US"
+    company_name: "Manhattan Associates, Inc."
+    mapping_source: "longbridge_security_list"
+  "000899104":
+    symbol: "ADMA.US"
+    company_name: "ADMA Biologics, Inc."
+    mapping_source: "longbridge_security_list"
+  "78573M104":
+    symbol: "SABR.US"
+    company_name: "Sabre Corporation"
+    mapping_source: "longbridge_security_list"
+  "437076102":
+    symbol: "HD.US"
+    company_name: "The Home Depot, Inc."
+    mapping_source: "longbridge_security_list"
+  "461202103":
+    symbol: "INTU.US"
+    company_name: "Intuit Inc."
+    mapping_source: "longbridge_security_list"
+  "654106103":
+    symbol: "NKE.US"
+    company_name: "NIKE, Inc."
+    mapping_source: "longbridge_security_list"
+  "M7518J104":
+    symbol: "ODD.US"
+    company_name: "Oddity Tech Ltd."
+    mapping_source: "longbridge_security_list"
+  "384109104":
+    symbol: "GGG.US"
+    company_name: "Graco Inc."
+    mapping_source: "longbridge_security_list"
+  "053332102":
+    symbol: "AZO.US"
+    company_name: "AutoZone, Inc."
+    mapping_source: "longbridge_security_list"
+  "194014502":
+    symbol: "ENOV.US"
+    company_name: "Enovis Corporation"
+    mapping_source: "longbridge_security_list"
+  "68404L201":
+    symbol: "OPCH.US"
+    company_name: "Option Care Health, Inc."
+    mapping_source: "longbridge_security_list"
+  "142152107":
+    symbol: "CAI.US"
+    company_name: "Caris Life Sciences, Inc."
+    mapping_source: "longbridge_security_list"
+  "76155X100":
+    symbol: "RVMD.US"
+    company_name: "Revolution Medicines, Inc."
+    mapping_source: "longbridge_security_list"
+  "518415104":
+    symbol: "LSCC.US"
+    company_name: "Lattice Semiconductor Corporation"
+    mapping_source: "longbridge_security_list"
+  "444859102":
+    symbol: "HUM.US"
+    company_name: "Humana Inc."
+    mapping_source: "longbridge_security_list"
+  "90138F102":
+    symbol: "TWLO.US"
+    company_name: "Twilio Inc."
+    mapping_source: "longbridge_security_list"
+  "466313103":
+    symbol: "JBL.US"
+    company_name: "Jabil Inc."
+    mapping_source: "longbridge_security_list"
+  "84265V105":
+    symbol: "SCCO.US"
+    company_name: "Southern Copper Corporation"
+    mapping_source: "longbridge_security_list"
+  "G54950103":
+    symbol: "LIN.US"
+    company_name: "Linde plc"
+    mapping_source: "longbridge_security_list"
+  "185899101":
+    symbol: "CLF.US"
+    company_name: "Cleveland-Cliffs Inc."
+    mapping_source: "longbridge_security_list"
+  "67080N101":
+    symbol: "NUVB.US"
+    company_name: "Nuvation Bio Inc."
+    mapping_source: "longbridge_security_list"
+  "458140100":
+    symbol: "INTC.US"
+    company_name: "Intel Corporation"
+    mapping_source: "longbridge_security_list"
+  "74366E102":
+    symbol: "PTGX.US"
+    company_name: "Protagonist Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "91332U101":
+    symbol: "U.US"
+    company_name: "Unity Software Inc."
+    mapping_source: "longbridge_security_list"
+  "68062P106":
+    symbol: "OLMA.US"
+    company_name: "Olema Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "98420N105":
+    symbol: "XENE.US"
+    company_name: "Xenon Pharmaceuticals Inc."
+    mapping_source: "longbridge_security_list"
+  "18915M107":
+    symbol: "NET.US"
+    company_name: "Cloudflare, Inc."
+    mapping_source: "longbridge_security_list"
+  "92837L109":
+    symbol: "VIST.US"
+    company_name: "Vista Energy, S.A.B. de C.V."
+    mapping_source: "longbridge_security_list"
+  "19247G107":
+    symbol: "COHR.US"
+    company_name: "Coherent Corp."
+    mapping_source: "longbridge_security_list"
+  "15101Q207":
+    symbol: "CLS.US"
+    company_name: "Celestica Inc."
+    mapping_source: "longbridge_security_list"
+  "55024U109":
+    symbol: "LITE.US"
+    company_name: "Lumentum Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "960413102":
+    symbol: "WLK.US"
+    company_name: "Westlake Corporation"
+    mapping_source: "longbridge_security_list"
+  "278768106":
+    symbol: "SATS.US"
+    company_name: "EchoStar Corporation"
+    mapping_source: "longbridge_security_list"
+  "893641100":
+    symbol: "TDG.US"
+    company_name: "TransDigm Group Incorporated"
+    mapping_source: "longbridge_security_list"
+  "482480100":
+    symbol: "KLAC.US"
+    company_name: "KLA Corporation"
+    mapping_source: "longbridge_security_list"
+  "G8068L108":
+    symbol: "SN.US"
+    company_name: "SharkNinja, Inc."
+    mapping_source: "longbridge_security_list"
+  "42806J148":
+    symbol: "HTZ.US"
+    company_name: "Hertz Global Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "82835W108":
+    symbol: "SPRY.US"
+    company_name: "ARS Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "343928107":
+    symbol: "FLYX.US"
+    company_name: "flyExclusive, Inc."
+    mapping_source: "longbridge_security_list"
+  "051774115":
+    symbol: "AUR.US"
+    company_name: "Aurora Innovation, Inc."
+    mapping_source: "longbridge_security_list"
+  "343928115":
+    symbol: "FLYX.US"
+    company_name: "flyExclusive, Inc."
+    mapping_source: "longbridge_security_list"
+  "69331C108":
+    symbol: "PCG.US"
+    company_name: "PG&E Corporation"
+    mapping_source: "longbridge_security_list"
+  "22160N109":
+    symbol: "CSGP.US"
+    company_name: "CoStar Group, Inc."
+    mapping_source: "longbridge_security_list"
+  "77311W101":
+    symbol: "RKT.US"
+    company_name: "Rocket Companies, Inc."
+    mapping_source: "longbridge_security_list"
+  "169656105":
+    symbol: "CMG.US"
+    company_name: "Chipotle Mexican Grill, Inc."
+    mapping_source: "longbridge_security_list"
+  "21037T109":
+    symbol: "CEG.US"
+    company_name: "Constellation Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "199908104":
+    symbol: "FIX.US"
+    company_name: "Comfort Systems USA, Inc."
+    mapping_source: "longbridge_security_list"
+  "L8681T102":
+    symbol: "SPOT.US"
+    company_name: "Spotify Technology S.A."
+    mapping_source: "longbridge_security_list"
+  "49177J102":
+    symbol: "KVUE.US"
+    company_name: "Kenvue Inc."
+    mapping_source: "longbridge_security_list"
+  "743315103":
+    symbol: "PGR.US"
+    company_name: "The Progressive Corporation"
+    mapping_source: "longbridge_security_list"
+  "883556102":
+    symbol: "TMO.US"
+    company_name: "Thermo Fisher Scientific Inc."
+    mapping_source: "longbridge_security_list"
+  "M98068105":
+    symbol: "WIX.US"
+    company_name: "Wix.com Ltd."
+    mapping_source: "longbridge_security_list"
+  "82968B103":
+    symbol: "SIRI.US"
+    company_name: "Sirius XM Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "016255101":
+    symbol: "ALGN.US"
+    company_name: "Align Technology, Inc."
+    mapping_source: "longbridge_security_list"
+  "01741R102":
+    symbol: "ATI.US"
+    company_name: "ATI Inc."
+    mapping_source: "longbridge_security_list"
+  "021369103":
+    symbol: "ALTR.US"
+    company_name: "Altair Engineering Inc."
+    mapping_source: "longbridge_security_list"
+  "031100100":
+    symbol: "AME.US"
+    company_name: "AMETEK, Inc."
+    mapping_source: "longbridge_security_list"
+  "03662Q105":
+    symbol: "ANSS.US"
+    company_name: "ANSYS, Inc."
+    mapping_source: "longbridge_security_list"
+  "052769106":
+    symbol: "ADSK.US"
+    company_name: "Autodesk, Inc."
+    mapping_source: "longbridge_security_list"
+  "14167L103":
+    symbol: "CDNA.US"
+    company_name: "CareDx, Inc."
+    mapping_source: "longbridge_security_list"
+  "157085101":
+    symbol: "CERS.US"
+    company_name: "Cerus Corporation"
+    mapping_source: "longbridge_security_list"
+  "192005106":
+    symbol: "CDXS.US"
+    company_name: "Codexis, Inc."
+    mapping_source: "longbridge_security_list"
+  "26614N102":
+    symbol: "DD.US"
+    company_name: "DuPont de Nemours, Inc."
+    mapping_source: "longbridge_security_list"
+  "277432100":
+    symbol: "EMN.US"
+    company_name: "Eastman Chemical Company"
+    mapping_source: "longbridge_security_list"
+  "28106W103":
+    symbol: "EDIT.US"
+    company_name: "Editas Medicine, Inc."
+    mapping_source: "longbridge_security_list"
+  "311642102":
+    symbol: "FARO.US"
+    company_name: "FARO Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "31189P102":
+    symbol: "FATE.US"
+    company_name: "Fate Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "428291108":
+    symbol: "HXL.US"
+    company_name: "Hexcel Corporation"
+    mapping_source: "longbridge_security_list"
+  "45337C102":
+    symbol: "INCY.US"
+    company_name: "Incyte Corporation"
+    mapping_source: "longbridge_security_list"
+  "45866F104":
+    symbol: "ICE.US"
+    company_name: "Intercontinental Exchange, Inc."
+    mapping_source: "longbridge_security_list"
+  "462222100":
+    symbol: "IONS.US"
+    company_name: "Ionis Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "462260100":
+    symbol: "IOVA.US"
+    company_name: "Iovance Biotherapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "46269C102":
+    symbol: "IRDM.US"
+    company_name: "Iridium Communications Inc."
+    mapping_source: "longbridge_security_list"
+  "483007704":
+    symbol: "KALU.US"
+    company_name: "Kaiser Aluminum Corporation"
+    mapping_source: "longbridge_security_list"
+  "533900106":
+    symbol: "LECO.US"
+    company_name: "Lincoln Electric Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "57667T100":
+    symbol: "MTLS.US"
+    company_name: "Materialise NV"
+    mapping_source: "longbridge_security_list"
+  "63008G203":
+    symbol: "NNDM.US"
+    company_name: "Nano Dimension Ltd."
+    mapping_source: "longbridge_security_list"
+  "653656108":
+    symbol: "NICE.US"
+    company_name: "NICE Ltd."
+    mapping_source: "longbridge_security_list"
+  "69370C100":
+    symbol: "PTC.US"
+    company_name: "PTC Inc."
+    mapping_source: "longbridge_security_list"
+  "743713109":
+    symbol: "PRLB.US"
+    company_name: "Proto Labs, Inc."
+    mapping_source: "longbridge_security_list"
+  "87918A105":
+    symbol: "TDOC.US"
+    company_name: "Teladoc Health, Inc."
+    mapping_source: "longbridge_security_list"
+  "881624209":
+    symbol: "TEVA.US"
+    company_name: "Teva Pharmaceutical Industries Limited"
+    mapping_source: "longbridge_security_list"
+  "88554D205":
+    symbol: "DDD.US"
+    company_name: "3D Systems Corporation"
+    mapping_source: "longbridge_security_list"
+  "88579Y101":
+    symbol: "MMM.US"
+    company_name: "3M Company"
+    mapping_source: "longbridge_security_list"
+  "98421M106":
+    symbol: "XRX.US"
+    company_name: "Xerox Holdings Corporation"
+    mapping_source: "longbridge_security_list"
+  "M15342104":
+    symbol: "AUDC.US"
+    company_name: "AudioCodes Ltd."
+    mapping_source: "longbridge_security_list"
+  "M2682V108":
+    symbol: "CYBR.US"
+    company_name: "CyberArk Software Ltd."
+    mapping_source: "longbridge_security_list"
+  "M4R82T106":
+    symbol: "FVRR.US"
+    company_name: "Fiverr International Ltd."
+    mapping_source: "longbridge_security_list"
+  "M7516K103":
+    symbol: "NVMI.US"
+    company_name: "Nova Ltd."
+    mapping_source: "longbridge_security_list"
+  "M81873107":
+    symbol: "RDWR.US"
+    company_name: "Radware Ltd."
+    mapping_source: "longbridge_security_list"
+  "M85548101":
+    symbol: "SSYS.US"
+    company_name: "Stratasys Ltd."
+    mapping_source: "longbridge_security_list"
+  "M87915274":
+    symbol: "TSEM.US"
+    company_name: "Tower Semiconductor Ltd."
+    mapping_source: "longbridge_security_list"
+  "M96088105":
+    symbol: "URGN.US"
+    company_name: "UroGen Pharma Ltd."
+    mapping_source: "longbridge_security_list"
+  "M5425M103":
+    symbol: "INMD.US"
+    company_name: "InMode Ltd."
+    mapping_source: "longbridge_security_list"
+  "M78673114":
+    symbol: "PERI.US"
+    company_name: "Perion Network Ltd."
+    mapping_source: "longbridge_security_list"
+  "69553P100":
+    symbol: "PD.US"
+    company_name: "PagerDuty, Inc."
+    mapping_source: "longbridge_security_list"
+  "00650F109":
+    symbol: "ADPT.US"
+    company_name: "Adaptive Biotechnologies Corporation"
+    mapping_source: "longbridge_security_list"
+  "00437E102":
+    symbol: "ACCD.US"
+    company_name: "Accolade, Inc."
+    mapping_source: "longbridge_security_list"
+  "92532F100":
+    symbol: "VRTX.US"
+    company_name: "Vertex Pharmaceuticals Incorporated"
+    mapping_source: "longbridge_security_list"
+  "M51474118":
+    symbol: "GILT.US"
+    company_name: "Gilat Satellite Networks Ltd."
+    mapping_source: "longbridge_security_list"
+  "M84116108":
+    symbol: "SILC.US"
+    company_name: "Silicom Ltd."
+    mapping_source: "longbridge_security_list"
+  "65481N100":
+    symbol: "NIU.US"
+    company_name: "Niu Technologies"
+    mapping_source: "longbridge_security_list"
+  "30063P105":
+    symbol: "EXAS.US"
+    company_name: "Exact Sciences Corporation"
+    mapping_source: "longbridge_security_list"
+  "75886F107":
+    symbol: "REGN.US"
+    company_name: "Regeneron Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "760273102":
+    symbol: "RPTX.US"
+    company_name: "Repare Therapeutics Inc."
+    mapping_source: "longbridge_security_list"
+  "48581R205":
+    symbol: "KSPI.US"
+    company_name: "Joint Stock Company Kaspi.kz"
+    mapping_source: "longbridge_security_list"
+  "559222401":
+    symbol: "MGA.US"
+    company_name: "Magna International Inc."
+    mapping_source: "longbridge_security_list"
+  "922475108":
+    symbol: "VEEV.US"
+    company_name: "Veeva Systems Inc."
+    mapping_source: "longbridge_security_list"
+  "559166103":
+    symbol: "MGIC.US"
+    company_name: "Magic Software Enterprises Ltd."
+    mapping_source: "longbridge_security_list"
+  "25058X105":
+    symbol: "DM.US"
+    company_name: "Desktop Metal, Inc."
+    mapping_source: "longbridge_security_list"
+  "M6191J100":
+    symbol: "FROG.US"
+    company_name: "JFrog Ltd."
+    mapping_source: "longbridge_security_list"
+  "277461406":
+    symbol: "KODK.US"
+    company_name: "Eastman Kodak Company"
+    mapping_source: "longbridge_security_list"
+  "539830109":
+    symbol: "LMT.US"
+    company_name: "Lockheed Martin Corporation"
+    mapping_source: "longbridge_security_list"
+  "M70700105":
+    symbol: "NNOX.US"
+    company_name: "Nano-X Imaging Ltd."
+    mapping_source: "longbridge_security_list"
+  "124155102":
+    symbol: "BFLY.US"
+    company_name: "Butterfly Network, Inc."
+    mapping_source: "longbridge_security_list"
+  "00214Q104":
+    symbol: "ARKK.US"
+    company_name: "ARK Innovation ETF"
+    mapping_source: "longbridge_security_list"
+  "00214Q500":
+    symbol: "PRNT.US"
+    company_name: "The 3D Printing ETF"
+    mapping_source: "longbridge_security_list"
+  "90364P105":
+    symbol: "PATH.US"
+    company_name: "UiPath, Inc."
+    mapping_source: "longbridge_security_list"
+  "74765K105":
+    symbol: "QSI.US"
+    company_name: "Quantum-Si incorporated"
+    mapping_source: "longbridge_security_list"
+  "92539P101":
+    symbol: "VERV.US"
+    company_name: "Verve Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "57064N102":
+    symbol: "MKFG.US"
+    company_name: "Markforged Holding Corporation"
+    mapping_source: "longbridge_security_list"
+  "98423F109":
+    symbol: "XMTR.US"
+    company_name: "Xometry, Inc."
+    mapping_source: "longbridge_security_list"
+  "72815L107":
+    symbol: "PLTK.US"
+    company_name: "Playtika Holding Corp."
+    mapping_source: "longbridge_security_list"
+  "M25133105":
+    symbol: "CGNT.US"
+    company_name: "Cognyte Software Ltd."
+    mapping_source: "longbridge_security_list"
+  "M7S64H106":
+    symbol: "MNDY.US"
+    company_name: "monday.com Ltd."
+    mapping_source: "longbridge_security_list"
+  "M84137104":
+    symbol: "SMWB.US"
+    company_name: "Similarweb Ltd."
+    mapping_source: "longbridge_security_list"
+  "717081103":
+    symbol: "PFE.US"
+    company_name: "Pfizer Inc."
+    mapping_source: "longbridge_security_list"
+  "G3934V109":
+    symbol: "GENI.US"
+    company_name: "Genius Sports Limited"
+    mapping_source: "longbridge_security_list"
+  "00214Q302":
+    symbol: "ARKG.US"
+    company_name: "ARK Genomic Revolution ETF"
+    mapping_source: "longbridge_security_list"
+  "37611X100":
+    symbol: "DNA.US"
+    company_name: "Ginkgo Bioworks Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "92259N104":
+    symbol: "VELO.US"
+    company_name: "Velo3D, Inc."
+    mapping_source: "longbridge_security_list"
+  "65345M108":
+    symbol: "KIND.US"
+    company_name: "Nextdoor Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "67080M103":
+    symbol: "NRIX.US"
+    company_name: "Nurix Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "G982AW100":
+    symbol: "XPEV.US"
+    company_name: "XPeng Inc."
+    mapping_source: "longbridge_security_list"
+  "29260Y109":
+    symbol: "EDR.US"
+    company_name: "Endeavor Group Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "M5216V106":
+    symbol: "GLBE.US"
+    company_name: "Global-E Online Ltd."
+    mapping_source: "longbridge_security_list"
+  "M2197Q107":
+    symbol: "CLBT.US"
+    company_name: "Cellebrite DI Ltd."
+    mapping_source: "longbridge_security_list"
+  "M8216R109":
+    symbol: "RSKD.US"
+    company_name: "Riskified Ltd."
+    mapping_source: "longbridge_security_list"
+  "M8744T106":
+    symbol: "TBLA.US"
+    company_name: "Taboola.com Ltd."
+    mapping_source: "longbridge_security_list"
+  "62914V106":
+    symbol: "NIO.US"
+    company_name: "NIO Inc"
+    mapping_source: "longbridge_security_list"
+  "26142V105":
+    symbol: "DKNG.US"
+    company_name: "DraftKings Inc."
+    mapping_source: "longbridge_security_list"
+  "40131M109":
+    symbol: "GH.US"
+    company_name: "Guardant Health, Inc."
+    mapping_source: "longbridge_security_list"
+  "00724F101":
+    symbol: "ADBE.US"
+    company_name: "Adobe Inc."
+    mapping_source: "longbridge_security_list"
+  "52661A108":
+    symbol: "DRS.US"
+    company_name: "Leonardo DRS, Inc."
+    mapping_source: "longbridge_security_list"
+  "922908736":
+    symbol: "VUG.US"
+    company_name: "Vanguard Growth ETF"
+    mapping_source: "longbridge_security_list"
+  "090043100":
+    symbol: "BILL.US"
+    company_name: "BILL Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "72352L106":
+    symbol: "PINS.US"
+    company_name: "Pinterest, Inc."
+    mapping_source: "longbridge_security_list"
+  "60741F104":
+    symbol: "MBLY.US"
+    company_name: "Mobileye Global Inc."
+    mapping_source: "longbridge_security_list"
+  "M7S750159":
+    symbol: "NYAX.US"
+    company_name: "Nayax Ltd."
+    mapping_source: "longbridge_security_list"
+  "88339J105":
+    symbol: "TTD.US"
+    company_name: "The Trade Desk, Inc."
+    mapping_source: "longbridge_security_list"
+  "05368V106":
+    symbol: "AVNT.US"
+    company_name: "Avient Corporation"
+    mapping_source: "longbridge_security_list"
+  "24906P109":
+    symbol: "XRAY.US"
+    company_name: "DENTSPLY SIRONA Inc."
+    mapping_source: "longbridge_security_list"
+  "489170100":
+    symbol: "KMT.US"
+    company_name: "Kennametal Inc."
+    mapping_source: "longbridge_security_list"
+  "05368X102":
+    symbol: "AVDX.US"
+    company_name: "AvidXchange Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "M7S64L115":
+    symbol: "PGY.US"
+    company_name: "Pagaya Technologies Ltd."
+    mapping_source: "longbridge_security_list"
+  "M9607U115":
+    symbol: "VLN.US"
+    company_name: "Valens Semiconductor Ltd."
+    mapping_source: "longbridge_security_list"
+  "03769M106":
+    symbol: "APO.US"
+    company_name: "Apollo Global Management, Inc."
+    mapping_source: "longbridge_security_list"
+  "74347G440":
+    symbol: "BITO.US"
+    company_name: "ProShares Bitcoin ETF"
+    mapping_source: "longbridge_security_list"
+  "M7S64L123":
+    symbol: "PGY.US"
+    company_name: "Pagaya Technologies Ltd."
+    mapping_source: "longbridge_security_list"
+  "00091E109":
+    symbol: "ABSI.US"
+    company_name: "Absci Corporation"
+    mapping_source: "longbridge_security_list"
+  "031162100":
+    symbol: "AMGN.US"
+    company_name: "Amgen Inc."
+    mapping_source: "longbridge_security_list"
+  "81762P102":
+    symbol: "NOW.US"
+    company_name: "ServiceNow, Inc."
+    mapping_source: "longbridge_security_list"
+  "464287622":
+    symbol: "IWB.US"
+    company_name: "iShares Russell 1000 ETF"
+    mapping_source: "longbridge_security_list"
+  "75734B100":
+    symbol: "RDDT.US"
+    company_name: "Reddit, Inc."
+    mapping_source: "longbridge_security_list"
+  "451051106":
+    symbol: "IBTA.US"
+    company_name: "Ibotta, Inc."
+    mapping_source: "longbridge_security_list"
+  "23804L103":
+    symbol: "DDOG.US"
+    company_name: "Datadog, Inc."
+    mapping_source: "longbridge_security_list"
+  "74349Y100":
+    symbol: "EETH.US"
+    company_name: "ProShares Ether ETF"
+    mapping_source: "longbridge_security_list"
+  "781154109":
+    symbol: "RBRK.US"
+    company_name: "Rubrik, Inc."
+    mapping_source: "longbridge_security_list"
+  "70450Y103":
+    symbol: "PYPL.US"
+    company_name: "PayPal Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "92259N203":
+    symbol: "VELO.US"
+    company_name: "Velo3D, Inc."
+    mapping_source: "longbridge_security_list"
+  "25058X303":
+    symbol: "DM.US"
+    company_name: "Desktop Metal, Inc."
+    mapping_source: "longbridge_security_list"
+  "57064N201":
+    symbol: "MKFG.US"
+    company_name: "Markforged Holding Corporation"
+    mapping_source: "longbridge_security_list"
+  "576690101":
+    symbol: "MTRN.US"
+    company_name: "Materion Corporation"
+    mapping_source: "longbridge_security_list"
+  "37637K108":
+    symbol: "GTLB.US"
+    company_name: "GitLab Inc."
+    mapping_source: "longbridge_security_list"
+  "78643B500":
+    symbol: "ALAR.US"
+    company_name: "Alarum Technologies Ltd."
+    mapping_source: "longbridge_security_list"
+  "M68830112":
+    symbol: "MDWD.US"
+    company_name: "MediWound Ltd."
+    mapping_source: "longbridge_security_list"
+  "46438R105":
+    symbol: "ETHA.US"
+    company_name: "iShares Ethereum Trust ETF"
+    mapping_source: "longbridge_security_list"
+  "10501L106":
+    symbol: "BWAY.US"
+    company_name: "BrainsWay Ltd."
+    mapping_source: "longbridge_security_list"
+  "36118L106":
+    symbol: "FUTU.US"
+    company_name: "Futu Holdings Limited"
+    mapping_source: "longbridge_security_list"
+  "79466L302":
+    symbol: "CRM.US"
+    company_name: "Salesforce, Inc."
+    mapping_source: "longbridge_security_list"
+  "M8740S227":
+    symbol: "TATT.US"
+    company_name: "TAT Technologies Ltd."
+    mapping_source: "longbridge_security_list"
+  "M81865111":
+    symbol: "RDCM.US"
+    company_name: "RADCOM Ltd."
+    mapping_source: "longbridge_security_list"
+  "009066101":
+    symbol: "ABNB.US"
+    company_name: "Airbnb, Inc."
+    mapping_source: "longbridge_security_list"
+  "389637109":
+    symbol: "GBTC.US"
+    company_name: "Grayscale Bitcoin Trust ETF"
+    mapping_source: "longbridge_security_list"
+  "369604301":
+    symbol: "GE.US"
+    company_name: "GE Aerospace"
+    mapping_source: "longbridge_security_list"
+  "M20791105":
+    symbol: "CAMT.US"
+    company_name: "Camtek Ltd."
+    mapping_source: "longbridge_security_list"
+  "M22465104":
+    symbol: "CHKP.US"
+    company_name: "Check Point Software Technologies Ltd."
+    mapping_source: "longbridge_security_list"
+  "M6158M104":
+    symbol: "ITRN.US"
+    company_name: "Ituran Location and Control Ltd."
+    mapping_source: "longbridge_security_list"
+  "464287614":
+    symbol: "IWF.US"
+    company_name: "iShares Russell 1000 Growth ETF"
+    mapping_source: "longbridge_security_list"
+  "M8T80P204":
+    symbol: "NEXN.US"
+    company_name: "Nexxen International Ltd."
+    mapping_source: "longbridge_security_list"
+  "732908108":
+    symbol: "PONY.US"
+    company_name: "Pony AI Inc."
+    mapping_source: "longbridge_security_list"
+  "G5279N105":
+    symbol: "KLAR.US"
+    company_name: "Klarna Group plc"
+    mapping_source: "longbridge_security_list"
+  "69404D108":
+    symbol: "PACB.US"
+    company_name: "Pacific Biosciences of California, Inc."
+    mapping_source: "longbridge_security_list"
+  "80810D103":
+    symbol: "SDGR.US"
+    company_name: "Schrödinger, Inc."
+    mapping_source: "longbridge_security_list"
+  "74624M102":
+    symbol: "PSTG.US"
+    company_name: "Everpure, Inc."
+    mapping_source: "longbridge_security_list"
+  "44267D107":
+    symbol: "HHH.US"
+    company_name: "Howard Hughes Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "13646K108":
+    symbol: "CP.US"
+    company_name: "Canadian Pacific Kansas City Limited"
+    mapping_source: "longbridge_security_list"
+  "679295105":
+    symbol: "OKTA.US"
+    company_name: "Okta, Inc."
+    mapping_source: "longbridge_security_list"
+  "683712103":
+    symbol: "OPEN.US"
+    company_name: "Opendoor Technologies Inc."
+    mapping_source: "longbridge_security_list"
+  "04626A103":
+    symbol: "ALAB.US"
+    company_name: "Astera Labs, Inc."
+    mapping_source: "longbridge_security_list"
+  "24703L202":
+    symbol: "DELL.US"
+    company_name: "Dell Technologies Inc."
+    mapping_source: "longbridge_security_list"
+  "032095101":
+    symbol: "APH.US"
+    company_name: "Amphenol Corporation"
+    mapping_source: "longbridge_security_list"
+  "79589L106":
+    symbol: "IOT.US"
+    company_name: "Samsara Inc."
+    mapping_source: "longbridge_security_list"
+  "26603R106":
+    symbol: "DUOL.US"
+    company_name: "Duolingo, Inc."
+    mapping_source: "longbridge_security_list"
+  "81764X103":
+    symbol: "TTAN.US"
+    company_name: "ServiceTitan, Inc."
+    mapping_source: "longbridge_security_list"
+  "78781J109":
+    symbol: "SAIL.US"
+    company_name: "SailPoint, Inc."
+    mapping_source: "longbridge_security_list"
+  "03674X106":
+    symbol: "AR.US"
+    company_name: "Antero Resources Corporation"
+    mapping_source: "longbridge_security_list"
+  "G6095L109":
+    symbol: "APTV.US"
+    company_name: "Aptiv PLC"
+    mapping_source: "longbridge_security_list"
+  "26884L109":
+    symbol: "EQT.US"
+    company_name: "EQT Corporation"
+    mapping_source: "longbridge_security_list"
+  "40412C101":
+    symbol: "HCA.US"
+    company_name: "HCA Healthcare, Inc."
+    mapping_source: "longbridge_security_list"
+  "871829107":
+    symbol: "SYY.US"
+    company_name: "Sysco Corporation"
+    mapping_source: "longbridge_security_list"
+  "31428X106":
+    symbol: "FDX.US"
+    company_name: "FedEx Corporation"
+    mapping_source: "longbridge_security_list"
+  "57667L107":
+    symbol: "MTCH.US"
+    company_name: "Match Group, Inc."
+    mapping_source: "longbridge_security_list"
+  "040413106":
+    symbol: "ANET.US"
+    company_name: "Arista Networks, Inc."
+    mapping_source: "longbridge_security_list"
+  "512807108":
+    symbol: "LRCX.US"
+    company_name: "Lam Research Corporation"
+    mapping_source: "longbridge_security_list"
+  "573874104":
+    symbol: "MRVL.US"
+    company_name: "Marvell Technology, Inc."
+    mapping_source: "longbridge_security_list"
+  "482497104":
+    symbol: "BEKE.US"
+    company_name: "KE Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "574599106":
+    symbol: "MAS.US"
+    company_name: "Masco Corporation"
+    mapping_source: "longbridge_security_list"
+  "68389X105":
+    symbol: "ORCL.US"
+    company_name: "Oracle Corporation"
+    mapping_source: "longbridge_security_list"
+  "097023105":
+    symbol: "BA.US"
+    company_name: "The Boeing Company"
+    mapping_source: "longbridge_security_list"
+  "517834107":
+    symbol: "LVS.US"
+    company_name: "Las Vegas Sands Corp."
+    mapping_source: "longbridge_security_list"
+  "983134107":
+    symbol: "WYNN.US"
+    company_name: "Wynn Resorts, Limited"
+    mapping_source: "longbridge_security_list"
+  "165167172":
+    symbol: "EXE.US"
+    company_name: "Expand Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "165167180":
+    symbol: "EXE.US"
+    company_name: "Expand Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "165167735":
+    symbol: "EXE.US"
+    company_name: "Expand Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "200340107":
+    symbol: "CMA.US"
+    company_name: "Comerica Incorporated"
+    mapping_source: "longbridge_security_list"
+  "337738108":
+    symbol: "FI.US"
+    company_name: "Fiserv, Inc."
+    mapping_source: "longbridge_security_list"
+  "493267108":
+    symbol: "KEY.US"
+    company_name: "KeyCorp"
+    mapping_source: "longbridge_security_list"
+  "192422103":
+    symbol: "CGNX.US"
+    company_name: "Cognex Corporation"
+    mapping_source: "longbridge_security_list"
+  "294429105":
+    symbol: "EFX.US"
+    company_name: "Equifax Inc."
+    mapping_source: "longbridge_security_list"
+  "44980X109":
+    symbol: "IPGP.US"
+    company_name: "IPG Photonics Corporation"
+    mapping_source: "longbridge_security_list"
+  "574795100":
+    symbol: "MASI.US"
+    company_name: "Masimo Corporation"
+    mapping_source: "longbridge_security_list"
+  "713448108":
+    symbol: "PEP.US"
+    company_name: "PepsiCo, Inc."
+    mapping_source: "longbridge_security_list"
+  "92345Y106":
+    symbol: "VRSK.US"
+    company_name: "Verisk Analytics, Inc."
+    mapping_source: "longbridge_security_list"
+  "30214U102":
+    symbol: "EXPO.US"
+    company_name: "Exponent, Inc."
+    mapping_source: "longbridge_security_list"
+  "169905106":
+    symbol: "CHH.US"
+    company_name: "Choice Hotels International, Inc."
+    mapping_source: "longbridge_security_list"
+  "45167R104":
+    symbol: "IEX.US"
+    company_name: "IDEX Corporation"
+    mapping_source: "longbridge_security_list"
+  "81686C104":
+    symbol: "SEMR.US"
+    company_name: "Semrush Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "83200N103":
+    symbol: "SMAR.US"
+    company_name: "Smartsheet Inc."
+    mapping_source: "longbridge_security_list"
+  "91688F104":
+    symbol: "UPWK.US"
+    company_name: "Upwork Inc."
+    mapping_source: "longbridge_security_list"
+  "42704L104":
+    symbol: "HRI.US"
+    company_name: "Herc Holdings Inc."
+    mapping_source: "longbridge_security_list"
+  "85209W109":
+    symbol: "SPT.US"
+    company_name: "Sprout Social, Inc."
+    mapping_source: "longbridge_security_list"
+  "00288U106":
+    symbol: "ABCL.US"
+    company_name: "AbCellera Biologics Inc."
+    mapping_source: "longbridge_security_list"
+  "004225108":
+    symbol: "ACAD.US"
+    company_name: "ACADIA Pharmaceuticals Inc."
+    mapping_source: "longbridge_security_list"
+  "02043Q107":
+    symbol: "ALNY.US"
+    company_name: "Alnylam Pharmaceuticals, Inc."
+    mapping_source: "longbridge_security_list"
+  "03940R107":
+    symbol: "ARCH.US"
+    company_name: "Arch Resources, Inc."
+    mapping_source: "longbridge_security_list"
+  "00206R102":
+    symbol: "T.US"
+    company_name: "AT&T Inc."
+    mapping_source: "longbridge_security_list"
+  "05352A100":
+    symbol: "AVTR.US"
+    company_name: "Avantor, Inc."
+    mapping_source: "longbridge_security_list"
+  "15135U109":
+    symbol: "CVE.US"
+    company_name: "Cenovus Energy Inc."
+    mapping_source: "longbridge_security_list"
+  "20464U100":
+    symbol: "COMP.US"
+    company_name: "Compass, Inc."
+    mapping_source: "longbridge_security_list"
+  "293594107":
+    symbol: "ENVX.US"
+    company_name: "Enovix Corporation"
+    mapping_source: "longbridge_security_list"
+  "29362U104":
+    symbol: "ENTG.US"
+    company_name: "Entegris, Inc."
+    mapping_source: "longbridge_security_list"
+  "35671D857":
+    symbol: "FCX.US"
+    company_name: "Freeport-McMoRan Inc."
+    mapping_source: "longbridge_security_list"
+  "G4701H109":
+    symbol: "IHS.US"
+    company_name: "IHS Holding Limited"
+    mapping_source: "longbridge_security_list"
+  "48666K109":
+    symbol: "KBH.US"
+    company_name: "KB Home"
+    mapping_source: "longbridge_security_list"
+  "48242W106":
+    symbol: "KBR.US"
+    company_name: "KBR, Inc."
+    mapping_source: "longbridge_security_list"
+  "513272104":
+    symbol: "LW.US"
+    company_name: "Lamb Weston Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "50187T106":
+    symbol: "LGIH.US"
+    company_name: "LGI Homes, Inc."
+    mapping_source: "longbridge_security_list"
+  "65339F101":
+    symbol: "NEE.US"
+    company_name: "NextEra Energy, Inc."
+    mapping_source: "longbridge_security_list"
+  "687793109":
+    symbol: "OSCR.US"
+    company_name: "Oscar Health, Inc."
+    mapping_source: "longbridge_security_list"
+  "69047Q102":
+    symbol: "OVV.US"
+    company_name: "Ovintiv Inc."
+    mapping_source: "longbridge_security_list"
+  "701094104":
+    symbol: "PH.US"
+    company_name: "Parker-Hannifin Corporation"
+    mapping_source: "longbridge_security_list"
+  "718546104":
+    symbol: "PSX.US"
+    company_name: "Phillips 66"
+    mapping_source: "longbridge_security_list"
+  "86771W105":
+    symbol: "RUN.US"
+    company_name: "Sunrun Inc."
+    mapping_source: "longbridge_security_list"
+  "878742204":
+    symbol: "TECK.US"
+    company_name: "Teck Resources Limited"
+    mapping_source: "longbridge_security_list"
+  "91912E105":
+    symbol: "VALE.US"
+    company_name: "Vale S.A."
+    mapping_source: "longbridge_security_list"
+  "443573100":
+    symbol: "HUBS.US"
+    company_name: "HubSpot, Inc."
+    mapping_source: "longbridge_security_list"
+  "830566105":
+    symbol: "SKX.US"
+    company_name: "Skechers U.S.A., Inc."
+    mapping_source: "longbridge_security_list"
+  "93403J106":
+    symbol: "WRBY.US"
+    company_name: "Warby Parker Inc."
+    mapping_source: "longbridge_security_list"
+  "12008R107":
+    symbol: "BLDR.US"
+    company_name: "Builders FirstSource, Inc."
+    mapping_source: "longbridge_security_list"
+  "142339100":
+    symbol: "CSL.US"
+    company_name: "Carlisle Companies Incorporated"
+    mapping_source: "longbridge_security_list"
+  "336433107":
+    symbol: "FSLR.US"
+    company_name: "First Solar, Inc."
+    mapping_source: "longbridge_security_list"
+  "46982L108":
+    symbol: "J.US"
+    company_name: "Jacobs Solutions Inc."
+    mapping_source: "longbridge_security_list"
+  "749685103":
+    symbol: "RPM.US"
+    company_name: "RPM International Inc."
+    mapping_source: "longbridge_security_list"
+  "H42097107":
+    symbol: "UBS.US"
+    company_name: "UBS Group AG"
+    mapping_source: "longbridge_security_list"
+  "95082P105":
+    symbol: "WCC.US"
+    company_name: "WESCO International, Inc."
+    mapping_source: "longbridge_security_list"
+  "55826T102":
+    symbol: "SPHR.US"
+    company_name: "Sphere Entertainment Co."
+    mapping_source: "longbridge_security_list"
+  "87256C101":
+    symbol: "TKO.US"
+    company_name: "TKO Group Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "H8817H100":
+    symbol: "RIG.US"
+    company_name: "Transocean Ltd."
+    mapping_source: "longbridge_security_list"
+  "958102105":
+    symbol: "WDC.US"
+    company_name: "Western Digital Corporation"
+    mapping_source: "longbridge_security_list"
+  "Y2573F102":
+    symbol: "FLEX.US"
+    company_name: "Flex Ltd."
+    mapping_source: "longbridge_security_list"
+  "651639106":
+    symbol: "NEM.US"
+    company_name: "Newmont Corporation"
+    mapping_source: "longbridge_security_list"
+  "91347P105":
+    symbol: "OLED.US"
+    company_name: "Universal Display Corporation"
+    mapping_source: "longbridge_security_list"
+  "98980F104":
+    symbol: "ZI.US"
+    company_name: "ZoomInfo Technologies Inc."
+    mapping_source: "longbridge_security_list"
+  "00130H105":
+    symbol: "AES.US"
+    company_name: "The AES Corporation"
+    mapping_source: "longbridge_security_list"
+  "03940C100":
+    symbol: "ACLX.US"
+    company_name: "Arcellx, Inc."
+    mapping_source: "longbridge_security_list"
+  "06738E204":
+    symbol: "BCS.US"
+    company_name: "Barclays PLC"
+    mapping_source: "longbridge_security_list"
+  "088786108":
+    symbol: "BCYC.US"
+    company_name: "Bicycle Therapeutics plc"
+    mapping_source: "longbridge_security_list"
+  "12674W109":
+    symbol: "CABA.US"
+    company_name: "Cabaletta Bio, Inc."
+    mapping_source: "longbridge_security_list"
+  "17243V102":
+    symbol: "CNK.US"
+    company_name: "Cinemark Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "234264109":
+    symbol: "DAKT.US"
+    company_name: "Daktronics, Inc."
+    mapping_source: "longbridge_security_list"
+  "G29183103":
+    symbol: "ETN.US"
+    company_name: "Eaton Corporation plc"
+    mapping_source: "longbridge_security_list"
+  "399909100":
+    symbol: "GGAL.US"
+    company_name: "Grupo Financiero Galicia S.A."
+    mapping_source: "longbridge_security_list"
+  "49456B101":
+    symbol: "KMI.US"
+    company_name: "Kinder Morgan, Inc."
+    mapping_source: "longbridge_security_list"
+  "52490G102":
+    symbol: "LEGN.US"
+    company_name: "Legend Biotech Corporation"
+    mapping_source: "longbridge_security_list"
+  "61559X104":
+    symbol: "MLTX.US"
+    company_name: "MoonLake Immunotherapeutics"
+    mapping_source: "longbridge_security_list"
+  "65340P106":
+    symbol: "NXE.US"
+    company_name: "NexGen Energy Ltd."
+    mapping_source: "longbridge_security_list"
+  "799566104":
+    symbol: "SANA.US"
+    company_name: "Sana Biotechnology, Inc."
+    mapping_source: "longbridge_security_list"
+  "82686Q101":
+    symbol: "SLN.US"
+    company_name: "Silence Therapeutics plc"
+    mapping_source: "longbridge_security_list"
+  "N82405106":
+    symbol: "STLA.US"
+    company_name: "Stellantis N.V."
+    mapping_source: "longbridge_security_list"
+  "88322Q108":
+    symbol: "TGTX.US"
+    company_name: "TG Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "89680M101":
+    symbol: "TLSI.US"
+    company_name: "TriSalus Life Sciences, Inc."
+    mapping_source: "longbridge_security_list"
+  "36828A101":
+    symbol: "GEV.US"
+    company_name: "GE Vernova Inc."
+    mapping_source: "longbridge_security_list"
+  "85205L107":
+    symbol: "SWTX.US"
+    company_name: "SpringWorks Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "86366E106":
+    symbol: "GPCR.US"
+    company_name: "Structure Therapeutics Inc."
+    mapping_source: "longbridge_security_list"
+  "88080T104":
+    symbol: "WULF.US"
+    company_name: "TeraWulf Inc."
+    mapping_source: "longbridge_security_list"
+  "03076K108":
+    symbol: "ABCB.US"
+    company_name: "Ameris Bancorp"
+    mapping_source: "longbridge_security_list"
+  "04351P101":
+    symbol: "ASND.US"
+    company_name: "Ascendis Pharma A/S"
+    mapping_source: "longbridge_security_list"
+  "21874C102":
+    symbol: "CNM.US"
+    company_name: "Core & Main, Inc."
+    mapping_source: "longbridge_security_list"
+  "320517105":
+    symbol: "FHN.US"
+    company_name: "First Horizon Corporation"
+    mapping_source: "longbridge_security_list"
+  "446150104":
+    symbol: "HBAN.US"
+    company_name: "Huntington Bancshares Incorporated"
+    mapping_source: "longbridge_security_list"
+  "G6700G107":
+    symbol: "NVT.US"
+    company_name: "nVent Electric plc"
+    mapping_source: "longbridge_security_list"
+  "855244109":
+    symbol: "SBUX.US"
+    company_name: "Starbucks Corporation"
+    mapping_source: "longbridge_security_list"
+  "87807B107":
+    symbol: "TRP.US"
+    company_name: "TC Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "92243G108":
+    symbol: "PCVX.US"
+    company_name: "Vaxcyte, Inc."
+    mapping_source: "longbridge_security_list"
+  "925050106":
+    symbol: "VRNA.US"
+    company_name: "Verona Pharma plc"
+    mapping_source: "longbridge_security_list"
+  "983793100":
+    symbol: "XPO.US"
+    company_name: "XPO, Inc."
+    mapping_source: "longbridge_security_list"
+  "26856L103":
+    symbol: "ELF.US"
+    company_name: "e.l.f. Beauty, Inc."
+    mapping_source: "longbridge_security_list"
+  "60471A101":
+    symbol: "MIR.US"
+    company_name: "Mirion Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "78442P106":
+    symbol: "SLM.US"
+    company_name: "SLM Corporation"
+    mapping_source: "longbridge_security_list"
+  "867975104":
+    symbol: "SNRE.US"
+    company_name: "Sunrise Communications AG"
+    mapping_source: "longbridge_security_list"
+  "934423104":
+    symbol: "WBD.US"
+    company_name: "Warner Bros. Discovery, Inc."
+    mapping_source: "longbridge_security_list"
+  "10806X102":
+    symbol: "BBIO.US"
+    company_name: "BridgeBio Pharma, Inc."
+    mapping_source: "longbridge_security_list"
+  "256163106":
+    symbol: "DOCU.US"
+    company_name: "DocuSign, Inc."
+    mapping_source: "longbridge_security_list"
+  "453204109":
+    symbol: "PI.US"
+    company_name: "Impinj, Inc."
+    mapping_source: "longbridge_security_list"
+  "163851108":
+    symbol: "CC.US"
+    company_name: "The Chemours Company"
+    mapping_source: "longbridge_security_list"
+  "29337E102":
+    symbol: "ELVN.US"
+    company_name: "Enliven Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "38141G104":
+    symbol: "GS.US"
+    company_name: "The Goldman Sachs Group, Inc."
+    mapping_source: "longbridge_security_list"
+  "418056107":
+    symbol: "HAS.US"
+    company_name: "Hasbro, Inc."
+    mapping_source: "longbridge_security_list"
+  "92686J106":
+    symbol: "VKTX.US"
+    company_name: "Viking Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "00835Q202":
+    symbol: "AEVA.US"
+    company_name: "Aeva Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "19240Q201":
+    symbol: "COGT.US"
+    company_name: "Cogent Biosciences, Inc."
+    mapping_source: "longbridge_security_list"
+  "372460105":
+    symbol: "GPC.US"
+    company_name: "Genuine Parts Company"
+    mapping_source: "longbridge_security_list"
+  "60937P106":
+    symbol: "MDB.US"
+    company_name: "MongoDB, Inc."
+    mapping_source: "longbridge_security_list"
+  "737446104":
+    symbol: "POST.US"
+    company_name: "Post Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "816850101":
+    symbol: "SMTC.US"
+    company_name: "Semtech Corporation"
+    mapping_source: "longbridge_security_list"
+  "86384P109":
+    symbol: "STUB.US"
+    company_name: "StubHub Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "87165B103":
+    symbol: "SYF.US"
+    company_name: "Synchrony Financial"
+    mapping_source: "longbridge_security_list"
+  "882681109":
+    symbol: "TXRH.US"
+    company_name: "Texas Roadhouse, Inc."
+    mapping_source: "longbridge_security_list"
+  "04010E109":
+    symbol: "AGX.US"
+    company_name: "Argan, Inc."
+    mapping_source: "longbridge_security_list"
+  "171757206":
+    symbol: "CDTX.US"
+    company_name: "Cidara Therapeutics, Inc."
+    mapping_source: "longbridge_security_list"
+  "682189105":
+    symbol: "ON.US"
+    company_name: "ON Semiconductor Corporation"
+    mapping_source: "longbridge_security_list"
+  "74340E103":
+    symbol: "PGNY.US"
+    company_name: "Progyny, Inc."
+    mapping_source: "longbridge_security_list"
+  "Y95308105":
+    symbol: "WVE.US"
+    company_name: "Wave Life Sciences Ltd."
+    mapping_source: "longbridge_security_list"
+  "97785W106":
+    symbol: "WOLF.US"
+    company_name: "Wolfspeed, Inc."
+    mapping_source: "longbridge_security_list"
+  "026874784":
+    symbol: "AIG.US"
+    company_name: "American International Group, Inc."
+    mapping_source: "longbridge_security_list"
+  "070830104":
+    symbol: "BBWI.US"
+    company_name: "Bath & Body Works, Inc."
+    mapping_source: "longbridge_security_list"
+  "194162103":
+    symbol: "CL.US"
+    company_name: "Colgate-Palmolive Company"
+    mapping_source: "longbridge_security_list"
+  "H33700115":
+    symbol: "GB.US"
+    company_name: "Global Blue Group Holding AG"
+    mapping_source: "longbridge_security_list"
+  "H33700107":
+    symbol: "GB.US"
+    company_name: "Global Blue Group Holding AG"
+    mapping_source: "longbridge_security_list"
+  "69331C140":
+    symbol: "PCG.US"
+    company_name: "PG&E Corporation"
+    mapping_source: "longbridge_security_list"
+  "81730H109":
+    symbol: "S.US"
+    company_name: "SentinelOne, Inc."
+    mapping_source: "longbridge_security_list"
+  "872540109":
+    symbol: "TJX.US"
+    company_name: "The TJX Companies, Inc."
+    mapping_source: "longbridge_security_list"
+  "87261Y114":
+    symbol: "TMC.US"
+    company_name: "TMC the metals company Inc."
+    mapping_source: "longbridge_security_list"
+  "92332V107":
+    symbol: "VTYX.US"
+    company_name: "Ventyx Biosciences, Inc."
+    mapping_source: "longbridge_security_list"
+  "64107A113":
+    symbol: "NPWR.US"
+    company_name: "NET Power Inc."
+    mapping_source: "longbridge_security_list"
+  "758750103":
+    symbol: "RRX.US"
+    company_name: "Regal Rexnord Corporation"
+    mapping_source: "longbridge_security_list"
+  "911684108":
+    symbol: "USM.US"
+    company_name: "United States Cellular Corporation"
+    mapping_source: "longbridge_security_list"
+  "09061G101":
+    symbol: "BMRN.US"
+    company_name: "BioMarin Pharmaceutical Inc."
+    mapping_source: "longbridge_security_list"
+  "92343V104":
+    symbol: "VZ.US"
+    company_name: "Verizon Communications Inc."
+    mapping_source: "longbridge_security_list"
+  "00751Y106":
+    symbol: "AAP.US"
+    company_name: "Advance Auto Parts, Inc."
+    mapping_source: "longbridge_security_list"
+  "219948106":
+    symbol: "CPAY.US"
+    company_name: "Corpay, Inc."
+    mapping_source: "longbridge_security_list"
+  "366651107":
+    symbol: "IT.US"
+    company_name: "Gartner, Inc."
+    mapping_source: "longbridge_security_list"
+  "703481101":
+    symbol: "PTEN.US"
+    company_name: "Patterson-UTI Energy, Inc."
+    mapping_source: "longbridge_security_list"
+  "268150109":
+    symbol: "DT.US"
+    company_name: "Dynatrace, Inc."
+    mapping_source: "longbridge_security_list"
+  "42809H107":
+    symbol: "HES.US"
+    company_name: "Hess Corporation"
+    mapping_source: "longbridge_security_list"
+  "776696106":
+    symbol: "ROP.US"
+    company_name: "Roper Technologies, Inc."
+    mapping_source: "longbridge_security_list"
+  "18453H106":
+    symbol: "CCO.US"
+    company_name: "Clear Channel Outdoor Holdings, Inc."
+    mapping_source: "longbridge_security_list"
+  "126650100":
+    symbol: "CVS.US"
+    company_name: "CVS Health Corporation"
+    mapping_source: "longbridge_security_list"
+  "31488V107":
+    symbol: "FERG.US"
+    company_name: "Ferguson Enterprises Inc."
+    mapping_source: "longbridge_security_list"
+  "34959J108":
+    symbol: "FTV.US"
+    company_name: "Fortive Corporation"
+    mapping_source: "longbridge_security_list"
+  "69331CAL2":
+    symbol: "PCG.US"
+    company_name: "PG&E Corporation"
+    mapping_source: "longbridge_security_list"
+  "69331C306":
+    symbol: "PCG.US"
+    company_name: "PG&E Corporation"
+    mapping_source: "longbridge_security_list"
+  "741623102":
+    symbol: "PRMB.US"
+    company_name: "Primo Brands Corporation"
+    mapping_source: "longbridge_security_list"
+  "586001109":
+    symbol: "SHCO.US"
+    company_name: "Soho House & Co Inc."
+    mapping_source: "longbridge_security_list"
+  "98138H101":
+    symbol: "WDAY.US"
+    company_name: "Workday, Inc."
+    mapping_source: "longbridge_security_list"
+  "74935Q107":
+    symbol: "RBA.US"
+    company_name: "RB Global, Inc."
+    mapping_source: "longbridge_security_list"
+  "G7997W102":
+    symbol: "SDRL.US"
+    company_name: "Seadrill Limited"
+    mapping_source: "longbridge_security_list"
+  "87422Q109":
+    symbol: "TLN.US"
+    company_name: "Talen Energy Corporation"
+    mapping_source: "longbridge_security_list"
+  "03980N107":
+    symbol: "ARDT.US"
+    company_name: "Ardent Health, Inc."
+    mapping_source: "longbridge_security_list"
+  "34354P105":
+    symbol: "FLS.US"
+    company_name: "Flowserve Corporation"
+    mapping_source: "longbridge_security_list"
+  "62482R107":
+    symbol: "COOP.US"
+    company_name: "Mr. Cooper Group Inc."
+    mapping_source: "longbridge_security_list"
+  "071734107":
+    symbol: "BHC.US"
+    company_name: "Bausch Health Companies Inc."
+    mapping_source: "longbridge_security_list"
+  "203668108":
+    symbol: "CYH.US"
+    company_name: "Community Health Systems, Inc."
+    mapping_source: "longbridge_security_list"
+  "21874A106":
+    symbol: "CORZ.US"
+    company_name: "Core Scientific, Inc."
+    mapping_source: "longbridge_security_list"
+  "126408103":
+    symbol: "CSX.US"
+    company_name: "CSX Corporation"
+    mapping_source: "longbridge_security_list"
+  "852234103":
+    symbol: "XYZ.US"
+    company_name: "Block, Inc."
+    mapping_source: "manual_verified"
+  "M4130Y106":
+    symbol: "ENLV.US"
+    company_name: "Enlivex Therapeutics Ltd."
+    mapping_source: "manual_verified"
+  "38964R203":
+    symbol: "ETH.US"
+    company_name: "Grayscale Ethereum Mini Staking ETF"
+    mapping_source: "manual_verified"
+  "432705309":
+    symbol: "CNTN.US"
+    company_name: "Canton Strategic Holdings Inc."
+    mapping_source: "manual_verified"
+  "422806109":
+    symbol: "HEI.US"
+    company_name: "HEICO Corporation"
+    mapping_source: "manual_verified"
+  "65443P102":
+    symbol: "MASS.US"
+    company_name: "908 Devices Inc."
+    mapping_source: "manual_verified"
+  "98954M200":
+    symbol: "ZG.US"
+    company_name: "Zillow Group, Inc. Class A"
+    mapping_source: "manual_verified"
+  "464286772":
+    symbol: "EWY.US"
+    company_name: "iShares MSCI South Korea ETF"
+    mapping_source: "manual_verified"
+  "500767306":
+    symbol: "KWEB.US"
+    company_name: "KraneShares CSI China Internet ETF"
+    mapping_source: "manual_verified"
+  "29273V100":
+    symbol: "ET.US"
+    company_name: "Energy Transfer LP"
+    mapping_source: "manual_verified"
+  "D18190898":
+    symbol: "DB.US"
+    company_name: "Deutsche Bank Aktiengesellschaft"
+    mapping_source: "manual_verified"
+  "02376R102":
+    symbol: "AAL.US"
+    company_name: "American Airlines Group Inc."
+    mapping_source: "manual_verified"
+  "608190104":
+    symbol: "MHK.US"
+    company_name: "Mohawk Industries, Inc."
+    mapping_source: "manual_verified"
+  "910047109":
+    symbol: "UAL.US"
+    company_name: "United Airlines Holdings, Inc."
+    mapping_source: "manual_verified"
+  "464287184":
+    symbol: "FXI.US"
+    company_name: "iShares China Large-Cap ETF"
+    mapping_source: "manual_verified"
+  "382550101":
+    symbol: "GT.US"
+    company_name: "The Goodyear Tire & Rubber Company"
+    mapping_source: "manual_verified"
+  "630402105":
+    symbol: "NSSC.US"
+    company_name: "Napco Security Technologies, Inc."
+    mapping_source: "manual_verified"
+  "464286400":
+    symbol: "EWZ.US"
+    company_name: "iShares MSCI Brazil ETF"
+    mapping_source: "manual_verified"
+  "349381103":
+    symbol: "FIGR.US"
+    company_name: "Figure Technology Solutions, Inc."
+    mapping_source: "manual_verified"
+  "37950E259":
+    symbol: "ARGT.US"
+    company_name: "Global X MSCI Argentina ETF"
+    mapping_source: "manual_verified"
+  "929740108":
+    symbol: "WAB.US"
+    company_name: "Westinghouse Air Brake Technologies Corporation"
+    mapping_source: "manual_verified"
+  "46428R107":
+    symbol: "GSG.US"
+    company_name: "iShares S&P GSCI Commodity-Indexed Trust"
+    mapping_source: "manual_verified"
+  "G7997R103":
+    symbol: "STX.US"
+    company_name: "Seagate Technology Holdings plc"
+    mapping_source: "manual_verified"
+  "07782B104":
+    symbol: "BLTE.US"
+    company_name: "Belite Bio, Inc."
+    mapping_source: "manual_verified"
+  "74743L100":
+    symbol: "Q.US"
+    company_name: "Qnity Electronics Inc."
+    mapping_source: "manual_verified"
+  "N4732M103":
+    symbol: "JBS.US"
+    company_name: "JBS N.V."
+    mapping_source: "manual_verified"
+  "N53745100":
+    symbol: "LYB.US"
+    company_name: "LyondellBasell Industries N.V."
+    mapping_source: "manual_verified"
+  "23306J309":
+    symbol: "DBVT.US"
+    company_name: "DBV Technologies S.A."
+    mapping_source: "manual_verified"
+  "83443Q103":
+    symbol: "SOLS.US"
+    company_name: "Solstice Advanced Materials Inc."
+    mapping_source: "manual_verified"
+  "020398707":
+    symbol: "ALM.US"
+    company_name: "Almonty Industries Inc."
+    mapping_source: "manual_verified"
+  "78463V107":
+    symbol: "GLD.US"
+    company_name: "SPDR Gold Shares"
+    mapping_source: "manual_verified"
+  "655844108":
+    symbol: "NSC.US"
+    company_name: "Norfolk Southern Corporation"
+    mapping_source: "manual_verified"
+  "907818108":
+    symbol: "UNP.US"
+    company_name: "Union Pacific Corporation"
+    mapping_source: "manual_verified"
+  "092667104":
+    symbol: "SRTA.US"
+    company_name: "Strata Critical Medical Inc."
+    mapping_source: "manual_verified"
+  "92189F676":
+    symbol: "SMH.US"
+    company_name: "VanEck Semiconductor ETF"
+    mapping_source: "manual_verified"
+  "62548M209":
+    symbol: "CTEV.US"
+    company_name: "Claritev Corporation"
+    mapping_source: "manual_verified"
+  "147528103":
+    symbol: "CASY.US"
+    company_name: "Casey's General Stores, Inc."
+    mapping_source: "manual_verified"
+  "50212V100":
+    symbol: "LPLA.US"
+    company_name: "LPL Financial Holdings Inc."
+    mapping_source: "manual_verified"

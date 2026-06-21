@@ -7,9 +7,11 @@ import argparse
 import calendar
 import copy
 import datetime as dt
+import json
 import math
 import pathlib
 import re
+import sys
 import tempfile
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -17,11 +19,23 @@ import yaml
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import historical_store
 
 
 class NoAliasDumper(yaml.SafeDumper):
     def ignore_aliases(self, data: Any) -> bool:
         return True
+
+
+def represent_string(dumper: yaml.SafeDumper, data: str) -> yaml.ScalarNode:
+    style = '"' if "&" in data or "*" in data else None
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
+
+
+NoAliasDumper.add_representer(str, represent_string)
 
 
 def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
@@ -35,7 +49,10 @@ def load_yaml(path: pathlib.Path) -> Dict[str, Any]:
 def write_yaml(path: pathlib.Path, data: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
-        yaml.dump(data, handle, Dumper=NoAliasDumper, allow_unicode=True, sort_keys=False, width=120)
+        if path.suffix.lower() == ".json":
+            json.dump(data, handle, ensure_ascii=False, sort_keys=False, separators=(",", ":"))
+        else:
+            yaml.dump(data, handle, Dumper=NoAliasDumper, allow_unicode=True, sort_keys=False, width=120)
         tmp_path = pathlib.Path(handle.name)
     tmp_path.replace(path)
 
@@ -1062,6 +1079,8 @@ def build_metadata(config: Dict[str, Any], snapshot: Dict[str, Any]) -> Dict[str
         "data_date": snapshot.get("data_date"),
         "market_data_date": snapshot.get("market_data_date") or snapshot.get("data_date"),
         "latest_13f_report_period": snapshot.get("latest_13f_report_period"),
+        "latest_13f_fingerprint": snapshot.get("latest_13f_fingerprint") or [],
+        "config_hash": build.get("config_hash"),
         "metrics_version": build.get("metrics_version", "0.1"),
         "whitelist_version": config.get("institutions", {}).get("whitelist_version"),
         "key_institution_version": config.get("key_institutions", {}).get("version"),
@@ -1680,7 +1699,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--snapshot", type=pathlib.Path, default=ROOT / "raw/sample/snapshot.yaml")
     parser.add_argument("--simulation", type=pathlib.Path, default=None)
     parser.add_argument("--historical-holdings", type=pathlib.Path, default=ROOT / "raw/generated/historical_13f_holdings.yaml")
-    parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.yaml")
+    parser.add_argument("--output", type=pathlib.Path, default=ROOT / "data/stockhunt.json")
     parser.add_argument("--content-dir", type=pathlib.Path, default=ROOT / "content/en/stocks")
     parser.add_argument("--institution-content-dir", type=pathlib.Path, default=ROOT / "content/en/institutions")
     parser.add_argument("--en-content-root", type=pathlib.Path, default=ROOT / "content/en")
@@ -1694,7 +1713,7 @@ def main() -> None:
     config = load_yaml(args.config)
     snapshot = load_yaml(args.snapshot)
     if args.simulation and args.simulation.exists():
-        simulation_payload = load_yaml(args.simulation)
+        simulation_payload = historical_store.load_store(args.simulation)
         snapshot["simulation"] = simulation_payload.get("simulation") or simulation_payload
         snapshot["_holding_periods"] = simulation_payload.get("holding_periods") or []
         snapshot["_holding_intervals"] = simulation_payload.get("holding_intervals") or []

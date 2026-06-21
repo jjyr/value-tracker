@@ -14,10 +14,13 @@ import time
 from collections import Counter
 from typing import Any, Dict, Iterable, List, Optional
 
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import yaml
 
-
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+from scripts.symbol_resolver import LongbridgeSymbolResolver
 
 
 class NoAliasDumper(yaml.SafeDumper):
@@ -141,14 +144,18 @@ def value_number(value: Any) -> float:
 
 def map_holding(
     holding: Dict[str, Any],
-    cusip_map: Dict[str, Dict[str, Any]],
+    symbol_resolver: LongbridgeSymbolResolver,
     warnings: List[str],
     manager_name: str,
 ) -> Optional[Dict[str, Any]]:
     cusip = str(holding.get("cusip") or "").strip().upper()
-    mapped = cusip_map.get(cusip)
+    issuer = holding.get("name") or holding.get("issuer_name") or "unknown issuer"
+    try:
+        mapped = symbol_resolver.resolve(cusip, issuer)
+    except Exception as exc:  # noqa: BLE001 - keep live build partial.
+        warnings.append(f"symbol auto-map unavailable for {cusip} ({issuer}) from {manager_name}: {exc}")
+        mapped = symbol_resolver.mappings.get(cusip)
     if not mapped:
-        issuer = holding.get("name") or holding.get("issuer_name") or "unknown issuer"
         warnings.append(f"unmapped CUSIP {cusip} ({issuer}) from {manager_name}; skipped")
         return None
     symbol = mapped["symbol"]
@@ -170,7 +177,7 @@ def build_manager_filings(
     client: LongbridgeClient,
     manager: Dict[str, Any],
     top: int,
-    cusip_map: Dict[str, Dict[str, Any]],
+    symbol_resolver: LongbridgeSymbolResolver,
     warnings: List[str],
 ) -> List[Dict[str, Any]]:
     cik = manager["cik"]
@@ -223,12 +230,12 @@ def build_manager_filings(
     current_holdings = [
         mapped
         for holding in current_by_cusip.values()
-        if (mapped := map_holding(holding, cusip_map, warnings, display_name))
+        if (mapped := map_holding(holding, symbol_resolver, warnings, display_name))
     ]
     previous_holdings = [
         mapped
         for holding in previous_by_cusip.values()
-        if (mapped := map_holding(holding, cusip_map, warnings, display_name))
+        if (mapped := map_holding(holding, symbol_resolver, warnings, display_name))
     ]
 
     filings = [
@@ -343,9 +350,32 @@ def most_common(values: Iterable[Optional[str]]) -> Optional[str]:
     return Counter(cleaned).most_common(1)[0][0]
 
 
+def latest_13f_fingerprint(filings: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    rows = []
+    for filing in filings:
+        if filing.get("source") == "longbridge_investors_synthetic_previous":
+            continue
+        rows.append(
+            {
+                "cik": filing.get("cik"),
+                "accession_number": filing.get("accession_number"),
+                "filing_date": filing.get("filing_date"),
+                "report_period": filing.get("report_period"),
+            }
+        )
+    return sorted(rows, key=lambda row: (str(row.get("cik") or ""), str(row.get("accession_number") or "")))
+
+
 def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
     config = load_yaml(args.config)
     cusip_map = load_cusip_map(args.cusip_map)
+    symbol_resolver = LongbridgeSymbolResolver(
+        cusip_map,
+        mapping_path=args.cusip_map,
+        sleep_seconds=args.sleep,
+        enabled=not args.disable_auto_map,
+        persist=not args.no_persist_auto_map,
+    )
     client = LongbridgeClient(sleep_seconds=args.sleep)
     warnings: List[str] = []
     managers = enabled_managers(config, args.manager_limit)
@@ -354,7 +384,7 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
         display_name = manager.get("display_name") or manager.get("name") or manager["cik"]
         print(f"fetching 13F for {display_name} ({manager['cik']})", file=sys.stderr)
         try:
-            filings.extend(build_manager_filings(client, manager, args.top, cusip_map, warnings))
+            filings.extend(build_manager_filings(client, manager, args.top, symbol_resolver, warnings))
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"investor fetch failed for {display_name} ({manager['cik']}): {exc}")
 
@@ -369,14 +399,17 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
         }
     )
     print(f"enriching market data for {len(symbols)} symbols", file=sys.stderr)
-    market = enrich_market(client, symbols, cusip_map, warnings, args.batch_size)
+    market = enrich_market(client, symbols, symbol_resolver.mappings, warnings, args.batch_size)
 
     warnings = list(dict.fromkeys(warnings))
+    if symbol_resolver.auto_resolved_count:
+        warnings.append(f"auto-mapped {symbol_resolver.auto_resolved_count} CUSIPs via Longbridge security-list")
     return {
         "data_date": args.data_date or today(),
         "market_data_date": args.market_data_date or args.data_date or today(),
         "latest_13f_report_period": latest_period,
         "previous_13f_report_period": previous_period,
+        "latest_13f_fingerprint": latest_13f_fingerprint(filings),
         "build": {
             "build_id": f"live-{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
             "built_at": now_iso(),
@@ -398,6 +431,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manager-limit", type=int, default=None, help="Limit enabled managers for smoke tests.")
     parser.add_argument("--batch-size", type=int, default=30, help="Symbols per Longbridge market-data command.")
     parser.add_argument("--sleep", type=float, default=0.0, help="Seconds to sleep after each Longbridge command.")
+    parser.add_argument("--disable-auto-map", action="store_true", help="Only use explicit CUSIP mappings.")
+    parser.add_argument("--no-persist-auto-map", action="store_true", help="Do not append successful auto-maps to the CUSIP map.")
     parser.add_argument("--data-date", default=None)
     parser.add_argument("--market-data-date", default=None)
     return parser.parse_args()

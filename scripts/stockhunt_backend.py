@@ -8,6 +8,7 @@ import datetime as dt
 import hashlib
 import json
 import pathlib
+import sys
 import tempfile
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -15,6 +16,8 @@ import yaml
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 
 class NoAliasDumper(yaml.SafeDumper):
@@ -400,6 +403,7 @@ def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, m
         "market_data_date": raw.get("market_data_date") or raw["data_date"],
         "latest_13f_report_period": raw["latest_13f_report_period"],
         "previous_13f_report_period": raw.get("previous_13f_report_period"),
+        "latest_13f_fingerprint": raw.get("latest_13f_fingerprint") or [],
         "manager_count": len(enabled_managers(config)),
         "build": {
             "build_id": build.get("build_id") or f"snapshot-{raw['data_date']}",

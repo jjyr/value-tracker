@@ -107,7 +107,7 @@ other = "Institution Positions"
 other = "按机构买入、卖出和当前持有股数统计 Top 10，并展示每只股票在该组统计中的占比。"
 
 [report_period]
-other = "Report Period"
+other = "报告期"
 
 [stats_period]
 other = "统计期间"
@@ -319,6 +319,9 @@ other = "变动金额"
 [current_holding]
 other = "当前持有"
 
+[current_shares]
+other = "当前股数"
+
 [portfolio_weight]
 other = "组合权重"
 
@@ -372,6 +375,9 @@ other = "最近变动明细"
 
 [change_shares]
 other = "变动股数"
+
+[change_percent]
+other = "变动比例"
 
 [risk_note_short]
 other = "本页面仅用于研究和信息展示，不构成投资建议。13F 数据存在披露延迟，机构持仓变化不代表当前仍然持有。"

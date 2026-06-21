@@ -6,11 +6,14 @@ Value Tracker 当前不维护中间数据库。这个文件保留为存储设计
 
 ```text
 raw/generated/snapshot.yaml
-raw/generated/historical_simulation.yaml
+raw/generated/historical/
 raw/generated/cache/sec/
 raw/generated/cache/longbridge-kline/
-data/stockhunt.yaml
-content/institutions/*.md
+data/stockhunt.json
+content/en/institutions/*.md
+content/en/stocks/*.md
+content/zh/institutions/*.md
+content/zh/stocks/*.md
 ```
 
 ## 调试产物
@@ -19,11 +22,11 @@ content/institutions/*.md
 
 ## 设计原则
 
-- 站点只消费 `data/stockhunt.yaml`。
+- 站点只消费 `data/stockhunt.json`。
 - 当前机构变化快照从 raw input 和配置重算。
-- 历史模拟盘从 SEC cache、K 线 cache 和配置重算。
+- 历史模拟盘从 SEC cache、K 线 cache 和配置重算，并保存为 JSONL store 以支持尾部增量续算。
 - 外部抓取成本高的数据使用 cache 增量更新。
-- 派生指标不单独做长期状态保存，避免修改策略后出现旧状态残留。
+- checkpoint 只保存可重放的模拟状态；配置或映射 hash 变化时自动全量重算，避免旧状态残留。
 
 ## 何时重新引入更重存储
 

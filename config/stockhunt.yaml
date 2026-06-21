@@ -1,4 +1,4 @@
-version: "2026-06-01-v1"
+version: "2026-06-21-v1"
 
 data:
   timezone: "Asia/Ho_Chi_Minh"
@@ -8,7 +8,7 @@ data:
   output_dir: "public"
 
 institutions:
-  whitelist_version: "2026-06-01-whitelist-v1"
+  whitelist_version: "2026-06-21-whitelist-v1"
   managers:
     - cik: "0001709323"
       name: "Himalaya Capital Management LLC"
@@ -25,9 +25,49 @@ institutions:
       display_name: "伯克希尔"
       enabled: true
       style: "value"
+    - cik: "0001697748"
+      name: "ARK Investment Management LLC"
+      display_name: "木头姐"
+      enabled: true
+      style: "disruptive_growth"
+    - cik: "0001336528"
+      name: "Pershing Square Capital Management, L.P."
+      display_name: "Bill Ackman"
+      enabled: true
+      style: "activist"
+    - cik: "0001541617"
+      name: "Altimeter Capital Management, LP"
+      display_name: "Brad Gerstner"
+      enabled: true
+      style: "tech_growth"
+    - cik: "0001656456"
+      name: "Appaloosa LP"
+      display_name: "David Tepper"
+      enabled: true
+      style: "opportunistic"
+    - cik: "0001569205"
+      name: "Fundsmith LLP"
+      display_name: "Terry Smith"
+      enabled: true
+      style: "quality"
+    - cik: "0001671657"
+      name: "Dorsey Asset Management, LLC"
+      display_name: "Pat Dorsey"
+      enabled: true
+      style: "quality"
+    - cik: "0001536411"
+      name: "Duquesne Family Office LLC"
+      display_name: "Druckenmiller"
+      enabled: true
+      style: "macro_growth"
+    - cik: "0001040273"
+      name: "Third Point LLC"
+      display_name: "Dan Loeb"
+      enabled: true
+      style: "event_driven"
 
 key_institutions:
-  version: "2026-06-01-key-v1"
+  version: "2026-06-21-key-v1"
   members:
     - cik: "0001759760"
       display_name: "段永平"
@@ -37,6 +77,30 @@ key_institutions:
       enabled: true
     - cik: "0001067983"
       display_name: "伯克希尔"
+      enabled: true
+    - cik: "0001697748"
+      display_name: "木头姐"
+      enabled: true
+    - cik: "0001336528"
+      display_name: "Bill Ackman"
+      enabled: true
+    - cik: "0001541617"
+      display_name: "Brad Gerstner"
+      enabled: true
+    - cik: "0001656456"
+      display_name: "David Tepper"
+      enabled: true
+    - cik: "0001569205"
+      display_name: "Terry Smith"
+      enabled: true
+    - cik: "0001671657"
+      display_name: "Pat Dorsey"
+      enabled: true
+    - cik: "0001536411"
+      display_name: "Druckenmiller"
+      enabled: true
+    - cik: "0001040273"
+      display_name: "Dan Loeb"
       enabled: true
 
 rankings:

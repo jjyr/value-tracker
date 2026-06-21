@@ -6,6 +6,9 @@
     <div>
       <p class="eyebrow">{{ .eyebrow | default "Equity Curve" }}</p>
       <h2>{{ .title }}</h2>
+      {{ with .description }}
+        <p class="chart-description">{{ . }}</p>
+      {{ end }}
     </div>
     <div class="segmented-control" aria-label="{{ i18n "chart_range_aria" }}">
       <button class="range-button {{ if eq $range "ytd" }}is-active{{ end }}" type="button" data-range="ytd">YTD</button>
