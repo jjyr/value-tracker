@@ -1,4 +1,4 @@
-version: "2026-06-21-v1"
+version: "2026-06-22-v1"
 
 data:
   timezone: "Asia/Ho_Chi_Minh"
@@ -107,6 +107,90 @@ rankings:
   homepage_display_limit: 100
   top_n_for_simulation: 10
   activity_tag_limit: 10
+
+company_investors:
+  version: "2026-06-22-company-investors-v1"
+  members:
+    - cik: "0001045810"
+      symbol: "NVDA.US"
+      name: "NVIDIA Corp."
+      display_name: "NVIDIA"
+      display_name_zh: "英伟达"
+      holder_aliases:
+        - "GPU Ventures"
+      enabled: true
+    - cik: "0000050863"
+      symbol: "INTC.US"
+      name: "Intel Corporation"
+      display_name: "Intel"
+      display_name_zh: "英特尔"
+      enabled: true
+    - cik: "0000320193"
+      symbol: "AAPL.US"
+      name: "Apple Inc."
+      display_name: "Apple"
+      display_name_zh: "苹果"
+      enabled: false
+    - cik: "0000789019"
+      symbol: "MSFT.US"
+      name: "Microsoft Corp."
+      display_name: "Microsoft"
+      display_name_zh: "微软"
+      enabled: false
+    - cik: "0001652044"
+      symbol: "GOOGL.US"
+      name: "Alphabet Inc."
+      display_name: "Alphabet"
+      display_name_zh: "Alphabet"
+      enabled: true
+    - cik: "0001018724"
+      symbol: "AMZN.US"
+      name: "Amazon.com Inc."
+      display_name: "Amazon"
+      display_name_zh: "亚马逊"
+      enabled: true
+    - cik: "0001326801"
+      symbol: "META.US"
+      name: "Meta Platforms Inc."
+      display_name: "Meta"
+      display_name_zh: "Meta"
+      enabled: false
+    - cik: "0001046179"
+      symbol: "TSM.US"
+      name: "Taiwan Semiconductor Manufacturing Co. ADR"
+      display_name: "TSMC"
+      display_name_zh: "台积电"
+      enabled: false
+    - cik: "0001730168"
+      symbol: "AVGO.US"
+      name: "Broadcom Inc."
+      display_name: "Broadcom"
+      display_name_zh: "博通"
+      enabled: false
+    - cik: "0000937966"
+      symbol: "ASML.US"
+      name: "ASML Holding NV ADR"
+      display_name: "ASML"
+      display_name_zh: "ASML"
+      enabled: false
+    - cik: "0000002488"
+      symbol: "AMD.US"
+      name: "Advanced Micro Devices Inc."
+      display_name: "AMD"
+      display_name_zh: "AMD"
+      enabled: true
+    - cik: "0001973239"
+      symbol: "ARM.US"
+      name: "Arm Holdings plc ADR"
+      display_name: "Arm"
+      display_name_zh: "Arm"
+      enabled: false
+    - cik: "0000804328"
+      symbol: "QCOM.US"
+      name: "QUALCOMM Incorporated"
+      display_name: "Qualcomm"
+      display_name_zh: "高通"
+      enabled: false
 
 strategy:
   version: "2026-06-02-strategy-v2"

@@ -76,6 +76,18 @@ def enabled_managers(config: Dict[str, Any], manager_limit: Optional[int]) -> Li
     return rows[:manager_limit] if manager_limit else rows
 
 
+def enabled_company_investors(config: Dict[str, Any]) -> List[Dict[str, Any]]:
+    rows = []
+    for company in config.get("company_investors", {}).get("members", []):
+        if company.get("enabled", True):
+            row = dict(company)
+            row["cik"] = normalize_cik(row["cik"])
+            row.setdefault("display_name", row.get("symbol") or row.get("name"))
+            row.setdefault("source_type", "company_13f")
+            rows.append(row)
+    return rows
+
+
 def configured_cash_disclosures(config: Dict[str, Any], path: Optional[pathlib.Path]) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
     for disclosure in config.get("cash_disclosures") or []:
@@ -143,6 +155,9 @@ class LongbridgeClient:
         if not symbols:
             return []
         return self.run_json(["calc-index", *symbols, "--fields", "pe,total_market_value"])
+
+    def top_shareholders(self, symbol: str) -> Dict[str, Any]:
+        return self.run_json(["shareholder", symbol, "--top", "--periods", "1"])
 
 
 def number(value: Any) -> Optional[float]:
@@ -370,7 +385,7 @@ def most_common(values: Iterable[Optional[str]]) -> Optional[str]:
 def latest_13f_fingerprint(filings: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
     rows = []
     for filing in filings:
-        if filing.get("source") == "longbridge_investors_synthetic_previous":
+        if str(filing.get("source") or "").endswith("synthetic_previous"):
             continue
         rows.append(
             {
@@ -381,6 +396,66 @@ def latest_13f_fingerprint(filings: Iterable[Dict[str, Any]]) -> List[Dict[str, 
             }
         )
     return sorted(rows, key=lambda row: (str(row.get("cik") or ""), str(row.get("accession_number") or "")))
+
+
+def normalize_slash_date(value: Any) -> Optional[str]:
+    if value in (None, ""):
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    return text.replace("/", "-")
+
+
+def first_shareholder_period(payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    periods = payload.get("info") or []
+    if not isinstance(periods, list):
+        return None
+    for row in periods:
+        if isinstance(row, dict) and str(row.get("period") or "").lower() in {"latest", "最新"}:
+            return row
+    for row in periods:
+        if isinstance(row, dict):
+            return row
+    return None
+
+
+def build_top_shareholders(client: LongbridgeClient, symbol: str, count: int, retries: int) -> Dict[str, Any]:
+    last_error: Optional[Exception] = None
+    for attempt in range(retries + 1):
+        try:
+            payload = client.top_shareholders(symbol)
+            break
+        except Exception as exc:  # noqa: BLE001 - retry transient network issues.
+            last_error = exc
+            if attempt >= retries:
+                raise
+            time.sleep(min(2.0, 0.5 * (attempt + 1)))
+    else:
+        raise RuntimeError(f"top shareholders unavailable for {symbol}: {last_error}")
+    period = first_shareholder_period(payload) or {}
+    holders = []
+    for index, holder in enumerate((period.get("share_holders") or [])[:count], start=1):
+        holders.append(
+            {
+                "rank": index,
+                "name": holder.get("name"),
+                "title": holder.get("title"),
+                "object_id": holder.get("object_id"),
+                "shares_held": holder.get("shares_held"),
+                "shares_changed": holder.get("shares_changed"),
+                "percent_shares_held": holder.get("percent_shares_held"),
+                "percent_shares_changed": holder.get("percent_shares_changed"),
+                "filing_date": normalize_slash_date(holder.get("filing_date")),
+                "period": holder.get("period") or period.get("period"),
+            }
+        )
+    return {
+        "symbol": symbol,
+        "period": period.get("period"),
+        "source": "longbridge_shareholder_top",
+        "shareholders": holders,
+    }
 
 
 def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
@@ -405,19 +480,42 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"investor fetch failed for {display_name} ({manager['cik']}): {exc}")
 
+    company_filings: List[Dict[str, Any]] = []
+    for company in enabled_company_investors(config):
+        display_name = company.get("display_name") or company.get("name") or company["cik"]
+        print(f"fetching company 13F for {display_name} ({company['cik']})", file=sys.stderr)
+        try:
+            rows = build_manager_filings(client, company, args.top, symbol_resolver, warnings)
+            for row in rows:
+                row["source"] = "company_13f_synthetic_previous" if row.get("source") == "longbridge_investors_synthetic_previous" else "company_13f"
+                row["company_symbol"] = company.get("symbol")
+            company_filings.extend(rows)
+        except Exception as exc:  # noqa: BLE001
+            warnings.append(f"company investor fetch failed for {display_name} ({company['cik']}): {exc}")
+
     latest_period = most_common(filing.get("report_period") for filing in filings if filing.get("source") != "longbridge_investors_synthetic_previous")
     previous_period = most_common(filing.get("report_period") for filing in filings if filing.get("source") == "longbridge_investors_synthetic_previous")
     cash_disclosures = configured_cash_disclosures(config, getattr(args, "cash_disclosures", DEFAULT_CASH_DISCLOSURES))
     symbols = sorted(
         {
             holding["symbol"]
-            for filing in filings
+            for filing in [*filings, *company_filings]
             for holding in filing.get("holdings", [])
             if holding.get("symbol")
         }
     )
     print(f"enriching market data for {len(symbols)} symbols", file=sys.stderr)
     market = enrich_market(client, symbols, symbol_resolver.mappings, warnings, args.batch_size)
+
+    top_shareholders: List[Dict[str, Any]] = []
+    if not args.skip_shareholders:
+        shareholder_symbols = symbols[: args.shareholder_symbol_limit] if args.shareholder_symbol_limit else symbols
+        for index, symbol in enumerate(shareholder_symbols, start=1):
+            print(f"fetching top shareholders for {symbol} ({index}/{len(shareholder_symbols)})", file=sys.stderr)
+            try:
+                top_shareholders.append(build_top_shareholders(client, symbol, args.shareholder_top_count, args.shareholder_retries))
+            except Exception as exc:  # noqa: BLE001 - keep live build partial.
+                warnings.append(f"top shareholders unavailable for {symbol}: {exc}")
 
     warnings = list(dict.fromkeys(warnings))
     if symbol_resolver.auto_resolved_count:
@@ -428,6 +526,7 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
         "latest_13f_report_period": latest_period,
         "previous_13f_report_period": previous_period,
         "latest_13f_fingerprint": latest_13f_fingerprint(filings),
+        "company_13f_fingerprint": latest_13f_fingerprint(company_filings),
         "build": {
             "build_id": f"live-{dt.datetime.now().strftime('%Y%m%d%H%M%S')}",
             "built_at": now_iso(),
@@ -436,8 +535,10 @@ def build_live_raw(args: argparse.Namespace) -> Dict[str, Any]:
             "warnings": warnings,
         },
         "market": market,
+        "top_shareholders": top_shareholders,
         "cash_disclosures": cash_disclosures,
         "filings": filings,
+        "company_filings": company_filings,
     }
 
 
@@ -451,6 +552,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manager-limit", type=int, default=None, help="Limit enabled managers for smoke tests.")
     parser.add_argument("--batch-size", type=int, default=30, help="Symbols per Longbridge market-data command.")
     parser.add_argument("--sleep", type=float, default=0.0, help="Seconds to sleep after each Longbridge command.")
+    parser.add_argument("--skip-shareholders", action="store_true", help="Skip per-symbol Top shareholders fetch.")
+    parser.add_argument("--shareholder-top-count", type=int, default=10, help="Top shareholder rows to keep per symbol.")
+    parser.add_argument("--shareholder-retries", type=int, default=2, help="Retries per symbol when Top shareholders fetch fails.")
+    parser.add_argument("--shareholder-symbol-limit", type=int, default=None, help="Limit shareholder fetches for smoke tests.")
     parser.add_argument("--disable-auto-map", action="store_true", help="Only use explicit CUSIP mappings.")
     parser.add_argument("--no-persist-auto-map", action="store_true", help="Do not append successful auto-maps to the CUSIP map.")
     parser.add_argument("--data-date", default=None)

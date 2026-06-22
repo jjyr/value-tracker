@@ -81,6 +81,57 @@
       </div>
     </section>
 
+    {{ with $stock.top_shareholders }}
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">{{ i18n "shareholders" }}</p>
+            <h2>{{ i18n "top_shareholders" }}</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{{ i18n "shareholder" }}</th>
+                <th>{{ i18n "shares_held" }}</th>
+                <th>{{ i18n "ownership_pct" }}</th>
+                <th>{{ i18n "change_shares" }}</th>
+                <th>{{ i18n "change_percent" }}</th>
+                <th>{{ i18n "filing_date" }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range . }}
+                <tr>
+                  <td>{{ .rank }}</td>
+                  <td>
+                    {{ if and .tracked .href }}
+                      <a class="stock-link" href="{{ .href | replaceRE "^/" "" | relLangURL }}">
+                        <strong>{{ .name }}</strong>
+                        <span>{{ partial "display-name.html" . }}</span>
+                      </a>
+                    {{ else }}
+                      <div class="stock-link">
+                        <strong>{{ .name }}</strong>
+                        {{ with .title }}<span>{{ . }}</span>{{ end }}
+                      </div>
+                    {{ end }}
+                  </td>
+                  <td>{{ if gt .shares_held 0.0 }}{{ printf "%.0f" .shares_held }}{{ else }}--{{ end }}</td>
+                  <td>{{ .percent_shares_held | default "--" }}</td>
+                  <td>{{ if ne .shares_changed 0.0 }}{{ printf "%+.0f" .shares_changed }}{{ else }}--{{ end }}</td>
+                  <td>{{ .percent_shares_changed | default "--" }}</td>
+                  <td>{{ .filing_date | default "--" }}</td>
+                </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    {{ end }}
+
     <section class="panel">
       <div class="panel-heading">
         <div>

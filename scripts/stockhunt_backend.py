@@ -475,6 +475,15 @@ def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, m
         ),
     )
     securities = [snapshot_security(symbol, metrics[symbol], markets.get(symbol, {})) for symbol in sorted_symbols]
+    company_filings = raw.get("company_filings") or []
+    company_symbols = sorted(
+        {
+            holding.get("symbol")
+            for filing in company_filings
+            for holding in filing.get("holdings", [])
+            if holding.get("symbol")
+        }
+    )
     build = raw.get("build") or {}
     warnings = list(build.get("warnings") or [])
     missing_market = [symbol for symbol in sorted_symbols if symbol not in markets]
@@ -486,6 +495,7 @@ def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, m
         "latest_13f_report_period": raw["latest_13f_report_period"],
         "previous_13f_report_period": raw.get("previous_13f_report_period"),
         "latest_13f_fingerprint": raw.get("latest_13f_fingerprint") or [],
+        "company_13f_fingerprint": raw.get("company_13f_fingerprint") or [],
         "manager_count": len(managers),
         "build": {
             "build_id": build.get("build_id") or f"snapshot-{raw['data_date']}",
@@ -496,6 +506,9 @@ def build_snapshot(config: Dict[str, Any], raw: Dict[str, Any], cfg_hash: str, m
             "warnings": warnings,
         },
         "cash_disclosures": snapshot_cash_disclosures(current, cash_disclosures),
+        "company_filings": company_filings,
+        "company_market": [markets[symbol] for symbol in company_symbols if symbol in markets],
+        "top_shareholders": raw.get("top_shareholders") or [],
         "securities": securities,
     }
 

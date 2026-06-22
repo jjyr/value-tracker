@@ -11,6 +11,7 @@
   </main>
 {{ else }}
   {{ $summary := $institution.summary }}
+  {{ $isCompanyInvestor := eq ($institution.source_type | default "") "company_13f" }}
   {{ $cashDisclosed := $summary.cash_disclosure_available | default false }}
   {{ $securitiesValue := float ($summary.securities_value_usd | default ($summary.total_value_usd | default 0)) }}
   {{ $cashValue := float ($summary.cash_value_usd | default 0) }}
@@ -19,7 +20,7 @@
     <a class="back-link" href="{{ site.Home.RelPermalink }}">← {{ i18n "back_home" }}</a>
     <section class="detail-hero">
       <div>
-        <p class="eyebrow">Institution · {{ $institution.cik }}</p>
+        <p class="eyebrow">{{ if $isCompanyInvestor }}{{ i18n "company_13f_source" }}{{ else }}Institution{{ end }} · {{ $institution.cik }}</p>
         <h1>{{ partial "display-name.html" $institution }}</h1>
         <p>{{ $institution.name }}</p>
       </div>
@@ -37,19 +38,24 @@
           <div><span>{{ i18n "holdings_number" }}</span><strong>{{ $summary.holdings_count }}</strong></div>
           <div><span>{{ i18n "period_changes" }}</span><strong>{{ $summary.changes_count }}</strong></div>
           <div><span>{{ i18n "portfolio_value" }}</span><strong data-money="{{ $securitiesValue }}">--</strong></div>
-          <div><span>{{ i18n "cash_position" }}</span>{{ if $cashDisclosed }}<strong data-money="{{ $cashValue }}">--</strong>{{ else }}<strong>{{ i18n "not_disclosed" }}</strong>{{ end }}</div>
-          <div><span>{{ i18n "cash_weight" }}</span><strong>{{ if $cashDisclosed }}{{ printf "%.2f%%" $cashWeight }}{{ else }}--{{ end }}</strong></div>
+          {{ if $isCompanyInvestor }}
+            <div><span>{{ i18n "company_13f_source" }}</span><strong>{{ $summary.report_period | default "--" }}</strong></div>
+            <div><span>{{ i18n "filing_date" }}</span><strong>{{ $summary.filing_date | default "--" }}</strong></div>
+          {{ else }}
+            <div><span>{{ i18n "cash_position" }}</span>{{ if $cashDisclosed }}<strong data-money="{{ $cashValue }}">--</strong>{{ else }}<strong>{{ i18n "not_disclosed" }}</strong>{{ end }}</div>
+            <div><span>{{ i18n "cash_weight" }}</span><strong>{{ if $cashDisclosed }}{{ printf "%.2f%%" $cashWeight }}{{ else }}--{{ end }}</strong></div>
+          {{ end }}
           <div><span>{{ i18n "bought_value" }}</span><strong data-money="{{ $summary.bought_value_usd }}">--</strong></div>
           <div><span>{{ i18n "sold_value" }}</span><strong data-money="{{ $summary.sold_value_usd }}">--</strong></div>
         </div>
       </div>
 
-      {{ with $historicalCurve }}
+      {{ if and (not $isCompanyInvestor) $historicalCurve }}
         {{ partial "equity-chart.html" (dict
           "eyebrow" "13F Curve"
           "title" (printf "%s vs SPY / QQQ" (partial "display-name.html" $institution))
-          "points" .benchmark_curve
-          "series" .chart_series
+          "points" $historicalCurve.benchmark_curve
+          "series" $historicalCurve.chart_series
           "range" "all"
           "ariaLabel" (printf "%s 13F" (partial "display-name.html" $institution))
         ) }}
@@ -60,7 +66,7 @@
       <div class="panel-heading">
         <div>
           <p class="eyebrow">{{ i18n "portfolio" }}</p>
-          <h2>{{ i18n "current_holdings" }}</h2>
+          <h2>{{ if $isCompanyInvestor }}{{ i18n "strategic_holdings" }}{{ else }}{{ i18n "current_holdings" }}{{ end }}</h2>
         </div>
       </div>
       <div class="table-wrap">

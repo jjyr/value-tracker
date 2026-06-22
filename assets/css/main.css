@@ -1822,6 +1822,22 @@ button.tip-trigger,
   line-height: 1;
 }
 
+.company-tracker-card .institution-card-mark {
+  border-color: rgba(103, 212, 255, 0.34);
+  color: var(--cyan);
+  background: rgba(103, 212, 255, 0.09);
+}
+
+.company-price-summary strong {
+  font-size: 22px;
+}
+
+.company-price-summary em {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 820;
+}
+
 .institution-metric-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);

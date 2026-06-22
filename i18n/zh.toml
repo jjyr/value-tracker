@@ -38,16 +38,16 @@ other = "关于"
 other = "股票"
 
 [tracked_institutions]
-other = "Tracked Institutions"
+other = "追踪对象"
 
 [home_title]
 other = "机构收益追踪"
 
 [home_subtitle]
-other = "按 YTD 收益排序，查看重点机构 13F 持仓组合的涨跌、回撤、当前持仓和最近变动。"
+other = "查看重点机构 13F 组合曲线，也把重点公司当成持股机构，观察它们披露的战略持仓链条。"
 
 [home_institution_count]
-other = "追踪机构"
+other = "追踪对象"
 
 [equity_curve]
 other = "Equity Curve"
@@ -65,7 +65,7 @@ other = "13F 数据有披露延迟；机构收益曲线按公开持仓和市场�
 other = "13F 数据有披露延迟；持仓效率自 {{ .StartDate }} 起计算，机构收益曲线按公开持仓和市场价格估算，不代表实时持仓或投资建议。"
 
 [home_grid_aria]
-other = "追踪机构涨跌情况"
+other = "追踪机构和重点公司"
 
 [portfolio_value]
 other = "持仓市值"
@@ -128,10 +128,16 @@ other = "本期没有明显变动。"
 other = "{{ .Name }}持仓分布"
 
 [institution_positions]
-other = "Institution Positions"
+other = "机构持仓"
 
 [holdings_hero_text]
 other = "按机构买入、卖出和当前持有股数统计 Top 10，并展示每只股票在该组统计中的占比。"
+
+[company_13f_source]
+other = "公司披露"
+
+[strategic_holdings]
+other = "战略持仓"
 
 [report_period]
 other = "报告期"
@@ -327,6 +333,21 @@ other = "重点机构"
 
 [institutions]
 other = "Institutions"
+
+[shareholders]
+other = "持股人"
+
+[top_shareholders]
+other = "Top 10 持股人"
+
+[shareholder]
+other = "持股人"
+
+[shares_held]
+other = "持有股数"
+
+[ownership_pct]
+other = "持股比例"
 
 [institution_detail]
 other = "机构明细"

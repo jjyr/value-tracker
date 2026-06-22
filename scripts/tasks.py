@@ -53,6 +53,10 @@ def add_fetch_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--end-date", default=None, help="Historical backtest end date. Defaults to today.")
     parser.add_argument("--live-batch-size", type=int, default=30, help="Symbols per Longbridge live market-data command.")
     parser.add_argument("--live-sleep", type=float, default=0.0, help="Seconds to sleep after each Longbridge live command.")
+    parser.add_argument("--skip-shareholders", action="store_true", help="Skip per-symbol Top shareholders fetch.")
+    parser.add_argument("--shareholder-top-count", type=int, default=10, help="Top shareholder rows to keep per symbol.")
+    parser.add_argument("--shareholder-retries", type=int, default=2, help="Retries per symbol when Top shareholders fetch fails.")
+    parser.add_argument("--shareholder-symbol-limit", type=int, default=None, help="Limit shareholder fetches for smoke tests.")
     parser.add_argument("--sec-user-agent", default="ValueTracker/0.1 contact@example.com", help="User-Agent for SEC early-update checks.")
     parser.add_argument(
         "--cash-disclosures",
@@ -230,6 +234,10 @@ def run_live_input(args: argparse.Namespace) -> Dict[str, Any]:
         cash_disclosures=args.cash_disclosures,
         disable_auto_map=args.disable_auto_map,
         no_persist_auto_map=args.no_persist_auto_map,
+        skip_shareholders=args.skip_shareholders,
+        shareholder_top_count=args.shareholder_top_count,
+        shareholder_retries=args.shareholder_retries,
+        shareholder_symbol_limit=args.shareholder_symbol_limit,
         data_date=None,
         market_data_date=None,
     )

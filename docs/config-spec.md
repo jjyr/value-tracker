@@ -97,6 +97,22 @@ rankings:
         - "market_cap_usd asc"
         - "symbol asc"
 
+company_investors:
+  version: "2026-06-22-company-investors-v1"
+  members:
+    - cik: "0001045810"
+      symbol: "NVDA.US"
+      name: "NVIDIA Corp."
+      display_name: "NVIDIA"
+      display_name_zh: "英伟达"
+      enabled: true
+    - cik: "0000050863"
+      symbol: "INTC.US"
+      name: "Intel Corporation"
+      display_name: "Intel"
+      display_name_zh: "英特尔"
+      enabled: true
+
 strategy:
   version: "2026-06-01-strategy-v1"
   id: "institutional_signal_weekly"
@@ -222,6 +238,15 @@ build
 ```
 
 如果修改会影响 SEC 解析、CUSIP 映射或历史价格口径，则使用：
+
+```text
+fetch-all
+build
+```
+
+### 3.4 修改公司型持股机构
+
+例如修改 `company_investors.members`。这些公司不会计入白名单机构分母；如果公司本身披露 13F，则会在首页作为“公司型持股机构”展示它持有哪些上市公司，用于梳理战略投资链条。需要重跑：
 
 ```text
 fetch-all

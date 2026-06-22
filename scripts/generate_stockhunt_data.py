@@ -300,6 +300,20 @@ def enabled_managers(config: Dict[str, Any]) -> List[Dict[str, Any]]:
     return [manager for manager in config.get("institutions", {}).get("managers", []) if manager.get("enabled", True)]
 
 
+def enabled_company_investors(config: Dict[str, Any]) -> List[Dict[str, Any]]:
+    members = config.get("company_investors", {}).get("members", [])
+    rows = []
+    for member in members:
+        if not member.get("enabled", True):
+            continue
+        row = dict(member)
+        row["cik"] = normalize_cik(row.get("cik"))
+        row.setdefault("display_name", row.get("symbol") or row.get("name"))
+        row.setdefault("source_type", "company_13f")
+        rows.append(row)
+    return rows
+
+
 def key_institution_ciks(config: Dict[str, Any]) -> set:
     members = config.get("key_institutions", {}).get("members", [])
     return {normalize_cik(member.get("cik")) for member in members if member.get("enabled", True)}
@@ -325,6 +339,86 @@ def localized_manager_row(manager: Dict[str, Any]) -> Dict[str, Any]:
     row = dict(manager)
     row.update(manager_display_fields(row))
     return row
+
+
+HOLDER_NAME_DROP_TOKENS = {
+    "THE",
+    "INC",
+    "INCORPORATED",
+    "CORP",
+    "CORPORATION",
+    "CO",
+    "COMPANY",
+    "LLC",
+    "L",
+    "P",
+    "LP",
+    "LTD",
+    "LIMITED",
+}
+
+
+def holder_name_key(value: Any) -> str:
+    text = str(value or "").upper().replace("&", " AND ")
+    tokens = re.sub(r"[^A-Z0-9]+", " ", text).split()
+    return "".join(token for token in tokens if token not in HOLDER_NAME_DROP_TOKENS)
+
+
+def tracked_holder_aliases(config_row: Dict[str, Any]) -> List[str]:
+    aliases: List[str] = []
+    for key in ("holder_aliases", "shareholder_aliases", "aliases"):
+        value = config_row.get(key) or []
+        if isinstance(value, str):
+            aliases.append(value)
+        else:
+            aliases.extend(str(item) for item in value if item)
+    return aliases
+
+
+def tracked_holder_lookup(config: Dict[str, Any], institutions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    config_by_cik = {
+        normalize_cik(row.get("cik")): row
+        for row in [*enabled_managers(config), *enabled_company_investors(config)]
+        if row.get("cik")
+    }
+    lookup: Dict[str, Dict[str, Any]] = {}
+    for cik, institution in institutions.items():
+        reference = {
+            "tracked": True,
+            "cik": cik,
+            "href": institution.get("href") or manager_href(cik),
+            "source_type": institution.get("source_type"),
+            **manager_display_fields(institution),
+        }
+        config_row = config_by_cik.get(cik, {})
+        names = [
+            institution.get("name"),
+            institution.get("display_name"),
+            institution.get("display_name_en"),
+            institution.get("display_name_zh"),
+            config_row.get("name"),
+            config_row.get("display_name"),
+            config_row.get("display_name_en"),
+            config_row.get("display_name_zh"),
+            *tracked_holder_aliases(config_row),
+        ]
+        for name in names:
+            key = holder_name_key(name)
+            if key:
+                lookup.setdefault(key, reference)
+    return lookup
+
+
+def float_or_zero(value: Any) -> float:
+    if value in (None, ""):
+        return 0.0
+    text = str(value).replace(",", "").replace("%", "").replace("<", "").strip()
+    if not text:
+        return 0.0
+    try:
+        return float(text)
+    except ValueError:
+        return 0.0
 
 
 def rank_by_value(rows: List[Dict[str, Any]], key: str) -> Dict[str, int]:
@@ -457,6 +551,10 @@ def manager_links_by_name(config: Dict[str, Any]) -> Dict[str, str]:
 
 def manager_by_cik(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     return {normalize_cik(manager.get("cik")): manager for manager in enabled_managers(config)}
+
+
+def company_investor_by_cik(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    return {normalize_cik(company.get("cik")): company for company in enabled_company_investors(config)}
 
 
 def institution_badge_tip_key(status: Optional[str], current_shares: float) -> str:
@@ -1150,6 +1248,327 @@ def build_institutions(
     return output
 
 
+def company_filing_sort_key(filing: Dict[str, Any]) -> Tuple[str, str, str]:
+    return (
+        str(filing.get("report_period") or ""),
+        str(filing.get("filing_date") or ""),
+        str(filing.get("accession_number") or ""),
+    )
+
+
+def latest_company_filings(snapshot: Dict[str, Any]) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
+    current: Dict[str, Dict[str, Any]] = {}
+    previous: Dict[str, Dict[str, Any]] = {}
+    for filing in sorted(snapshot.get("company_filings") or [], key=company_filing_sort_key):
+        cik = normalize_cik(filing.get("cik"))
+        source = str(filing.get("source") or "")
+        if source.endswith("synthetic_previous"):
+            previous[cik] = filing
+        else:
+            current[cik] = filing
+    return current, previous
+
+
+def holdings_by_symbol(holdings: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    output: Dict[str, Dict[str, Any]] = {}
+    for holding in holdings:
+        symbol = holding.get("symbol")
+        if not symbol:
+            continue
+        row = output.setdefault(
+            symbol,
+            {
+                "symbol": symbol,
+                "issuer_name": holding.get("issuer_name") or holding.get("name") or symbol,
+                "shares": 0.0,
+                "value_usd": 0.0,
+            },
+        )
+        row["shares"] += float(holding.get("shares") or 0)
+        row["value_usd"] += float(holding.get("value_usd") or 0)
+    return output
+
+
+def company_market_by_symbol(snapshot: Dict[str, Any], rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    output = {
+        row.get("symbol"): dict(
+            row.get("market") or {},
+            symbol=row.get("symbol"),
+            company_name=row.get("company_name"),
+            exchange=row.get("exchange"),
+            sector=row.get("sector"),
+            industry=row.get("industry"),
+            tags=row.get("tags") or [],
+            detail_tags=row.get("detail_tags") or row.get("tags") or [],
+            risk_tags=row.get("risk_tags") or [],
+        )
+        for row in rows
+        if row.get("symbol")
+    }
+    for row in snapshot.get("company_market") or []:
+        if row.get("symbol"):
+            output[row["symbol"]] = dict(row)
+    return output
+
+
+def status_for_company_holding(previous: Optional[Dict[str, Any]], current: Optional[Dict[str, Any]], previous_known: bool) -> str:
+    previous_shares = float(previous.get("shares") or 0) if previous else 0.0
+    current_shares = float(current.get("shares") or 0) if current else 0.0
+    if current_shares > 0 and not previous_known:
+        return "unknown_previous"
+    if previous_shares == 0 and current_shares > 0:
+        return "new_position"
+    if previous_shares > 0 and current_shares == 0:
+        return "exited"
+    if current_shares > previous_shares:
+        return "added"
+    if 0 < current_shares < previous_shares:
+        return "reduced"
+    if current_shares > 0:
+        return "unchanged"
+    return "not_held"
+
+
+def company_change_value(status: str, previous: Optional[Dict[str, Any]], current: Optional[Dict[str, Any]], price: float) -> float:
+    previous_shares = float(previous.get("shares") or 0) if previous else 0.0
+    current_shares = float(current.get("shares") or 0) if current else 0.0
+    if status in {"new_position", "unknown_previous"}:
+        return float(current.get("value_usd") or 0) if current else 0.0
+    if status == "added":
+        return max(current_shares - previous_shares, 0.0) * price
+    if status == "reduced":
+        return -max(previous_shares - current_shares, 0.0) * price
+    if status == "exited":
+        return -(previous_shares * price)
+    return 0.0
+
+
+def company_holding_row(
+    holding: Dict[str, Any],
+    previous: Optional[Dict[str, Any]],
+    status: str,
+    filing: Dict[str, Any],
+    market: Dict[str, Any],
+    total_value: float,
+) -> Dict[str, Any]:
+    symbol = holding.get("symbol") or (previous or {}).get("symbol")
+    current_shares = float(holding.get("shares") or 0)
+    previous_shares = float((previous or {}).get("shares") or 0)
+    current_value = float(holding.get("value_usd") or 0)
+    report_price = current_value / current_shares if current_shares > 0 and current_value > 0 else float(market.get("price") or 0)
+    change_shares = current_shares - previous_shares
+    change_value = company_change_value(status, previous, holding, report_price)
+    row = {
+        "symbol": symbol,
+        "slug": slugify_symbol(symbol),
+        "company_name": market.get("company_name") or holding.get("issuer_name") or symbol,
+        "exchange": market.get("exchange"),
+        "sector": market.get("sector"),
+        "industry": market.get("industry"),
+        "tags": market.get("detail_tags") or market.get("tags") or [],
+        "risk_tags": market.get("risk_tags") or [],
+        "status": status,
+        "status_key": status_label_key(status),
+        "status_tone": status_tone(status),
+        "previous_shares": previous_shares,
+        "current_shares": current_shares,
+        "change_shares": change_shares,
+        "change_value_usd": change_value,
+        "trade_report_price": round(report_price, 4),
+        "current_value_usd": current_value,
+        "avg_holding_price": round(current_value / current_shares, 4) if current_shares > 0 else 0,
+        "portfolio_weight_pct": current_value / total_value * 100 if total_value > 0 else 0.0,
+        "filing_date": filing.get("filing_date"),
+        "report_period": filing.get("report_period"),
+        "source_url": filing.get("sec_url"),
+        "source_type": filing.get("filing_type") or "13F-HR",
+    }
+    row.update(market_row({"market": market}))
+    return row
+
+
+def build_company_investors(config: Dict[str, Any], snapshot: Dict[str, Any], rows: List[Dict[str, Any]]) -> Dict[str, Any]:
+    current_filings, previous_filings = latest_company_filings(snapshot)
+    markets = company_market_by_symbol(snapshot, rows)
+    companies = company_investor_by_cik(config)
+    output: Dict[str, Any] = {}
+    for cik, company in companies.items():
+        filing = current_filings.get(cik)
+        if not filing:
+            continue
+        current = holdings_by_symbol(filing.get("holdings") or [])
+        previous_filing = previous_filings.get(cik)
+        previous = holdings_by_symbol((previous_filing or {}).get("holdings") or [])
+        previous_known = bool(previous_filing)
+        symbols = sorted(set(current) | set(previous))
+        total_value = sum(float(row.get("value_usd") or 0) for row in current.values())
+        holdings = []
+        changes = []
+        for symbol in symbols:
+            cur = current.get(symbol)
+            prev = previous.get(symbol)
+            status = status_for_company_holding(prev, cur, previous_known)
+            if status == "not_held":
+                continue
+            source_holding = cur or {"symbol": symbol, "issuer_name": (prev or {}).get("issuer_name"), "shares": 0, "value_usd": 0}
+            row = company_holding_row(source_holding, prev, status, filing, markets.get(symbol, {}), total_value)
+            if row["current_shares"] > 0:
+                holdings.append(row)
+            if status not in {"", "unchanged", "not_held"} and abs(float(row.get("change_value_usd") or 0)) > 0:
+                changes.append(row)
+        holdings.sort(key=lambda row: (-(row.get("current_value_usd") or 0), row["symbol"]))
+        changes.sort(key=lambda row: (-abs(float(row.get("change_value_usd") or 0)), row["symbol"]))
+        bought_value = sum(max(float(row.get("change_value_usd") or 0), 0.0) for row in changes)
+        sold_value = sum(abs(min(float(row.get("change_value_usd") or 0), 0.0)) for row in changes)
+        output[cik] = {
+            "cik": cik,
+            "symbol": company.get("symbol"),
+            "slug": manager_slug(cik),
+            "href": manager_href(cik),
+            "name": company.get("name"),
+            **manager_display_fields(company),
+            "style": "company",
+            "source_type": "company_13f",
+            "summary": {
+                "holdings_count": len(holdings),
+                "changes_count": len(changes),
+                "securities_value_usd": total_value,
+                "total_value_usd": total_value,
+                "bought_value_usd": bought_value,
+                "sold_value_usd": sold_value,
+                "cash_disclosure_available": False,
+                "cash_value_usd": 0,
+                "cash_weight_pct": 0,
+                "filing_date": filing.get("filing_date"),
+                "report_period": filing.get("report_period"),
+                "source_url": filing.get("sec_url"),
+            },
+            "holdings": holdings,
+            "recent_changes": changes,
+        }
+    return output
+
+
+def stock_shell_from_company_holding(holding: Dict[str, Any]) -> Dict[str, Any]:
+    symbol = holding["symbol"]
+    return {
+        "symbol": symbol,
+        "slug": holding.get("slug") or slugify_symbol(symbol),
+        "company_name": holding.get("company_name") or symbol,
+        "exchange": holding.get("exchange") or "NASDAQ",
+        "sector": holding.get("sector"),
+        "industry": holding.get("industry"),
+        "tags": holding.get("tags") or [],
+        "risk_tags": holding.get("risk_tags") or [],
+        "market": market_row({"market": holding}),
+        "metrics": {
+            "manager_count": 0,
+            "buyers_count": 0,
+            "sellers_count": 0,
+            "holders_count": 0,
+            "new_positions_count": 0,
+            "added_count": 0,
+            "reduced_count": 0,
+            "exits_count": 0,
+            "total_bought_value_usd": 0,
+            "total_sold_value_usd": 0,
+            "total_tracked_value_usd": 0,
+            "institutional_avg_holding_price": 0,
+            "latest_institutional_buy_price": 0,
+            "key_institution_bought": False,
+            "key_institution_bought_value_usd": 0,
+            "key_institution_holders": [],
+        },
+        "managers": [],
+    }
+
+
+def company_holder_row(investor: Dict[str, Any], holding: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "cik": investor["cik"],
+        "name": investor.get("name"),
+        "href": investor.get("href"),
+        "source_type": "company_13f",
+        **manager_display_fields(investor),
+        "symbol": holding.get("symbol"),
+        "status": holding.get("status"),
+        "status_key": holding.get("status_key"),
+        "status_tone": holding.get("status_tone"),
+        "previous_shares": holding.get("previous_shares", 0),
+        "current_shares": holding.get("current_shares", 0),
+        "change_shares": holding.get("change_shares", 0),
+        "change_value_usd": holding.get("change_value_usd", 0),
+        "trade_report_price": holding.get("trade_report_price", 0),
+        "current_value_usd": holding.get("current_value_usd", 0),
+        "avg_holding_price": holding.get("avg_holding_price", 0),
+        "portfolio_weight_pct": holding.get("portfolio_weight_pct", 0),
+        "filing_date": holding.get("filing_date"),
+        "report_period": holding.get("report_period"),
+        "source_url": holding.get("source_url"),
+    }
+
+
+def add_company_holders_to_stocks(stocks: Dict[str, Dict[str, Any]], company_investors: Dict[str, Any]) -> None:
+    for investor in company_investors.values():
+        for holding in investor.get("holdings") or []:
+            symbol = holding.get("symbol")
+            if not symbol:
+                continue
+            stocks.setdefault(symbol, stock_shell_from_company_holding(holding))
+            stocks[symbol].setdefault("managers", []).append(company_holder_row(investor, holding))
+    for stock in stocks.values():
+        stock.setdefault("managers", []).sort(
+            key=lambda row: (
+                -(float(row.get("current_value_usd") or 0)),
+                str(row.get("display_name") or row.get("name") or ""),
+            )
+        )
+
+
+def top_shareholders_by_symbol(snapshot: Dict[str, Any]) -> Dict[str, List[Dict[str, Any]]]:
+    output: Dict[str, List[Dict[str, Any]]] = {}
+    for row in snapshot.get("top_shareholders") or []:
+        symbol = row.get("symbol")
+        if not symbol:
+            continue
+        output[symbol] = [dict(holder) for holder in row.get("shareholders") or []]
+    return output
+
+
+def shareholder_row(holder: Dict[str, Any], tracked: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    row = {
+        "rank": int(holder.get("rank") or 0),
+        "name": holder.get("name") or "--",
+        "title": holder.get("title") or "",
+        "object_id": holder.get("object_id"),
+        "shares_held": float_or_zero(holder.get("shares_held")),
+        "shares_changed": float_or_zero(holder.get("shares_changed")),
+        "percent_shares_held": holder.get("percent_shares_held") or "",
+        "percent_shares_changed": holder.get("percent_shares_changed") or "",
+        "filing_date": holder.get("filing_date"),
+        "period": holder.get("period"),
+        "tracked": False,
+    }
+    if tracked:
+        row.update(tracked)
+    return row
+
+
+def add_top_shareholders_to_stocks(
+    config: Dict[str, Any],
+    snapshot: Dict[str, Any],
+    stocks: Dict[str, Dict[str, Any]],
+    institutions: Dict[str, Dict[str, Any]],
+) -> None:
+    lookup = tracked_holder_lookup(config, institutions)
+    by_symbol = top_shareholders_by_symbol(snapshot)
+    for symbol, stock in stocks.items():
+        holders = []
+        for holder in by_symbol.get(symbol, [])[:10]:
+            holders.append(shareholder_row(holder, lookup.get(holder_name_key(holder.get("name")))))
+        stock["top_shareholders"] = holders
+
+
 def build_metadata(config: Dict[str, Any], snapshot: Dict[str, Any]) -> Dict[str, Any]:
     build = snapshot.get("build") or {}
     now = dt.datetime.now().astimezone().replace(microsecond=0).isoformat()
@@ -1731,6 +2150,10 @@ def build_hugo_data(
     combined_rows = sort_combined_rows(ranking_rows)
     stocks = {row["symbol"]: stock_entry(row, key_names) for row in rows}
     institutions = build_institutions(config, rows, snapshot.get("cash_disclosures") or [])
+    company_investors = build_company_investors(config, snapshot, rows)
+    add_company_holders_to_stocks(stocks, company_investors)
+    institutions.update(company_investors)
+    add_top_shareholders_to_stocks(config, snapshot, stocks, institutions)
     period_label = activity_period_label(
         snapshot.get("previous_13f_report_period"),
         snapshot.get("latest_13f_report_period"),
@@ -1738,11 +2161,21 @@ def build_hugo_data(
     tracked_institution_order = [
         {
             "cik": normalize_cik(manager.get("cik")),
+            "source_type": "institution_13f",
             **manager_display_fields(manager),
         }
         for manager in enabled_managers(config)
         if normalize_cik(manager.get("cik")) in institutions
     ]
+    tracked_institution_order.extend(
+        {
+            "cik": normalize_cik(company.get("cik")),
+            "source_type": "company_13f",
+            **manager_display_fields(company),
+        }
+        for company in enabled_company_investors(config)
+        if normalize_cik(company.get("cik")) in company_investors
+    )
     simulation = enrich_simulation_summary(
         snapshot.get("simulation") or build_snapshot_simulation(config, snapshot, combined_rows, ranks, badge_by_symbol)
     )
@@ -1814,12 +2247,14 @@ def main() -> None:
     data = build_hugo_data(config, snapshot)
     write_yaml(args.output, data)
     if not args.skip_content:
+        stock_content_rows = list((data.get("stocks") or {}).values())
+        institution_content_rows = list((data.get("institutions") or {}).values())
         ensure_static_language_pages(args.en_content_root, "en")
         ensure_static_language_pages(args.zh_content_root, "zh")
-        ensure_content_pages(args.content_dir, snapshot.get("securities") or [])
-        ensure_institution_pages(args.institution_content_dir, enabled_managers(config), language="en")
-        ensure_content_pages(args.zh_content_root / "stocks", snapshot.get("securities") or [])
-        ensure_institution_pages(args.zh_content_root / "institutions", enabled_managers(config), language="zh")
+        ensure_content_pages(args.content_dir, stock_content_rows)
+        ensure_institution_pages(args.institution_content_dir, institution_content_rows, language="en")
+        ensure_content_pages(args.zh_content_root / "stocks", stock_content_rows)
+        ensure_institution_pages(args.zh_content_root / "institutions", institution_content_rows, language="zh")
     print(f"wrote {args.output}")
 
 

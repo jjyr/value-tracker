@@ -41,9 +41,15 @@ mappings:
     symbol: "BRK.B.US"
     company_name: "Berkshire Hathaway Inc."
     tags: ["S&P 500"]
+  "086921103":
+    symbol: "BETA.US"
+    company_name: "Beta Technologies Inc."
   "093671105":
     symbol: "HRB.US"
     company_name: "H&R Block Inc."
+  "107924102":
+    symbol: "BBOT.US"
+    company_name: "BridgeBio Oncology Therapeutics Inc."
   "14040H105":
     symbol: "COF.US"
     company_name: "Capital One Financial Corp."
@@ -63,6 +69,9 @@ mappings:
   "21873S108":
     symbol: "CRWV.US"
     company_name: "CoreWeave Inc."
+  "22053A107":
+    symbol: "QNCX.US"
+    company_name: "Quince Therapeutics Inc."
   "22788C105":
     symbol: "CRWD.US"
     company_name: "CrowdStrike Holdings Inc."
@@ -171,6 +180,9 @@ mappings:
   "650111107":
     symbol: "NYT.US"
     company_name: "The New York Times Co."
+  "654902204":
+    symbol: "NOK.US"
+    company_name: "Nokia Oyj ADR"
   "670346105":
     symbol: "NUE.US"
     company_name: "Nucor Corp."
@@ -234,6 +246,9 @@ mappings:
     symbol: "ASML.US"
     company_name: "ASML Holding NV ADR"
     tags: ["Nasdaq 100"]
+  "N97284108":
+    symbol: "NBIS.US"
+    company_name: "Nebius Group N.V."
   "H1467J104":
     symbol: "CB.US"
     company_name: "Chubb Ltd."

@@ -4,20 +4,26 @@
 {{ $order := $data.tracked_institution_order }}
 {{ $institutionCurves := $data.institution_curves }}
 {{ $institutionItems := slice }}
+{{ $companyInvestorItems := slice }}
 {{ range $order }}
   {{ $institution := index $institutions .cik }}
   {{ $curve := index $institutionCurves .cik }}
   {{ with $institution }}
-    {{ $curveSummary := dict }}
-    {{ with $curve }}{{ $curveSummary = .summary | default (dict) }}{{ end }}
-    {{ $institutionItems = $institutionItems | append (dict
-      "institution" .
-      "curve" $curve
-      "ytd" (float ($curveSummary.ytd_return_pct | default 0))
-    ) }}
+    {{ if eq (.source_type | default "") "company_13f" }}
+      {{ $companyInvestorItems = $companyInvestorItems | append (dict "institution" .) }}
+    {{ else }}
+      {{ $curveSummary := dict }}
+      {{ with $curve }}{{ $curveSummary = .summary | default (dict) }}{{ end }}
+      {{ $institutionItems = $institutionItems | append (dict
+        "institution" .
+        "curve" $curve
+        "ytd" (float ($curveSummary.ytd_return_pct | default 0))
+      ) }}
+    {{ end }}
   {{ end }}
 {{ end }}
 {{ $institutionItems = sort $institutionItems "ytd" "desc" }}
+{{ $trackedItemCount := add (len $institutionItems) (len $companyInvestorItems) }}
 {{ $chartSeries := slice }}
 {{ $benchmarkPoints := slice }}
 {{ $curveStartDate := "" }}
@@ -43,7 +49,7 @@
     </div>
     <div class="directory-summary">
       <span>{{ i18n "home_institution_count" }}</span>
-      <strong>{{ len $institutionItems }}</strong>
+      <strong>{{ $trackedItemCount }}</strong>
     </div>
   </section>
 
@@ -233,6 +239,9 @@
             </div>
           </div>
         </article>
+      {{ end }}
+      {{ range $idx, $item := $companyInvestorItems }}
+        {{ partial "company-tracker-card.html" (dict "institution" $item.institution "rank" (add (add (len $institutionItems) $idx) 1)) }}
       {{ end }}
   </section>
 </main>

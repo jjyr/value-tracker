@@ -38,16 +38,16 @@ other = "About"
 other = "Stocks"
 
 [tracked_institutions]
-other = "Tracked Institutions"
+other = "Tracked Items"
 
 [home_title]
 other = "Institution Return Tracker"
 
 [home_subtitle]
-other = "Ranked by YTD return. See key institutions' 13F portfolio performance, drawdowns, current holdings, and latest changes."
+other = "See key institutions' 13F portfolio curves, plus tracked companies treated as holders so their strategic investments fit the same chain."
 
 [home_institution_count]
-other = "Tracked institutions"
+other = "Tracked items"
 
 [equity_curve]
 other = "Equity Curve"
@@ -65,7 +65,7 @@ other = "13F disclosures are delayed. Institution return curves are estimates ba
 other = "13F disclosures are delayed. Holding efficiency is calculated from {{ .StartDate }}; institution return curves are estimates based on public holdings and market prices, not real-time holdings or investment advice."
 
 [home_grid_aria]
-other = "Tracked institution performance"
+other = "Tracked institutions and companies"
 
 [portfolio_value]
 other = "Portfolio value"
@@ -128,10 +128,16 @@ other = "No material changes this period."
 other = "{{ .Name }} allocation"
 
 [institution_positions]
-other = "Institution Positions"
+other = "Institution positions"
 
 [holdings_hero_text]
 other = "Top 10 by institutional buys, sells, and current shares held, with each stock's share of the group total."
+
+[company_13f_source]
+other = "Company filing"
+
+[strategic_holdings]
+other = "Strategic holdings"
 
 [report_period]
 other = "Report Period"
@@ -327,6 +333,21 @@ other = "Key institutions"
 
 [institutions]
 other = "Institutions"
+
+[shareholders]
+other = "Shareholders"
+
+[top_shareholders]
+other = "Top 10 Shareholders"
+
+[shareholder]
+other = "Shareholder"
+
+[shares_held]
+other = "Shares held"
+
+[ownership_pct]
+other = "Ownership"
 
 [institution_detail]
 other = "Institution details"

@@ -1,0 +1,93 @@
+{{ $institution := .institution }}
+{{ $rank := .rank }}
+{{ $summary := $institution.summary }}
+{{ $securitiesValue := float ($summary.securities_value_usd | default ($summary.total_value_usd | default 0)) }}
+{{ $pieRows := slice }}
+{{ range first 10 $institution.holdings }}
+  {{ $pieRows = $pieRows | append (dict
+    "symbol" .symbol
+    "company_name" .company_name
+    "slug" .slug
+    "value" (float (.current_value_usd | default 0))
+    "valueKind" "money"
+    "weight" (float (.portfolio_weight_pct | default 0))
+    "shares" (float (.current_shares | default 0))
+  ) }}
+{{ end }}
+<article class="institution-card institution-performance-card company-tracker-card">
+  <div class="institution-card-header">
+    <a class="institution-card-main" href="{{ $institution.href | relLangURL }}">
+      <div class="institution-card-mark">{{ $rank }}</div>
+      <div class="institution-card-title">
+        <h2>{{ partial "display-name.html" $institution }}</h2>
+        <p>{{ $institution.name }}</p>
+      </div>
+    </a>
+    <div class="institution-ytd company-price-summary">
+      <span>{{ i18n "company_13f_source" }}</span>
+      <strong>13F</strong>
+      <em>{{ $summary.report_period | default "--" }}</em>
+    </div>
+  </div>
+
+  <div class="institution-metric-grid company-metric-grid">
+    <div class="institution-metric-group">
+      <span class="institution-metric-group-label">{{ i18n "strategic_holdings" }}</span>
+      <div class="institution-metric-items asset-metrics">
+        <div class="institution-metric-item">
+          <span>{{ i18n "portfolio_value" }}</span>
+          <strong data-money="{{ $securitiesValue }}">--</strong>
+        </div>
+        <div class="institution-metric-item">
+          <span>{{ i18n "holdings_number" }}</span>
+          <strong>{{ $summary.holdings_count }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="institution-metric-group">
+      <span class="institution-metric-group-label">{{ i18n "period_changes" }}</span>
+      <div class="institution-metric-items performance-metrics">
+        <div class="institution-metric-item">
+          <span>{{ i18n "bought_value" }}</span>
+          <strong class="positive" data-money="{{ $summary.bought_value_usd }}">--</strong>
+        </div>
+        <div class="institution-metric-item">
+          <span>{{ i18n "sold_value" }}</span>
+          <strong class="negative" data-money="{{ $summary.sold_value_usd }}">--</strong>
+        </div>
+        <div class="institution-metric-item">
+          <span>{{ i18n "period_changes" }}</span>
+          <strong>{{ $summary.changes_count }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="institution-card-section">
+    <div class="section-title-row">
+      <h3>{{ i18n "strategic_holdings" }}</h3>
+      <span>{{ i18n "holdings_count" (dict "Count" $summary.holdings_count) }}</span>
+    </div>
+    <div class="holding-pie institution-allocation-pie" data-holding-pie='{{ $pieRows | jsonify }}' aria-label="{{ i18n "holding_distribution_aria" (dict "Name" (partial "display-name.html" $institution)) }}"></div>
+  </div>
+
+  <div class="institution-card-section">
+    <div class="section-title-row">
+      <h3>{{ i18n "latest_changes" }}</h3>
+      <span>{{ i18n "latest_5" }}</span>
+    </div>
+    <div class="institution-activity-list compact">
+      {{ range first 5 $institution.recent_changes }}
+        {{ $badgeTone := "holding" }}
+        {{ if eq .status_tone "buy" }}{{ $badgeTone = "buying" }}{{ else if eq .status_tone "sell" }}{{ $badgeTone = "selling" }}{{ end }}
+        <a class="institution-activity" href="{{ printf "stocks/%s/" .slug | relLangURL }}">
+          <span class="activity-badge badge-{{ $badgeTone }}">{{ partial "status-label.html" . }}</span>
+          <strong>{{ .symbol }}</strong>
+          <em data-money="{{ .change_value_usd }}">--</em>
+        </a>
+      {{ else }}
+        <span class="muted">{{ i18n "no_period_changes" }}</span>
+      {{ end }}
+    </div>
+  </div>
+</article>
